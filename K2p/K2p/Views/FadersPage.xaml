@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:prism="clr-namespace:Prism.Mvvm;assembly=Prism.Forms"
+             xmlns:b="clr-namespace:Prism.Behaviors;assembly=Prism.Forms"
+             xmlns:local="clr-namespace:K2p.Behaviors"
+             x:Class="K2p.Views.FadersPage"
+             Style="{StaticResource PageTitleStyle}" 
+             Title="Faders" >
+  <ContentPage.Content>
+    <ScrollView>
+      <StackLayout HorizontalOptions="CenterAndExpand" VerticalOptions="StartAndExpand" Padding="5,5,0,0">
+        <!--#region ************************************** Master Volume *********************************************** -->
+        <Grid Padding="0,0,5,0" ColumnSpacing="4">
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="60"/>
+            <ColumnDefinition Width="Auto"/>
+          </Grid.ColumnDefinitions>
+          <Label Grid.Column="0"  Text="Volume" VerticalOptions="Center" Style="{StaticResource LabelTitleStyle}" />
+
+          <Slider Style="{StaticResource SliderStyle}" Grid.Column="1"  Maximum="{Binding VolMax}" Minimum="{Binding VolMin}" Value="{Binding MasterSliderValue}"/>
+          <Entry Style="{StaticResource EntryStyle}" Grid.Column="2" Keyboard="Numeric" Text="{Binding MasterEntryValue}"  VerticalOptions="Center" >
+            <Entry.Behaviors>
+              <local:FaderValidationBehavior />
+              <b:EventToCommandBehavior EventName="Completed" Command="{Binding MasterEntryCompletedCommand}"/>
+            </Entry.Behaviors>
+          </Entry>
+          <Label Grid.Column="3" Text="dB" VerticalTextAlignment="Center" Style="{StaticResource LabelStyle}" />
+        </Grid>
+
+        <Label Text="Faders" Style="{StaticResource LabelTitleStyle}"/>
+        <!--#endregion Master Volume -->
+        <!--#region ******************************************* Left-Right Balance ****************************************************-->
+        <Grid Padding="5,0,5,0" ColumnSpacing="4">
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="40"/>
+            <ColumnDefinition Width="60"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="60"/>
+            <ColumnDefinition Width="Auto"/>
+          </Grid.ColumnDefinitions>
+
+          <Label Grid.Column="0"  Text="L/R" VerticalOptions="Center" Style="{StaticResource LabelStyle}" />
+          <!-- Note, if maximum is zero, set minimum 1st, otherwise the page won't load (Error not shown or thrown) -->
+          <Entry Style="{StaticResource EntryStyle}" Grid.Column="1" Keyboard="Numeric" Text="{Binding LeftEntryValue}" VerticalOptions="Center" >
+            <Entry.Behaviors>
+              <local:BalanceValidationBehavior />
+              <b:EventToCommandBehavior EventName="Completed" Command="{Binding LeftEntryCompletedCommand}"/>
+            </Entry.Behaviors>
+          </Entry>
+          <Slider Style="{StaticResource SliderStyle}" Grid.Column="2" Minimum="{Binding FaderSliderMin}" Maximum="{Binding FaderSliderMax}" Value="{Binding LeftRightSliderValue}"/>
+          <Entry Style="{StaticResource EntryStyle}" Grid.Column="3" Keyboard="Numeric" Text="{Binding RightEntryValue}" VerticalOptions="Center" >
+            <Entry.Behaviors>
+              <local:BalanceValidationBehavior />
+              <b:EventToCommandBehavior EventName="Completed" Command="{Binding RightEntryCompletedCommand}"/>
+            </Entry.Behaviors>
+          </Entry>
+          <Label Grid.Column="4" Text="dB" VerticalTextAlignment="Center" Style="{StaticResource LabelStyle}"/>
+        </Grid>
+        <!--#endregion Left-Right Balance -->
+        <!--#region ******************************************* Front-Rear Balance ****************************************************-->
+        <Grid Padding="5,0,5,0" ColumnSpacing="4">
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="40"/>
+            <ColumnDefinition Width="60"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="60"/>
+            <ColumnDefinition Width="Auto"/>
+          </Grid.ColumnDefinitions>
+
+          <Label Grid.Column="0"  Text="F/R" VerticalOptions="Center" Style="{StaticResource LabelStyle}" />
+           <!--Note, if maximum is zero, set minimum 1st, otherwise the page won't load (Error not shown or thrown)--> 
+          <Entry Style="{StaticResource EntryStyle}" Grid.Column="1" Keyboard="Numeric" Text="{Binding FrontEntryValue}" VerticalOptions="Center" >
+            <Entry.Behaviors>
+              <local:BalanceValidationBehavior />
+              <b:EventToCommandBehavior EventName="Completed" Command="{Binding FrontEntryCompletedCommand}"/>
+            </Entry.Behaviors>
+          </Entry>
+          <Slider Style="{StaticResource SliderStyle}" Grid.Column="2" Minimum="{Binding FaderSliderMin}" Maximum="{Binding FaderSliderMax}" Value="{Binding FrontRearSliderValue}"/>
+          <Entry Style="{StaticResource EntryStyle}" Grid.Column="3" Keyboard="Numeric" Text="{Binding RearEntryValue}" VerticalOptions="Center" >
+            <Entry.Behaviors>
+              <local:BalanceValidationBehavior />
+              <b:EventToCommandBehavior EventName="Completed" Command="{Binding RearEntryCompletedCommand}"/>
+            </Entry.Behaviors>
+          </Entry>
+          <Label Grid.Column="4" Text="dB" VerticalTextAlignment="Center" Style="{StaticResource LabelStyle}"/>
+        </Grid>
+        <!--#endregion  Front-Rear Balance  -->
+        <!--#region ******************************************* Center ****************************************************-->
+        <Grid Padding="5,0,5,0" ColumnSpacing="4">
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="40"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="60"/>
+            <ColumnDefinition Width="Auto"/>
+          </Grid.ColumnDefinitions>
+          <Label Grid.Column="0"  Text="Ctr" VerticalOptions="Center" Style="{StaticResource LabelStyle}" />
+                    <Slider Style="{StaticResource SliderStyle}" Grid.Column="1" Minimum ="-40"  Maximum="0"  Value="{Binding CenterSliderValue}"/>
+          <Entry Style="{StaticResource EntryStyle}" Grid.Column="2" Keyboard="Numeric" Text="{Binding CenterEntryValue}" VerticalOptions="Center" >
+            <Entry.Behaviors>
+              <local:CenterValidationBehavior />
+              <b:EventToCommandBehavior EventName="Completed" Command="{Binding CenterEntryCompletedCommand}"/>
+            </Entry.Behaviors>
+          </Entry>
+          <Label Grid.Column="3" Text="dB" VerticalTextAlignment="Center" Style="{StaticResource LabelStyle}"/>
+        </Grid>
+        <!--#endregion  Front-Rear Balance -->
+        <!--#region ******************************************* Bass ****************************************************-->
+        <Grid Padding="5,0,5,0" ColumnSpacing="4">
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="40"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="60"/>
+            <ColumnDefinition Width="Auto"/>
+          </Grid.ColumnDefinitions>
+          <Label Grid.Column="0"  Text="Bass" VerticalOptions="Center" Style="{StaticResource LabelStyle}" />
+          <Slider Style="{StaticResource SliderStyle}" Grid.Column="1" Minimum="-40" Maximum="0" Value="{Binding BassSliderValue}"/>
+          <Entry Style="{StaticResource EntryStyle}" Grid.Column="2" Keyboard="Numeric" Text="{Binding BassEntryValue}" VerticalOptions="Center" >
+            <Entry.Behaviors>
+              <local:BassValidationBehavior />
+              <b:EventToCommandBehavior EventName="Completed" Command="{Binding BassEntryCompletedCommand}"/>
+            </Entry.Behaviors>
+          </Entry>
+          <Label Grid.Column="3" Text="dB" VerticalTextAlignment="Center" Style="{StaticResource LabelStyle}"/>
+        </Grid>
+        <!--#endregion Bass Balance -->
+        <!--#region ****************************** Channel Assignments *********************************** -->
+        <Label Text ="Channel Assignments" Style="{StaticResource LabelTitleStyle}" Margin="0,10,0,0"/>
+        <Grid>
+
+          <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+
+          </Grid.RowDefinitions>
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="120"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+          </Grid.ColumnDefinitions>
+          <Label  Grid.Row="0" Grid.Column="0" Text="{Binding LabelCh0}" TextColor="{Binding TextColorCh0}" Style="{StaticResource LabelTitleStyleNoColor}" />
+          <Picker Grid.Row="0" Grid.Column="1" Title="{Binding PickerNameCh0}" ItemsSource="{Binding Assignments}" ItemDisplayBinding="{Binding Name}" SelectedIndex="{Binding SelectedIndexCh0}"  Style="{StaticResource PickerStyle}" />
+
+          <Label  Grid.Row="0" Grid.Column="2" Text="{Binding LabelCh1}" TextColor="{Binding TextColorCh1}" Style="{StaticResource LabelTitleStyleNoColor}" Margin="20,0,0,0"  />
+          <Picker Grid.Row="0" Grid.Column="3" Title="{Binding PickerNameCh1}" ItemsSource="{Binding Assignments}" ItemDisplayBinding="{Binding Name}" SelectedIndex="{Binding SelectedIndexCh1}" Style="{StaticResource PickerStyle}" Margin="4,0,0,0" />
+
+          <Label  Grid.Row="1" Grid.Column="0" Text="{Binding LabelCh2}" TextColor="{Binding TextColorCh2}" Style="{StaticResource LabelTitleStyleNoColor}"/>
+          <Picker Grid.Row="1" Grid.Column="1" Title="{Binding PickerNameCh2}" ItemsSource="{Binding Assignments}" ItemDisplayBinding="{Binding Name}" SelectedIndex="{Binding SelectedIndexCh2}" Style="{StaticResource PickerStyle}" />
+
+          <Label  Grid.Row="1" Grid.Column="2" Text="{Binding LabelCh3}" TextColor="{Binding TextColorCh3}" Style="{StaticResource LabelTitleStyleNoColor}"  Margin="20,0,0,0" />
+          <Picker Grid.Row="1" Grid.Column="3" Title="{Binding PickerNameCh3}" ItemsSource="{Binding Assignments}" ItemDisplayBinding="{Binding Name}" SelectedIndex="{Binding SelectedIndexCh3}" Style="{StaticResource PickerStyle}"  Margin="4,0,0,0" />
+
+          <Label  Grid.Row="2" Grid.Column="0" Text="{Binding LabelCh4}" TextColor="{Binding TextColorCh4}" Style="{StaticResource LabelTitleStyleNoColor}" />
+          <Picker Grid.Row="2" Grid.Column="1" Title="{Binding PickerNameCh4}" ItemsSource="{Binding Assignments}" ItemDisplayBinding="{Binding Name}" SelectedIndex="{Binding SelectedIndexCh4}" Style="{StaticResource PickerStyle}" />
+
+          <Label  Grid.Row="2" Grid.Column="2" Text="{Binding LabelCh5}" TextColor="{Binding TextColorCh5}" Style="{StaticResource LabelTitleStyleNoColor}"  Margin="20,0,0,0" />
+          <Picker Grid.Row="2" Grid.Column="3" Title="{Binding PickerNameCh5}" ItemsSource="{Binding Assignments}" ItemDisplayBinding="{Binding Name}" SelectedIndex="{Binding SelectedIndexCh5}" Style="{StaticResource PickerStyle}" Margin="4,0,0,0"  />
+
+          <Label  Grid.Row="3" Grid.Column="0" Text="{Binding LabelCh6}" TextColor="{Binding TextColorCh6}" Style="{StaticResource LabelTitleStyleNoColor}" />
+          <Picker Grid.Row="3" Grid.Column="1" Title="{Binding PickerNameCh6}" ItemsSource="{Binding Assignments}" ItemDisplayBinding="{Binding Name}" SelectedIndex="{Binding SelectedIndexCh6}" Style="{StaticResource PickerStyle}" />
+
+          <Label  Grid.Row="3" Grid.Column="2" Text="{Binding LabelCh7}" TextColor="{Binding TextColorCh7}" Style="{StaticResource LabelTitleStyleNoColor}"  Margin="20,0,0,0" />
+          <Picker Grid.Row="3" Grid.Column="3" Title="{Binding PickerNameCh7}" ItemsSource="{Binding Assignments}" ItemDisplayBinding="{Binding Name}" SelectedIndex="{Binding SelectedIndexCh7}" Style="{StaticResource PickerStyle}"  Margin="4,0,0,0" />
+        </Grid>
+        <Button Text="Default Assignments"   Style="{StaticResource ButtonStyle}"  Command="{Binding ButtonDefaultAssignments}" Margin="20,5,25,0"/>
+        <!--#endregion  ******************************* -->
+
+
+      </StackLayout>
+    </ScrollView>
+  </ContentPage.Content>
+</ContentPage>

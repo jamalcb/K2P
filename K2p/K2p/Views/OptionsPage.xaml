@@ -1,0 +1,61 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:b="clr-namespace:Prism.Behaviors;assembly=Prism.Forms"
+             xmlns:prism="clr-namespace:Prism.Mvvm;assembly=Prism.Forms"
+             prism:ViewModelLocator.AutowireViewModel="True"
+             xmlns:behaviors="clr-namespace:K2p.Behaviors;assembly=K2p"  
+             x:Class="K2p.Views.OptionsPage" 
+             Style="{StaticResource PageTitleStyle}"
+             Title="Options">
+    <ContentPage.Content>
+        <Grid Margin="2,5,10,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Label Text="{Binding Version}" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="4"  HorizontalOptions="CenterAndExpand"  Style="{StaticResource LabelStyle}" Margin="0,0,0,20"/>
+            <Label Text="Master Increment" Grid.Row="1" Grid.Column="0" Style="{StaticResource LabelStyle}"/>  
+            <Picker Title="Master" Grid.Row="1" Grid.Column="1" ItemsSource="{Binding DBIncrementsNames}" 
+              ItemDisplayBinding="{Binding Name}"  SelectedIndex="{Binding SelectedMasterIndex}"  Style="{StaticResource PickerStyle}"  />
+
+            <Label Text="EQ Increment" Grid.Row="1" Grid.Column="2" Style="{StaticResource LabelStyle}"/>
+            <Picker Title="EQ" Grid.Row="1" Grid.Column="3" ItemsSource="{Binding DBIncrementsNames}" 
+                ItemDisplayBinding="{Binding Name}" SelectedIndex="{Binding SelectedEqIndex}"  Style="{StaticResource PickerStyle}"/>
+
+
+            <Label Text="Trim Increment" Grid.Row="2" Grid.Column="0" Style="{StaticResource LabelStyle}"/>
+            <Picker Title="Trim/Fader" Grid.Row="2" Grid.Column="1" ItemsSource="{Binding DBIncrementsNames}" 
+                ItemDisplayBinding="{Binding Name}" SelectedIndex="{Binding SelectedTrimIndex}" Style="{StaticResource PickerStyle}"/>
+            
+            <StackLayout Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2"  Orientation="Horizontal"  Margin="2,20,0,0">
+                <Label Text="Eq Warnings" Style="{StaticResource LabelStyle}" />
+                <Switch  IsToggled="{Binding EqWarningIsEnabled}"/>
+            </StackLayout>
+
+            <Label Text="Password"  Grid.Row="4" Grid.Column="0" Style="{StaticResource LabelStyle}"/>
+            <Entry Grid.Row="4"  Grid.Column="1" WidthRequest="50" Style="{StaticResource PasswordStyle}" 
+                   Text="{Binding PasswordEntryValue}">
+                <Entry.Behaviors>
+                    <behaviors:PasswordBehavior/>
+                    <b:EventToCommandBehavior EventName="Completed" Command="{Binding PasswordEntryCompletedCommand}"/>
+                </Entry.Behaviors>
+            </Entry>          
+            <Label Text="{Binding PasswordLabel}" TextColor="{Binding PasswordOKColor}"  Grid.Row="4" Grid.Column="2" Style="{StaticResource LabelStyle}"/>
+
+        </Grid>
+
+
+    </ContentPage.Content>
+</ContentPage>

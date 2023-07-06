@@ -1,0 +1,86 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <SignAssembly>false</SignAssembly>
+    <ApplicationIcon>Arc_3.ico</ApplicationIcon>
+    <AssemblyOriginatorKeyFile>Code_Signing_Exported.pfx</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <NoWarn>RECS0018;1701;1702;</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Remove="Behaviors\Behaviors.cs.bak" />
+    <None Remove="Images\Down_Arrow_Icon.png" />
+    <None Remove="Statics\Response.cs.bak" />
+    <None Remove="Statics\Settings.cs.bak" />
+    <None Remove="ViewModels\ConnectPageViewModel.cs.bak" />
+    <None Remove="ViewModels\TouchParametricViewModel.cs.bak" />
+    <None Remove="ViewModels\TrimsPageViewModel.cs.bak" />
+    <None Remove="ViewModels\VuMetersPageViewModel.cs.bak" />
+    <None Remove="Views\ThirdOctavePage.xaml.cs.bak" />
+    <None Remove="Views\TouchParametric.xaml.bak" />
+    <None Remove="Views\TouchParametric.xaml.cs.bak" />
+    <None Remove="Documents\ios.txt" />
+    <None Remove="Statics\Constants.cs.bak" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AppCenter" Version="3.1.0" />
+    <PackageReference Include="Microsoft.AppCenter.Analytics" Version="3.1.0" />
+    <PackageReference Include="Microsoft.AppCenter.Crashes" Version="3.1.0" />
+    <PackageReference Include="Microsoft.AppCenter.Push" Version="3.1.0" />
+    <PackageReference Include="SkiaSharp.Views.Forms" Version="1.68.1.1" />
+    <PackageReference Include="System.Net.Sockets" Version="4.3.0" />
+    <PackageReference Include="Xamarin.Forms" Version="4.5.0.495" />
+    <PackageReference Include="Prism.Unity.Forms" Version="7.2.0.1422" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <EmbeddedResource Update="UserControls\PeqUserControl.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\ConnectPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\CrossoverPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\DelayPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\FadersPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\LimitersPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\OptionsPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\ParaPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\ReadbackPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\SettingsPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\ThirdOctavePage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\TouchParametric.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\TrimsPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\VuMetersPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+
+</Project>

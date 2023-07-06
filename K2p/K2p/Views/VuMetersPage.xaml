@@ -1,0 +1,67 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:prism="clr-namespace:Prism.Mvvm;assembly=Prism.Forms"
+             xmlns:views="clr-namespace:SkiaSharp.Views.Forms;assembly=SkiaSharp.Views.Forms"
+          
+             xmlns:behaviors="clr-namespace:K2p.Behaviors;assembly=K2p"
+             prism:ViewModelLocator.AutowireViewModel="True"
+             Style="{StaticResource PageTitleStyle}"
+             x:Class="K2p.Views.VuMetersPage">
+
+  <ContentPage.Content>
+    <Grid>
+      <Grid.RowDefinitions>
+        <RowDefinition Height="*"/>
+        <RowDefinition Height="*"/>
+        <RowDefinition Height="*"/>
+        <RowDefinition Height="*"/>
+      </Grid.RowDefinitions>
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*"/>
+        <ColumnDefinition Width="*"/>
+        <ColumnDefinition Width="*"/>
+        <ColumnDefinition Width="*"/>
+      </Grid.ColumnDefinitions>
+
+      <views:SKCanvasView x:Name="CanvasView0"  EnableTouchEvents="False" 
+                          Grid.Row="{Binding PlotRow0}"
+                          Grid.Column="{Binding PlotColumn0}" 
+                          Grid.RowSpan="{Binding PlotRowSpan0}"
+                          Grid.ColumnSpan="{Binding PlotColumnSpan0}" >
+        <views:SKCanvasView.Behaviors >
+          <behaviors:PaintSurfaceCommandBehavior Command="{Binding PaintCommand0}" />
+        </views:SKCanvasView.Behaviors>
+      </views:SKCanvasView>
+
+      <views:SKCanvasView x:Name="CanvasView1"  EnableTouchEvents="False" 
+                          Grid.Row="{Binding PlotRow1}"
+                          Grid.Column="{Binding PlotColumn1}" 
+                          Grid.RowSpan="{Binding PlotRowSpan1}"
+                          Grid.ColumnSpan="{Binding PlotColumnSpan1}" >
+        <views:SKCanvasView.Behaviors >
+          <behaviors:PaintSurfaceCommandBehavior Command="{Binding PaintCommand1}" />
+        </views:SKCanvasView.Behaviors>
+      </views:SKCanvasView>
+      <views:SKCanvasView x:Name="CanvasView2"  EnableTouchEvents="False" 
+                          Grid.Row="{Binding PlotRow2}"
+                          Grid.Column="{Binding PlotColumn2}" 
+                          Grid.RowSpan="{Binding PlotRowSpan2}"
+                          Grid.ColumnSpan="{Binding PlotColumnSpan2}" >
+        <views:SKCanvasView.Behaviors >
+          <behaviors:PaintSurfaceCommandBehavior Command="{Binding PaintCommand2}" />
+        </views:SKCanvasView.Behaviors>
+      </views:SKCanvasView>
+      <views:SKCanvasView x:Name="CanvasView3"  EnableTouchEvents="False" 
+                          Grid.Row="{Binding PlotRow3}"
+                          Grid.Column="{Binding PlotColumn3}" 
+                          Grid.RowSpan="{Binding PlotRowSpan3}"
+                          Grid.ColumnSpan="{Binding PlotColumnSpan3}" >
+        <views:SKCanvasView.Behaviors >
+          <behaviors:PaintSurfaceCommandBehavior Command="{Binding PaintCommand3}" />
+        </views:SKCanvasView.Behaviors>
+      </views:SKCanvasView>
+    </Grid>
+  </ContentPage.Content>
+
+</ContentPage>

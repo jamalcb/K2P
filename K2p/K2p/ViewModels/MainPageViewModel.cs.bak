@@ -1,0 +1,943 @@
+﻿using Prism.Commands;
+using Prism.Mvvm;
+using Prism.Navigation;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Net;
+using System.Runtime.CompilerServices;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using K2p.Statics;
+using K2p.Views;
+using Prism.Services;
+using Xamarin.Forms;
+using Microsoft.AppCenter;
+using Microsoft.AppCenter.Analytics;
+using Microsoft.AppCenter.Crashes;
+using Xamarin.Forms.Xaml.Internals;
+using Device = Xamarin.Forms.Device;
+
+namespace K2p.ViewModels
+{
+  public class MainPageViewModel : ViewModelBase
+  {
+    private readonly INavigationService _navigationService;
+    private readonly IPageDialogService _dialogService;
+    private bool _connectPageIsActive = true;
+    private bool _readbackPageIsActive = true;
+    private bool _fadersPageIsActive = true;
+    private bool _delayPageIsActive = true;
+    private bool _parametricPageIsActive = true;
+    private bool _thirdOctavePageIsActive = true;
+    private bool _settingsPageIsActive = true;
+    private bool _limitersPageIsActive = true;
+    private bool _toneControlsPageIsActive = true;
+    private bool _trimsPageIsActive = true;
+    private bool _crossoverPageIsActive = true;
+    private bool _vuMetersPageIsActive = true;
+    private bool _optionsPageIsActive = true;
+
+    private Timer _pollingTimer;
+    private bool _isLoading = true;
+
+    public DelegateCommand GoToConnectPage { get; }
+    public DelegateCommand GoToReadbackPage { get; }
+    public DelegateCommand GoToFadersPage { get; }
+    public DelegateCommand GoToDelayPage { get; }
+    public DelegateCommand GoToParametricPage { get; }
+    public DelegateCommand GoToThirdOctavePage { get; }
+    public DelegateCommand GoToToneControlsPage { get; }
+    public DelegateCommand GoToSettingsPage { get; }
+    public DelegateCommand GoToLimitersPage { get; }
+    public DelegateCommand GoToTrimsPage { get; }
+    public DelegateCommand GoToCrossoverPage { get; }
+    public DelegateCommand GoToVuMetersPage { get; }
+    public DelegateCommand GoToOptionsPage { get; }
+
+    public DelegateCommand MasterEntryCompletedCommand { get; }
+    public DelegateCommand BassEntryCompletedCommand { get; }
+    public DelegateCommand MidrangeEntryCompletedCommand { get; }
+    public DelegateCommand TrebleEntryCompletedCommand { get; }
+       
+    private string _masterEntryValue = "0.0";
+    private string _bassEntryValue = "0.0";
+    private string _midrangeEntryValue = "0.0";
+    private string _trebleEntryValue = "0.0";
+    private bool _presetIsActive1 = true;
+    private bool _presetIsActive2;
+    private bool _presetIsActive3;
+    private bool _presetIsActive4;
+    public int _rssi = -100;
+    public double _batteryVoltage;
+    private double _transformerTemperature;
+    private double _heatsinkTemperature;
+    private double _remotePotVoltage;
+    private double _temperatureSensor;
+    private int _presetLines;
+    private int _currentPreset;
+    private bool _transformerIsHot;
+    private bool _turnOnIn;
+    private bool _turnOnOut;
+    private bool _badSettings;
+    private bool _heatsinkIsHot;
+    private bool _adcIsclipping;
+    private bool _isStatic;
+    private bool _spdifIsLocked;
+    private bool _spdifIsMuted;
+    private uint _dhcpIpAddress;
+    private uint _dhcpIpGateway;
+    private uint _dhcpIpDns;
+    private uint _dhcpIpMask;
+    public ushort _processorLoad;
+    private int _baudrate;
+    private bool _hasDsp;
+    private bool _pscIsConnected;
+    private bool _iDataIsConnected;
+
+    public bool RequestDisconnect { get; set; }
+    public bool IsLoading
+    {
+      get => _isLoading;
+      set { SetProperty(ref _isLoading, value); }
+    }
+
+    public void UpdateMainPage()
+    {
+      Utils.vm = this;
+      var temp = Settings.MasterGain;
+      var temp2 = $"{Settings.MasterGain:N2}";
+
+      _masterEntryValue = temp2; //$"{Settings.MasterGain:N2}";
+                                 //_masterSliderVal = Settings.MasterGain;
+      _trebleEntryValue = $"{Settings.TrebleTone.Gain[0]:N2}";
+      _midrangeEntryValue = $"{Settings.MidTone.Gain[0]:N2}";
+      _bassEntryValue = $"{Settings.BassTone.Gain[0]:N2}";
+
+      RaisePropertyChanged("MasterEntryValue");
+      RaisePropertyChanged("MasterSliderValue");
+      RaisePropertyChanged("TrebleEntryValue");
+      RaisePropertyChanged("MidrangeEntryValue");
+      RaisePropertyChanged("BassEntryValue");
+      RaisePropertyChanged("CurrentPreset");
+    }
+
+    public void UpdateProperties()
+    {
+      RaisePropertyChanged("ProcessorLoad");
+      RaisePropertyChanged("BatteryVoltage");
+      RaisePropertyChanged("Rssi");
+      RaisePropertyChanged("ProtectedRowsGridLength");
+    }
+
+    public  GridLength ProtectedRowsGridLength
+    {
+      // get { return new GridLength(1, GridUnitType.Star) : new GridLength(0); }
+      get => Settings.PasswordEnabled
+        ? new GridLength(1, GridUnitType.Auto)
+        : new GridLength(0);    
+    }
+    public string ProcessorLoad => $"Load :{_processorLoad:N0}";
+    public string BatteryVoltage => $"Batt: {_batteryVoltage:N2}";
+    public string Rssi => $"{_rssi:N0} dBm";
+    public bool IDataIsConnected
+    {
+      get => _iDataIsConnected;
+      set => SetProperty(ref _iDataIsConnected, value);
+    }
+    public bool PscIsConnected
+    {
+      get => _pscIsConnected;
+      set => SetProperty(ref _pscIsConnected, value);
+    }
+    public bool HasDsp
+    {
+      get => _hasDsp;
+      set => SetProperty(ref _hasDsp, value);
+    }
+
+    public int BaudRate // 0 = 115200, 1 = 230400
+    {
+      get => _baudrate;
+      set => SetProperty(ref _baudrate, value);
+    }
+
+    public uint DhcpIpMask
+    {
+      get => _dhcpIpMask;
+      set { SetProperty(ref _dhcpIpMask, value); }
+    }
+    public uint DhcpIpDns
+    {
+      get => _dhcpIpDns;
+      set => SetProperty(ref _dhcpIpDns, value);
+    }
+    public uint DhcpIpGateway
+    {
+      get => _dhcpIpGateway;
+      set => SetProperty(ref _dhcpIpGateway, value);
+    }
+    public uint DhcpIpAddress
+    {
+      get => _dhcpIpAddress;
+      set => SetProperty(ref _dhcpIpAddress, value);
+    }
+    public bool SpdifIsMuted
+    {
+      get => _spdifIsMuted;
+      set => SetProperty(ref _spdifIsMuted, value);
+    }
+    public bool SpdifIsLocked
+    {
+      get => _spdifIsLocked;
+      set { SetProperty(ref _spdifIsLocked, value); }
+    }
+    public bool IsStatic
+    {
+      get => _isStatic;
+      set { SetProperty(ref _isStatic, value); }
+    }
+    public bool AdcIsclipping
+    {
+      get => _adcIsclipping;
+      set => SetProperty(ref _adcIsclipping, value);
+    }
+
+    public bool BadSettings
+    {
+      get => _badSettings;
+      set => SetProperty(ref _badSettings, value);
+    }
+
+
+    public double TransformerTemperature
+    {
+      get => _transformerTemperature;
+      set => SetProperty(ref _transformerTemperature, value);
+    }
+    public double HeatsinkTemperature
+    {
+      get => _heatsinkTemperature;
+      set => SetProperty(ref _heatsinkTemperature, value);
+    }
+    public double RemotePotVoltage
+    {
+      get => _remotePotVoltage;
+      set => SetProperty(ref _remotePotVoltage, value);
+    }
+    public double TemperatureSensor
+    {
+      get => _temperatureSensor;
+      set => SetProperty(ref _temperatureSensor, value);
+    }
+    public int PresetLines
+    {
+      get => _presetLines;
+      set => SetProperty(ref _presetLines, value);
+    }
+    public int CurrentPreset
+    {
+      get => _currentPreset;
+      set
+      {
+        SetProperty(ref _currentPreset, value);
+        SetPresets(_currentPreset);
+      }
+    }
+
+    private void SetPresets(int preset)
+    {
+      switch (preset)
+      {
+        case 0:
+          _presetIsActive1 = true;
+          _presetIsActive2 = false;
+          _presetIsActive3 = false;
+          _presetIsActive4 = false;
+          break;
+        case 1:
+          _presetIsActive1 = false;
+          _presetIsActive2 = true;
+          _presetIsActive3 = false;
+          _presetIsActive4 = false;
+          break;
+        case 2:
+          _presetIsActive1 = false;
+          _presetIsActive2 = false;
+          _presetIsActive3 = true;
+          _presetIsActive4 = false;
+          break;
+        case 3:
+          _presetIsActive1 = false;
+          _presetIsActive2 = false;
+          _presetIsActive3 = false;
+          _presetIsActive4 = true;
+
+          break;
+      }
+      RaisePropertyChanged("PresetIsActive1");
+      RaisePropertyChanged("PresetIsActive2");
+      RaisePropertyChanged("PresetIsActive3");
+      RaisePropertyChanged("PresetIsActive4");
+    }
+    public bool TransformerIsHot
+    {
+      get => _transformerIsHot;
+      set { _transformerIsHot = value; RaisePropertyChanged(); }
+    }
+    public bool HeatSinkIsHot
+    {
+      get => _heatsinkIsHot;
+      set { _heatsinkIsHot = value; RaisePropertyChanged(); }
+    }
+    public bool TurnOnIn
+    {
+      get => _turnOnIn;
+      set { _turnOnIn = value; RaisePropertyChanged(); }
+    }
+    public bool TurnOnOut
+    {
+      get => _turnOnOut;
+      set { _turnOnOut = value; RaisePropertyChanged(); }
+    }
+
+    //  private readonly IDictionary<string, object> _properties;
+    public MainPageViewModel(INavigationService navigationService, IPageDialogService dialogService) : base(
+      navigationService)
+    {
+      IsLoading = true;
+      Title = "Arc PS8 Pro";
+      Utils.MainPageVm = this;
+      // Settings.InitPeq();
+      GoToConnectPage = new DelegateCommand(ConnectNavigation).ObservesCanExecute(() => ConnectPageIsActive);
+      GoToReadbackPage = new DelegateCommand(ReadbackNavigation).ObservesCanExecute(() => ReadbackPageIsActive);
+      GoToFadersPage = new DelegateCommand(FadersNavigation).ObservesCanExecute(() => FadersPageIsActive);
+      GoToDelayPage = new DelegateCommand(DelayNavigation).ObservesCanExecute(() => DelayPageIsActive);
+      GoToParametricPage = new DelegateCommand(ParametricNavigation).ObservesCanExecute(() => ParametricPageIsActive);
+      GoToThirdOctavePage =
+        new DelegateCommand(ThirdOctaveNavigation).ObservesCanExecute(() => ThirdOctavePageIsActive);
+      GoToToneControlsPage =
+        new DelegateCommand(ToneControlsNavigation).ObservesCanExecute(() => ToneControlsPageIsActive); // not used
+      GoToSettingsPage = new DelegateCommand(SettingsNavigation).ObservesCanExecute(() => SettingsPageIsActive);
+      GoToLimitersPage = new DelegateCommand(LimitersNavigation).ObservesCanExecute(() => LimitersPageIsActive);
+      GoToTrimsPage = new DelegateCommand(TrimsNavigation).ObservesCanExecute(() => TrimsPageIsActive);
+      GoToCrossoverPage = new DelegateCommand(CrossoverNavigation).ObservesCanExecute(() => CrossoverPageIsActive);
+      GoToVuMetersPage = new DelegateCommand(VuMetersNavigation).ObservesCanExecute(() => VuMetersPageIsActive);
+      GoToOptionsPage = new DelegateCommand(OptionsNavigation).ObservesCanExecute(() => OptionsPageIsActive);
+
+      MasterEntryCompletedCommand = new DelegateCommand(ExecuteMasterEntryCompleted);
+      BassEntryCompletedCommand = new DelegateCommand(ExecuteBassEntryCompleted);
+      MidrangeEntryCompletedCommand = new DelegateCommand(ExecuteMidrangeEntryCompleted);
+      TrebleEntryCompletedCommand = new DelegateCommand(ExecuteTrebleEntryCompleted);
+
+      _navigationService = navigationService;
+      _dialogService = dialogService;
+
+      if (TCP.IsConnected)
+      {
+        Debug.WriteLine("Already Connected");
+      }
+      else
+      {
+
+        if (Application.Current.Properties.ContainsKey("Last_Connected"))
+        {
+          if ((bool)Application.Current.Properties["Last_Connected"])
+          {
+            var ipAddress = Application.Current.Properties["IP_Address"] as string;
+            TCP.Connect(ipAddress, 6666);
+            if (!TCP.IsConnected)
+            {
+              //   _dialogService.DisplayAlertAsync("Notice", $"Could not connect to {ipAddress}", "OK");
+            }
+
+            TimerEnabled = TCP.IsConnected;
+          }
+
+          Debug.WriteLine(
+            $"Last Connected: {(bool)Application.Current.Properties["Last_Connected"]}");
+        }
+      }
+
+      if (_pollingTimer == null)
+      {
+        _pollingTimer = new Timer(OnTick, null, 500, 500);
+      }
+
+      MainVm = this;
+      IsLoading = false;
+
+      //Application.Current.Properties.Clear();
+
+      Utils.GetApplicationProperty("MasterIncrement", 0);
+      Utils.GetApplicationProperty("EQGainIncrement", 0);
+      Utils.GetApplicationProperty("TrimIncrement", 0);
+      Utils.GetApplicationProperty("EqWarnings", true);
+      Utils.GetApplicationProperty("Password", 0);
+      Utils.GetApplicationProperty("ButtonDisconnect", true);
+      Utils.GetApplicationProperty("ButtonTone", true);
+      Utils.GetApplicationProperty("ButtonTrims", true);
+      Utils.GetApplicationProperty("ButtonFaders", true);
+      Utils.GetApplicationProperty("ButtonDelay", true);
+      Utils.GetApplicationProperty("ButtonVuMeters", true);
+      Utils.GetApplicationProperty("ButtonThirdOctave", true);
+      Utils.GetApplicationProperty("ButtonParametric", true);
+      Utils.GetApplicationProperty("IP_Address", "169.254.0.0");
+      Utils.GetApplicationProperty("Last_Connected", false);
+      Utils.GetApplicationProperty("SelectedBand", 0);           
+
+      UpdateMainPage();
+      UpdateTone();
+    }
+
+    public static MainPageViewModel MainVm;
+    private bool _startup = true;
+    public bool TimerEnabled { get; set; } = false;  // todo
+    private int _busyCount = 0;
+
+    public async void OnTickBusy()
+    {
+      while (_OnTickBusy)
+      {
+        await Task.Delay(1);
+      }
+    }
+
+    private bool _OnTickBusy = false;
+
+    private async void OnTick(object state)
+    {
+      if (!TimerEnabled || _OnTickBusy || VuMetersPage.IsActive) return;
+      Settings.CommResult cr;
+      if (!TCP.IsConnected) return;
+      _OnTickBusy = true;
+      if (_startup)
+      {
+        await Settings.GetSettings();
+        Settings.GetGlobal();
+        _startup = false;     
+      }
+      if (_busyCount > 20)
+      {
+        _busyCount = 0;
+        TCP.Reconnect();
+        _OnTickBusy = false;
+        return;
+      }
+      cr = await Settings.GetDirty();
+      switch (cr)
+      {
+        case Settings.CommResult.Closed:
+          //  Utils.ConnectVm.Connected = false; //todo when to close the connection if the other end is reset
+          Debug.WriteLine("OnTick() Closed");         
+          break;
+        case Settings.CommResult.LengthError:
+          Debug.WriteLine("OnTick() LengthError");
+          break;
+        case Settings.CommResult.OK:
+          _busyCount = 0;
+          break;
+        case Settings.CommResult.NotConnected:
+          break;
+        case Settings.CommResult.Busy:
+          Debug.WriteLine($"GetDirty() busy, count: {_busyCount++}");
+          break;
+        default:
+          Debug.WriteLine("Other error {0}", cr);
+          break;
+      }
+
+      if (RequestDisconnect)
+      {
+        RequestDisconnect = false;
+        TCP.Disconnect();
+        await Application.Current.SavePropertiesAsync();
+      }
+      _OnTickBusy = false;
+    }
+
+    private void UpdateTone()
+    {
+      _trebleEntryValue = $"{Settings.TrebleTone.Gain[0]:N2}";
+      _midrangeEntryValue = $"{Settings.MidTone.Gain[0]:N2}";
+      _bassEntryValue = $"{Settings.BassTone.Gain[0]:N2}";
+    }
+    public int ButtonBorderRadius => 15;
+
+    private void LimitersNavigation()
+    {
+      _navigationService.NavigateAsync("LimitersPage", null, !IsIos);
+    }
+
+    private void TrimsNavigation()
+    {
+      TrimsPageIsActive = false;
+      if (!IsIos)
+      {
+        Utils.TrackEvent("TrimsNavigation");
+      }
+      _navigationService.NavigateAsync("TrimsPage", null, !IsIos);
+      TrimsPageIsActive = true;
+    }
+
+    private void CrossoverNavigation()
+    {
+      CrossoverPageIsActive = false;
+      Utils.TrackEvent("CrossoverNavigation");
+      _navigationService.NavigateAsync("CrossoverPage", null, !IsIos); // set 3rd parameter to true to remove back nav bar
+      CrossoverPageIsActive = true;
+    }
+    private void VuMetersNavigation()
+    {
+      VuMetersPageIsActive = false;
+      Utils.TrackEvent("VuMetersNavigation");
+      _navigationService.NavigateAsync("VuMetersPage", null, !IsIos);
+      VuMetersPageIsActive = true;
+    }
+    private void OptionsNavigation()
+    {
+      OptionsPageIsActive = false;
+      //Utils.TrackEvent("OptionsNavigation");
+      var res = _navigationService.NavigateAsync("OptionsPage", null, !IsIos);
+      OptionsPageIsActive = true;
+    }
+
+    private void SettingsNavigation()
+    {
+      _navigationService.NavigateAsync("SettingsPage", null, !IsIos);
+
+    }
+    public bool IsIos => Device.RuntimePlatform == Device.iOS;
+
+    private async void ThirdOctaveNavigation()
+    {    
+      ThirdOctavePageIsActive = false;
+      if (PeqResponse.IsPEQ)
+      {
+        var answer =
+          await _dialogService.DisplayAlertAsync("Warning", $"This action will set the EQ to standard frequencies and Qs.", "OK",
+            "Cancel");
+        if (!answer)
+        {
+          ThirdOctavePageIsActive = true;
+          return;
+        }
+        ThirdOctavePageViewModel.SetAllStandard();
+      }
+      await _navigationService.NavigateAsync("ThirdOctavePage", null, !IsIos);
+      Utils.TrackEvent("ThirdOctaveNavigation");
+      ThirdOctavePageIsActive = true;  
+    }
+    private async void ParametricNavigation()
+    {
+      ParametricPageIsActive = false;
+      await _navigationService.NavigateAsync("TouchParametric", null, !IsIos);
+      ParametricPageIsActive = true;
+      Utils.TrackEvent("ParametricNavigation");
+    }
+    private void DelayNavigation()
+    {
+      _navigationService.NavigateAsync("DelayPage", null, !IsIos);
+      Utils.TrackEvent("DelayNavigation");
+    }
+
+    private async void FadersNavigation()
+    {
+      FadersPageIsActive = false;
+      await _navigationService.NavigateAsync("FadersPage", null, !IsIos);
+      Utils.TrackEvent("FadersNavigation");
+      FadersPageIsActive = true;
+    }
+
+
+    private void ToneControlsNavigation()
+    {
+      Utils.BlockSetters = true;
+      _navigationService.NavigateAsync("ToneControlsPage", null, !IsIos);
+      Utils.TrackEvent("ToneControlsNavigation");
+      Utils.BlockSetters = false;
+    }
+
+    private void ConnectNavigation()
+    {
+            _navigationService.NavigateAsync("ConnectPage", null, !IsIos);
+    }
+
+    private void ReadbackNavigation()
+    {
+      _navigationService.NavigateAsync("ReadbackPage", null, !IsIos);
+    }
+
+    public bool ConnectPageIsActive
+    {
+      get => _connectPageIsActive;
+      set => SetProperty(ref _connectPageIsActive, value);
+    }
+    public bool ReadbackPageIsActive
+    {
+      get => _readbackPageIsActive;
+      set => SetProperty(ref _readbackPageIsActive, value);
+    }
+    public bool FadersPageIsActive
+    {
+      get => _fadersPageIsActive;
+      set => SetProperty(ref _fadersPageIsActive, value);
+    }
+    public bool DelayPageIsActive
+    {
+      get => _delayPageIsActive;
+      set => SetProperty(ref _delayPageIsActive, value);
+    }
+    public bool ParametricPageIsActive
+    {
+      get => _parametricPageIsActive;
+      set => SetProperty(ref _parametricPageIsActive, value);
+    }
+
+    public bool ThirdOctavePageIsActive
+    {
+      get => _thirdOctavePageIsActive;
+      set => SetProperty(ref _thirdOctavePageIsActive, value);
+    }
+
+    public bool ToneControlsPageIsActive
+    {
+      get => _toneControlsPageIsActive;
+      set => SetProperty(ref _toneControlsPageIsActive, value);
+    }
+    public bool SettingsPageIsActive
+    {
+      get => _settingsPageIsActive;
+      set => SetProperty(ref _settingsPageIsActive, value);
+    }
+    public bool LimitersPageIsActive
+    {
+      get => _limitersPageIsActive;
+      set => SetProperty(ref _limitersPageIsActive, value);
+    }
+
+    public bool TrimsPageIsActive
+    {
+      get => _trimsPageIsActive;
+      set => SetProperty(ref _trimsPageIsActive, value);
+    }
+
+    public bool CrossoverPageIsActive
+    {
+      get => _crossoverPageIsActive;
+      set => SetProperty(ref _crossoverPageIsActive, value);
+    }
+
+    public bool VuMetersPageIsActive
+    {
+      get => _vuMetersPageIsActive;
+      set => SetProperty(ref _vuMetersPageIsActive, value);
+    }
+
+    public bool OptionsPageIsActive
+    {
+      get => _optionsPageIsActive;
+      set => SetProperty(ref _optionsPageIsActive, value);
+    }
+
+    #region treble
+
+    private void ExecuteTrebleEntryCompleted()
+    {
+      if (!double.TryParse(_trebleEntryValue, out var result)) return;
+      Settings.TrebleTone.Gain[0] = result;
+      RaisePropertyChanged($"TrebleSliderValue");
+      ToneControlsPageViewModel.SendTreble();
+    }
+    public double TrebleSliderValue
+    {
+      get => Settings.TrebleTone.Gain[0];
+      set
+      {
+        value = Settings.GetEQGainIncrement(value);
+
+        if (!SetProperty(ref Settings.TrebleTone.Gain[0], value)) return;
+        _trebleEntryValue = $"{value:N2}";
+        RaisePropertyChanged("TrebleEntryValue");
+        ToneControlsPageViewModel.SendTreble();
+      }
+    }
+    public string TrebleEntryValue
+    {
+      get => _trebleEntryValue;
+      set => SetProperty(ref _trebleEntryValue, value);
+    }
+
+
+    #endregion
+    #region midrange
+
+    private void ExecuteMidrangeEntryCompleted()
+    {
+      if (!double.TryParse(_midrangeEntryValue, out var result)) return;
+      if (Math.Abs(Settings.MidTone.Gain[0] - result) < Tolerance) return;
+
+      Settings.MidTone.Gain[0] = result;
+      RaisePropertyChanged("MidrangeSliderValue");
+      ToneControlsPageViewModel.SendMidrange();
+    }
+
+    public string MidrangeEntryValue
+    {
+      get => _midrangeEntryValue;
+      set { SetProperty(ref _midrangeEntryValue, value); }
+    }
+    public double MidrangeSliderValue
+    {
+      get => Settings.MidTone.Gain[0];
+      set
+      {
+        value = Settings.GetEQGainIncrement(value);
+        if (!SetProperty(ref Settings.MidTone.Gain[0], value)) return;
+        _midrangeEntryValue = $"{value:N2}";
+        RaisePropertyChanged("MidrangeEntryValue");
+        ToneControlsPageViewModel.SendMidrange();
+      }
+    }
+
+    #endregion
+    #region bass
+    private void ExecuteBassEntryCompleted()
+    {
+      if (!double.TryParse(_bassEntryValue, out var result)) return;
+      Settings.BassTone.Gain[0] = result;
+      RaisePropertyChanged("BassSliderValue");
+      ToneControlsPageViewModel.SendBass();
+    }
+
+    public string BassEntryValue
+    {
+      get => _bassEntryValue;
+      set { SetProperty(ref _bassEntryValue, value); }
+    }
+
+    public double BassSliderValue
+    {
+      get => Settings.BassTone.Gain[0];
+      set
+      {
+        value = Settings.GetEQGainIncrement(value);
+        if (!SetProperty(ref Settings.BassTone.Gain[0], value)) return;
+        _bassEntryValue = $"{value:N2}";
+        RaisePropertyChanged("BassEntryValue");
+        ToneControlsPageViewModel.SendBass();
+      }
+    }
+
+    private const double Tolerance = .01;
+
+    #endregion
+    #region master
+    private void ExecuteMasterEntryCompleted()
+    {
+      if (!double.TryParse(_masterEntryValue, out Settings.MasterGain)) return;
+      RaisePropertyChanged("MasterSliderValue");
+    }
+    public string MasterEntryValue
+    {
+      get => _masterEntryValue;
+      set
+      {
+        _masterEntryValue = value;
+        Debug.WriteLine("MasterEntryValue " + value);
+        RaisePropertyChanged();
+      }
+    }
+    public double MasterSliderValue
+    {
+      get => Settings.MasterGain;
+      set
+      {        
+        var val = Settings.GetMasterIncrement(value);
+        if (val == Settings.MasterGain) return;
+        Settings.MasterGain = val;
+        _masterEntryValue = $"{Settings.MasterGain:N2}";
+        RaisePropertyChanged();
+        RaisePropertyChanged("MasterEntryValue");
+      
+        Utils.SendFloat(USB_Commands.CMD_SET_MASTER_GAIN, Settings.MasterGain);
+        Utils.TrimPageVm?.UpdatePage();
+      }
+    }
+    #endregion master
+    public void UpdateConnectButton()
+    {
+      RaisePropertyChanged("ConnectButtonColor");
+      RaisePropertyChanged("ConnectButtonText");
+    }
+    //private Color _connectButtonColor = Color.Coral;
+    public Color ConnectButtonColor => TCP.IsConnected ? Color.LightGreen : Color.Coral;
+    public string ConnectButtonText => TCP.IsConnected ? "Disconnect" : "Connect";
+
+    public Color NavButtonColor { get; set; } = Color.AntiqueWhite; //have to set button color to keep uniform height?
+    public bool ActivityIsLoading { get; set; }
+
+    public bool PresetIsActive1
+    {
+      get => _presetIsActive1;
+      set
+      {
+        if (Utils.MainPageIsLoading)
+        {
+          return;
+        }
+        Debug.WriteLine($"Preset 1 {_presetIsActive1}, {_presetIsActive2}, {_presetIsActive3}, {_presetIsActive4}");
+        if (_presetIsActive1 == value) return;
+        SetProperty(ref _presetIsActive1, value);
+        if (!value) return;
+        _presetIsActive2 = false;
+        _presetIsActive3 = false;
+        _presetIsActive4 = false;
+        RaisePropertyChanged("PresetIsActive2");
+        RaisePropertyChanged("PresetIsActive3");
+        RaisePropertyChanged("PresetIsActive4");
+        SelectPreset(0);
+      }
+    }
+    public bool PresetIsActive2
+    {
+      get => _presetIsActive2;
+      set
+      {
+        if (Utils.MainPageIsLoading)
+        {
+          return;
+        }
+        Debug.WriteLine($"Preset 2 {_presetIsActive1}, {_presetIsActive2}, {_presetIsActive3}, {_presetIsActive4}");
+        if (_presetIsActive2 == value) return;
+        SetProperty(ref _presetIsActive2, value);
+        if (!value) return;
+        _presetIsActive1 = false;
+        _presetIsActive3 = false;
+        _presetIsActive4 = false;
+        RaisePropertyChanged("PresetIsActive1");
+        RaisePropertyChanged("PresetIsActive3");
+        RaisePropertyChanged("PresetIsActive4");
+        SelectPreset(1);
+      }
+    }
+    public bool PresetIsActive3
+    {
+      get => _presetIsActive3;
+      set
+      {
+        if (Utils.MainPageIsLoading)
+        {
+          return;
+        }
+        Debug.WriteLine($"Preset 3 {_presetIsActive1}, {_presetIsActive2}, {_presetIsActive3}, {_presetIsActive4}");
+        if (_presetIsActive3 == value) return;
+        SetProperty(ref _presetIsActive3, value);
+        if (!value) return;
+        _presetIsActive1 = false;
+        _presetIsActive2 = false;
+        _presetIsActive4 = false;
+        RaisePropertyChanged("PresetIsActive1");
+        RaisePropertyChanged("PresetIsActive2");
+        RaisePropertyChanged("PresetIsActive4");
+        SelectPreset(2);
+      }
+    }
+    public bool PresetIsActive4
+    {
+      get => _presetIsActive4;
+      set
+      {
+        if (Utils.MainPageIsLoading)
+        {
+          return;
+        }
+        Debug.WriteLine($"Preset 4 {_presetIsActive1}, {_presetIsActive2}, {_presetIsActive3}, {_presetIsActive4}");
+        if (_presetIsActive4 == value) return;
+        SetProperty(ref _presetIsActive4, value);
+        if (!value) return;
+        _presetIsActive1 = false;
+        _presetIsActive2 = false;
+        _presetIsActive3 = false;
+        RaisePropertyChanged("PresetIsActive1");
+        RaisePropertyChanged("PresetIsActive2");
+        RaisePropertyChanged("PresetIsActive3");
+        SelectPreset(3);
+      }
+    }
+
+    // Simple tel the remote to change presets.  Todo 
+    private async void SelectPreset(int preset)
+    {
+      try
+      {
+
+        if (Utils.MainPageIsLoading) return;
+
+        Debug.WriteLine($"SelectPreset({preset})");
+        //  if (count++ < 8) return;
+        if (_startup)
+        {
+          return;
+        }
+
+        if (IsLoading)
+        {
+          return;
+        }
+
+        ActivityIsLoading = true;
+        RaisePropertyChanged("ActivityIsLoading");
+        if (TCP.IsConnected)
+        {
+          TimerEnabled = false;
+          Load_Remote_Preset(preset);
+          await Task.Delay(500);
+          //   Task.Delay(500).Wait();
+          Settings.ForceGetSettings = true;
+          TimerEnabled = true;
+          //_startup = true; // force OnTick() to get settings
+          //for (var i = 0; i != 10; i++)
+          //{
+          //  Settings.CommResult result = await Settings.GetSettings();
+          //  if (result == Settings.CommResult.OK)
+          //  {
+          //    UpdateMainPage();
+          //    break;
+          //  }
+          //}
+          ActivityIsLoading = false;
+          RaisePropertyChanged("ActivityIsLoading");
+        }
+        else
+        {
+          await _dialogService?.DisplayAlertAsync("Notice", "GetSettings Failed", "OK");
+        }
+
+      }
+      catch (Exception ee)
+      {
+        Debug.WriteLine(ee.Message);
+      }
+
+      TimerEnabled = true;
+    }
+    public static bool Load_Remote_Preset(int profile)
+    {
+      var commandArray = new byte[4];
+      commandArray[0] = USB_Commands.CMD_REPORT_ID;
+      commandArray[1] = USB_Commands.CMD_START;
+      commandArray[2] = USB_Commands.CMD_LOAD_PRESET;
+      commandArray[3] = (byte)profile;
+      var result = Utils.Universal_Write(ref commandArray);
+      Thread.Sleep(500);
+      if (result) return true;
+      Debug.WriteLine("Write_Remote_Profile() failed.");
+      return false;
+    }
+
+  }
+
+}

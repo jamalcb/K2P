@@ -1,0 +1,54 @@
+﻿xamarin microsoft android emulator also Visual Studio Android Emulator
+tools->Visual Studio emulator for Android
+
+API Crash Token:
+057ed6f3172714442c1d5c4a60ac83a2cd1cfc21
+
+https://docs.microsoft.com/en-us/appcenter/api-docs/index
+https://openapi.appcenter.ms/#/account/
+
+
+sign the Android App
+https://docs.microsoft.com/en-us/xamarin/android/deploy-test/release-prep/?tabs=windows#Creating_a_Private_Keystore
+
+Keystore:
+C:\Users\Robert Zeff\AppData\Local\Xamarin\Mono for Android\Keystore\k2_alias
+
+
+Analytics:
+https://docs.microsoft.com/en-us/appcenter/sdk/analytics/android
+
+Distribute:
+Select K2p.Andriod, select "archive" 
+Click "Distribute"
+Select folder:
+C:\Users\Robert Zeff\AppData\Local\Xamarin\Mono for Android\Archives\2019-02-13
+Open folder:
+C:\Users\Robert Zeff\AppData\Local\Xamarin\Mono for Android\Archives\2019-02-13\K2p.Android 2-13-19 11.58 AM.apkarchive
+
+Upload the build from App Center / Distribute
+
+Push Notifications:
+https://www.youtube.com/watch?v=TT11e_YCRwI
+
+Firebase:
+https://console.firebase.google.com/project/nikolak2-85664/overview
+
+ID: nikolak2-85664
+
+
+Server key
+AAAA1RluclA:APA91bERv9LYozFsi04HAgjlzyHVWv03PglH0rtIu96q0oUnEFZrzt4cJ730gIm6yQq1O-zUj8BmcR2StbBLVeUlhI26tQUNy2ugIa2sv4Zx-OjuKZLgWmdgxpoiUcxL4_7jKTb3VLrt
+Note, server key cannot be viewed in AppCenter if existing push notifications are shown.
+
+
+BUild options
+Good?						Yes			No							
+					
+Android package format		apk			apk
+Shrinker					r8			r8
+AOT	Complitation            yes
+Startup Tracing             yes
+Linking						Sdk only	Sdk and User
+garbage collector           yes
+

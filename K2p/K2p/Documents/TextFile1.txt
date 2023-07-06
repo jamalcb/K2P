@@ -1,0 +1,4 @@
+﻿Apple bugs:
+
+Crashes when navigating back:
+Look for static.

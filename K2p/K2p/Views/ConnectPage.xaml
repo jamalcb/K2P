@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:prism="clr-namespace:Prism.Mvvm;assembly=Prism.Forms"
+             xmlns:b="clr-namespace:Prism.Behaviors;assembly=Prism.Forms"
+             xmlns:local="clr-namespace:K2p.Behaviors"
+             Style="{StaticResource PageTitleStyle}"
+             prism:ViewModelLocator.AutowireViewModel="True"
+             x:Class="K2p.Views.ConnectPage" Title="Connect">
+  <ContentPage.Content>
+    <Grid VerticalOptions="FillAndExpand" Margin="10,10,10,0">
+      <!--<Grid.Padding>
+                
+      <OnIdiom x:TypeArguments="Thickness">
+                    <OnIdiom.Phone>10,10,10,0</OnIdiom.Phone>
+                    <OnIdiom.Tablet>20,20,20,0</OnIdiom.Tablet>
+                </OnIdiom>
+      
+            </Grid.Padding>-->
+      <Grid.RowDefinitions>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+      </Grid.RowDefinitions>
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="Auto"/>
+        <ColumnDefinition Width="*"/>
+      </Grid.ColumnDefinitions>
+ 
+      <Label Grid.Row="0" Grid.Column="0" VerticalOptions="Center" FontAttributes="Bold" FontSize="Medium" Text="IP Address:" TextColor="#3498DB" />
+      <Entry Grid.Row="0" Grid.Column="1" Text="{Binding IpAddress}"
+                FontSize="16"   Style="{StaticResource EntryStyle}" >
+        <Entry.Behaviors>
+          <local:IpAddressValidationBehavior />
+          <b:EventToCommandBehavior EventName="Completed" Command="{Binding IPEntryCompletedCommand}"/>
+        </Entry.Behaviors>
+      </Entry>
+      <Button  Grid.Row="1" Grid.Column="0" 
+                     Style="{StaticResource ButtonStyle}"  
+                     Image="WiFi_Logo_48.png"
+                     Text="{Binding ConnectButtonText}" Command="{Binding ConnectCommand}" />
+
+      <Button  Grid.Row="1" Grid.Column="1" 
+                     Style="{StaticResource ButtonStyle}"  
+                     Text="Cancel"
+                     Command="{Binding CancelCommand}"/>     
+
+      <Button  Grid.Row="4" Grid.Column="1" 
+                   Style="{StaticResource ButtonStyle}"  
+                   Text="{Binding ButtonFindText}"
+                   Command="{Binding Discover}" BackgroundColor="AntiqueWhite"/>
+          
+
+
+            <ActivityIndicator Grid.Column="0" Grid.Row="5" IsVisible="{Binding ActivityIsLoading}" IsRunning="{Binding ActivityIsLoading}" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" />
+
+    </Grid>
+  </ContentPage.Content>
+</ContentPage>

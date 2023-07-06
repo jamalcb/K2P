@@ -1,0 +1,4 @@
+﻿https://forums.xamarin.com/discussion/82523/skiasharp-direct-drawing
+https://www.youtube.com/watch?v=fF0tzA6wUhA
+
+Plot grid is 98,98,98

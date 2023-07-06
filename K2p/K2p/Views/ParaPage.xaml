@@ -1,0 +1,1483 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:prism="clr-namespace:Prism.Mvvm;assembly=Prism.Forms"
+             xmlns:b="clr-namespace:Prism.Behaviors;assembly=Prism.Forms"
+             xmlns:control="clr-namespace:K2p.UserControls"
+             xmlns:behaviors="clr-namespace:K2p.Behaviors;assembly=K2p"
+             prism:ViewModelLocator.AutowireViewModel="True"
+             x:Class="K2p.Views.ParaPage"
+             Style="{StaticResource PageTitleStyle}"
+             Title="Parametric EQ" 
+             >
+  <ScrollView>
+
+    <StackLayout HorizontalOptions="CenterAndExpand" VerticalOptions="StartAndExpand" Padding="0,0,0,0">
+      <Grid Margin="4,4,4,0">
+        <Grid.RowDefinitions>
+          <RowDefinition Height="*"/>
+          <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="*"/>
+          <ColumnDefinition Width="*"/>
+          <ColumnDefinition Width="*"/>
+          <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <StackLayout Orientation="Horizontal" Grid.Column="0" Grid.Row="0">
+          <Label Text="CH1" IsEnabled="{Binding IsEnabledCh1}" Style="{StaticResource LabelStyle}"/>
+          <Switch IsToggled="{Binding IsEnabledCh1}"/>
+        </StackLayout>
+        <StackLayout Orientation="Horizontal" Grid.Column="1" Grid.Row="0">
+          <Label Text="CH2" IsEnabled="{Binding IsEnabledCh2}" Style="{StaticResource LabelStyle}" />
+          <Switch IsToggled="{Binding IsEnabledCh2}"/>
+        </StackLayout>
+        <StackLayout Orientation="Horizontal" Grid.Column="2" Grid.Row="0">
+          <Label Text="CH3" IsEnabled="{Binding IsEnabledCh3}" Style="{StaticResource LabelStyle}"/>
+          <Switch IsToggled="{Binding IsEnabledCh3}"/>
+        </StackLayout>
+        <StackLayout Orientation="Horizontal" Grid.Column="3" Grid.Row="0">
+          <Label Text="CH4" IsEnabled="{Binding IsEnabledCh4}" Style="{StaticResource LabelStyle}"/>
+          <Switch IsToggled="{Binding IsEnabledCh4}"/>
+        </StackLayout>
+
+        <StackLayout Orientation="Horizontal" Grid.Column="0" Grid.Row="1">
+          <Label Text="CH5" IsEnabled="{Binding IsEnabledCh5}" Style="{StaticResource LabelStyle}"/>
+          <Switch IsToggled="{Binding IsEnabledCh5}"/>
+        </StackLayout>
+        <StackLayout Orientation="Horizontal" Grid.Column="1" Grid.Row="1">
+          <Label Text="CH6" IsEnabled="{Binding IsEnabledCh6}" Style="{StaticResource LabelStyle}"/>
+          <Switch IsToggled="{Binding IsEnabledCh6}"/>
+        </StackLayout>
+        <StackLayout Orientation="Horizontal" Grid.Column="2" Grid.Row="1">
+          <Label Text="CH7" IsEnabled="{Binding IsEnabledCh7}" Style="{StaticResource LabelStyle}"/>
+          <Switch IsToggled="{Binding IsEnabledCh7}"/>
+        </StackLayout>
+        <StackLayout Orientation="Horizontal" Grid.Column="3" Grid.Row="1">
+          <Label Text="CH8" IsEnabled="{Binding IsEnabledCh8}" Style="{StaticResource LabelStyle}"/>
+          <Switch IsToggled="{Binding IsEnabledCh8}"/>
+        </StackLayout>
+      </Grid>
+      <!--#region Band 0 -->
+      <Grid Padding="10,0,10,0" ColumnSpacing="5">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="43"/>
+          <ColumnDefinition Width="Auto"/>
+          <ColumnDefinition Width="*"/>
+          <ColumnDefinition Width="Auto"/>
+          <ColumnDefinition Width="60"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+          <RowDefinition Height="*"/>
+          <RowDefinition Height="*"/>
+          <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Label Grid.Column="0"  Grid.Row="0"  Text="B1"  Style="{StaticResource LabelTitleStyle}" Margin="0,0,2,0" />
+        <Label Grid.Column="1"  Grid.Row="0"  Text="Freq"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="1"  Grid.Row="1"  Text="Gain"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="1"  Grid.Row="2"  Text="Q"  Style="{StaticResource LabelStyle}" />
+
+        <Label Grid.Column="4"  Grid.Row="0"  Text="Hz"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="4"  Grid.Row="1"  Text="Hz"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="4"  Grid.Row="2"  Text="Hz"  Style="{StaticResource LabelStyle}" />
+
+
+        <Slider  Grid.Column="2"  Grid.Row="0"  Style="{StaticResource SliderStyle}"  Maximum="{Binding FreqSliderMax}" Minimum="{Binding FreqSliderMin}" Value="{Binding B1FreqSliderValue}"/>
+        <Slider  Grid.Column="2"  Grid.Row="1"  Style="{StaticResource SliderStyle}"  Maximum="{Binding GainSliderMax}" Minimum="{Binding GainSliderMin}" Value="{Binding B1GainSliderValue}"/>
+        <Slider  Grid.Column="2"  Grid.Row="2"  Style="{StaticResource SliderStyle}"  Maximum="{Binding QSliderMax}" Minimum="{Binding QSliderMin}" Value="{Binding B1QSliderValue}"/>
+
+        <Entry Grid.Column="4" Grid.Row="0" Style="{StaticResource EntryStyle}"  Keyboard="Numeric" Text="{Binding B1FreqEntryValue}"  >
+          <Entry.Behaviors>
+            <b:EventToCommandBehavior EventName="Completed" Command="{Binding B1FreqEntryCompletedCommand}"/>
+          </Entry.Behaviors>
+        </Entry>
+        <Entry Grid.Column="4" Grid.Row="1" Style="{StaticResource EntryStyle}"  Keyboard="Numeric" Text="{Binding B1GainEntryValue}"  >
+          <Entry.Behaviors>
+            <behaviors:ParaBoostCutBehavior/>
+            <b:EventToCommandBehavior EventName="Completed" Command="{Binding B1GainEntryCompletedCommand}"/>
+          </Entry.Behaviors>
+        </Entry>
+        <Entry Grid.Column="4" Grid.Row="2" Style="{StaticResource EntryStyle}"  Keyboard="Numeric" Text="{Binding B1QEntryValue}"  >
+          <Entry.Behaviors>
+            <b:EventToCommandBehavior EventName="Completed" Command="{Binding B1QEntryCompletedCommand}"/>
+          </Entry.Behaviors>
+        </Entry>
+
+
+      </Grid>
+      <!--#endregion-->
+      <Grid Padding="10,0,10,0" ColumnSpacing="5">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="43"/>
+          <ColumnDefinition Width="Auto"/>
+          <ColumnDefinition Width="*"/>
+          <ColumnDefinition Width="Auto"/>
+          <ColumnDefinition Width="60"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+          <RowDefinition Height="*"/>
+          <RowDefinition Height="*"/>
+          <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Label Grid.Column="0"  Grid.Row="0"  Text="B2"  Style="{StaticResource LabelTitleStyle}" Margin="0,0,2,0" />
+        <Label Grid.Column="1"  Grid.Row="0"  Text="Freq"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="1"  Grid.Row="1"  Text="Gain"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="1"  Grid.Row="2"  Text="Q"  Style="{StaticResource LabelStyle}" />
+
+        <Label Grid.Column="4"  Grid.Row="0"  Text="Hz"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="4"  Grid.Row="1"  Text="Hz"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="4"  Grid.Row="2"  Text="Hz"  Style="{StaticResource LabelStyle}" />
+
+
+        <Slider  Grid.Column="2"  Grid.Row="0"  Style="{StaticResource SliderStyle}"  Maximum="{Binding FreqSliderMax}" Minimum="{Binding FreqSliderMin}" Value="{Binding B2FreqSliderValue}"/>
+        <Slider  Grid.Column="2"  Grid.Row="1"  Style="{StaticResource SliderStyle}"  Maximum="{Binding GainSliderMax}" Minimum="{Binding GainSliderMin}" Value="{Binding B2GainSliderValue}"/>
+        <Slider  Grid.Column="2"  Grid.Row="2"  Style="{StaticResource SliderStyle}"  Maximum="{Binding QSliderMax}" Minimum="{Binding QSliderMin}" Value="{Binding B2QSliderValue}"/>
+
+        <Entry Grid.Column="4" Grid.Row="0" Style="{StaticResource EntryStyle}"  Keyboard="Numeric" Text="{Binding B2FreqEntryValue}"  >
+          <Entry.Behaviors>
+            <b:EventToCommandBehavior EventName="Completed" Command="{Binding B2FreqEntryCompletedCommand}"/>
+          </Entry.Behaviors>
+        </Entry>
+        <Entry Grid.Column="4" Grid.Row="1" Style="{StaticResource EntryStyle}"  Keyboard="Numeric" Text="{Binding B2GainEntryValue}"  >
+          <Entry.Behaviors>
+            <behaviors:ParaBoostCutBehavior/>
+            <b:EventToCommandBehavior EventName="Completed" Command="{Binding B2GainEntryCompletedCommand}"/>
+          </Entry.Behaviors>
+        </Entry>
+        <Entry Grid.Column="4" Grid.Row="2" Style="{StaticResource EntryStyle}"  Keyboard="Numeric" Text="{Binding B2QEntryValue}"  >
+          <Entry.Behaviors>
+            <b:EventToCommandBehavior EventName="Completed" Command="{Binding B2QEntryCompletedCommand}"/>
+          </Entry.Behaviors>
+        </Entry>
+
+
+      </Grid>
+      <Grid Padding="10,0,10,0" ColumnSpacing="5">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="43"/>
+          <ColumnDefinition Width="Auto"/>
+          <ColumnDefinition Width="*"/>
+          <ColumnDefinition Width="Auto"/>
+          <ColumnDefinition Width="60"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+          <RowDefinition Height="*"/>
+          <RowDefinition Height="*"/>
+          <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Label Grid.Column="0"  Grid.Row="0"  Text="B3"  Style="{StaticResource LabelTitleStyle}" Margin="0,0,2,0" />
+        <Label Grid.Column="1"  Grid.Row="0"  Text="Freq"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="1"  Grid.Row="1"  Text="Gain"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="1"  Grid.Row="2"  Text="Q"  Style="{StaticResource LabelStyle}" />
+
+        <Label Grid.Column="4"  Grid.Row="0"  Text="Hz"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="4"  Grid.Row="1"  Text="Hz"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="4"  Grid.Row="2"  Text="Hz"  Style="{StaticResource LabelStyle}" />
+
+
+        <Slider  Grid.Column="2"  Grid.Row="0"  Style="{StaticResource SliderStyle}"  Maximum="{Binding FreqSliderMax}" Minimum="{Binding FreqSliderMin}" Value="{Binding B3FreqSliderValue}"/>
+        <Slider  Grid.Column="2"  Grid.Row="1"  Style="{StaticResource SliderStyle}"  Maximum="{Binding GainSliderMax}" Minimum="{Binding GainSliderMin}" Value="{Binding B3GainSliderValue}"/>
+        <Slider  Grid.Column="2"  Grid.Row="2"  Style="{StaticResource SliderStyle}"  Maximum="{Binding QSliderMax}" Minimum="{Binding QSliderMin}" Value="{Binding B3QSliderValue}"/>
+
+        <Entry Grid.Column="4" Grid.Row="0" Style="{StaticResource EntryStyle}"  Keyboard="Numeric" Text="{Binding B3FreqEntryValue}"  >
+          <Entry.Behaviors>
+            <b:EventToCommandBehavior EventName="Completed" Command="{Binding B3FreqEntryCompletedCommand}"/>
+          </Entry.Behaviors>
+        </Entry>
+        <Entry Grid.Column="4" Grid.Row="1" Style="{StaticResource EntryStyle}"  Keyboard="Numeric" Text="{Binding B3GainEntryValue}"  >
+          <Entry.Behaviors>
+            <behaviors:ParaBoostCutBehavior/>
+            <b:EventToCommandBehavior EventName="Completed" Command="{Binding B3GainEntryCompletedCommand}"/>
+          </Entry.Behaviors>
+        </Entry>
+        <Entry Grid.Column="4" Grid.Row="2" Style="{StaticResource EntryStyle}"  Keyboard="Numeric" Text="{Binding B3QEntryValue}"  >
+          <Entry.Behaviors>
+            <b:EventToCommandBehavior EventName="Completed" Command="{Binding B3QEntryCompletedCommand}"/>
+          </Entry.Behaviors>
+        </Entry>
+
+
+      </Grid>
+      <Grid Padding="10,0,10,0" ColumnSpacing="5">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="43"/>
+          <ColumnDefinition Width="Auto"/>
+          <ColumnDefinition Width="*"/>
+          <ColumnDefinition Width="Auto"/>
+          <ColumnDefinition Width="60"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+          <RowDefinition Height="*"/>
+          <RowDefinition Height="*"/>
+          <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Label Grid.Column="0"  Grid.Row="0"  Text="B4"  Style="{StaticResource LabelTitleStyle}" Margin="0,0,2,0" />
+        <Label Grid.Column="1"  Grid.Row="0"  Text="Freq"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="1"  Grid.Row="1"  Text="Gain"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="1"  Grid.Row="2"  Text="Q"  Style="{StaticResource LabelStyle}" />
+
+        <Label Grid.Column="4"  Grid.Row="0"  Text="Hz"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="4"  Grid.Row="1"  Text="Hz"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="4"  Grid.Row="2"  Text="Hz"  Style="{StaticResource LabelStyle}" />
+
+
+        <Slider  Grid.Column="2"  Grid.Row="0"  Style="{StaticResource SliderStyle}"  Maximum="{Binding FreqSliderMax}" Minimum="{Binding FreqSliderMin}" Value="{Binding B4FreqSliderValue}"/>
+        <Slider  Grid.Column="2"  Grid.Row="1"  Style="{StaticResource SliderStyle}"  Maximum="{Binding GainSliderMax}" Minimum="{Binding GainSliderMin}" Value="{Binding B4GainSliderValue}"/>
+        <Slider  Grid.Column="2"  Grid.Row="2"  Style="{StaticResource SliderStyle}"  Maximum="{Binding QSliderMax}" Minimum="{Binding QSliderMin}" Value="{Binding B4QSliderValue}"/>
+
+        <Entry Grid.Column="4" Grid.Row="0" Style="{StaticResource EntryStyle}"  Keyboard="Numeric" Text="{Binding B4FreqEntryValue}"  >
+          <Entry.Behaviors>
+            <b:EventToCommandBehavior EventName="Completed" Command="{Binding B4FreqEntryCompletedCommand}"/>
+          </Entry.Behaviors>
+        </Entry>
+        <Entry Grid.Column="4" Grid.Row="1" Style="{StaticResource EntryStyle}"  Keyboard="Numeric" Text="{Binding B4GainEntryValue}"  >
+          <Entry.Behaviors>
+            <behaviors:ParaBoostCutBehavior/>
+            <b:EventToCommandBehavior EventName="Completed" Command="{Binding B4GainEntryCompletedCommand}"/>
+          </Entry.Behaviors>
+        </Entry>
+        <Entry Grid.Column="4" Grid.Row="2" Style="{StaticResource EntryStyle}"  Keyboard="Numeric" Text="{Binding B4QEntryValue}"  >
+          <Entry.Behaviors>
+            <b:EventToCommandBehavior EventName="Completed" Command="{Binding B4QEntryCompletedCommand}"/>
+          </Entry.Behaviors>
+        </Entry>
+
+
+      </Grid>
+      <Grid Padding="10,0,10,0" ColumnSpacing="5">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="43"/>
+          <ColumnDefinition Width="Auto"/>
+          <ColumnDefinition Width="*"/>
+          <ColumnDefinition Width="Auto"/>
+          <ColumnDefinition Width="60"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+          <RowDefinition Height="*"/>
+          <RowDefinition Height="*"/>
+          <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Label Grid.Column="0"  Grid.Row="0"  Text="B5"  Style="{StaticResource LabelTitleStyle}" Margin="0,0,2,0" />
+        <Label Grid.Column="1"  Grid.Row="0"  Text="Freq"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="1"  Grid.Row="1"  Text="Gain"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="1"  Grid.Row="2"  Text="Q"  Style="{StaticResource LabelStyle}" />
+
+        <Label Grid.Column="4"  Grid.Row="0"  Text="Hz"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="4"  Grid.Row="1"  Text="Hz"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="4"  Grid.Row="2"  Text="Hz"  Style="{StaticResource LabelStyle}" />
+
+
+        <Slider  Grid.Column="2"  Grid.Row="0"  Style="{StaticResource SliderStyle}"  Maximum="{Binding FreqSliderMax}" Minimum="{Binding FreqSliderMin}" Value="{Binding B5FreqSliderValue}"/>
+        <Slider  Grid.Column="2"  Grid.Row="1"  Style="{StaticResource SliderStyle}"  Maximum="{Binding GainSliderMax}" Minimum="{Binding GainSliderMin}" Value="{Binding B5GainSliderValue}"/>
+        <Slider  Grid.Column="2"  Grid.Row="2"  Style="{StaticResource SliderStyle}"  Maximum="{Binding QSliderMax}" Minimum="{Binding QSliderMin}" Value="{Binding B5QSliderValue}"/>
+
+        <Entry Grid.Column="4" Grid.Row="0" Style="{StaticResource EntryStyle}"  Keyboard="Numeric" Text="{Binding B5FreqEntryValue}"  >
+          <Entry.Behaviors>
+            <b:EventToCommandBehavior EventName="Completed" Command="{Binding B5FreqEntryCompletedCommand}"/>
+          </Entry.Behaviors>
+        </Entry>
+        <Entry Grid.Column="4" Grid.Row="1" Style="{StaticResource EntryStyle}"  Keyboard="Numeric" Text="{Binding B5GainEntryValue}"  >
+          <Entry.Behaviors>
+            <behaviors:ParaBoostCutBehavior/>
+            <b:EventToCommandBehavior EventName="Completed" Command="{Binding B5GainEntryCompletedCommand}"/>
+          </Entry.Behaviors>
+        </Entry>
+        <Entry Grid.Column="4" Grid.Row="2" Style="{StaticResource EntryStyle}"  Keyboard="Numeric" Text="{Binding B5QEntryValue}"  >
+          <Entry.Behaviors>
+            <b:EventToCommandBehavior EventName="Completed" Command="{Binding B5QEntryCompletedCommand}"/>
+          </Entry.Behaviors>
+        </Entry>
+
+
+      </Grid>
+      <Grid Padding="10,0,10,0" ColumnSpacing="5">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="43"/>
+          <ColumnDefinition Width="Auto"/>
+          <ColumnDefinition Width="*"/>
+          <ColumnDefinition Width="Auto"/>
+          <ColumnDefinition Width="60"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+          <RowDefinition Height="*"/>
+          <RowDefinition Height="*"/>
+          <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Label Grid.Column="0"  Grid.Row="0"  Text="B6"  Style="{StaticResource LabelTitleStyle}" Margin="0,0,2,0" />
+        <Label Grid.Column="1"  Grid.Row="0"  Text="Freq"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="1"  Grid.Row="1"  Text="Gain"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="1"  Grid.Row="2"  Text="Q"  Style="{StaticResource LabelStyle}" />
+
+        <Label Grid.Column="4"  Grid.Row="0"  Text="Hz"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="4"  Grid.Row="1"  Text="Hz"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="4"  Grid.Row="2"  Text="Hz"  Style="{StaticResource LabelStyle}" />
+
+
+        <Slider  Grid.Column="2"  Grid.Row="0"  Style="{StaticResource SliderStyle}"  Maximum="{Binding FreqSliderMax}" Minimum="{Binding FreqSliderMin}" Value="{Binding B6FreqSliderValue}"/>
+        <Slider  Grid.Column="2"  Grid.Row="1"  Style="{StaticResource SliderStyle}"  Maximum="{Binding GainSliderMax}" Minimum="{Binding GainSliderMin}" Value="{Binding B6GainSliderValue}"/>
+        <Slider  Grid.Column="2"  Grid.Row="2"  Style="{StaticResource SliderStyle}"  Maximum="{Binding QSliderMax}" Minimum="{Binding QSliderMin}" Value="{Binding B6QSliderValue}"/>
+
+        <Entry Grid.Column="4" Grid.Row="0" Style="{StaticResource EntryStyle}"  Keyboard="Numeric" Text="{Binding B6FreqEntryValue}"  >
+          <Entry.Behaviors>
+            <b:EventToCommandBehavior EventName="Completed" Command="{Binding B6FreqEntryCompletedCommand}"/>
+          </Entry.Behaviors>
+        </Entry>
+        <Entry Grid.Column="4" Grid.Row="1" Style="{StaticResource EntryStyle}"  Keyboard="Numeric" Text="{Binding B6GainEntryValue}"  >
+          <Entry.Behaviors>
+            <behaviors:ParaBoostCutBehavior/>
+            <b:EventToCommandBehavior EventName="Completed" Command="{Binding B6GainEntryCompletedCommand}"/>
+          </Entry.Behaviors>
+        </Entry>
+        <Entry Grid.Column="4" Grid.Row="2" Style="{StaticResource EntryStyle}"  Keyboard="Numeric" Text="{Binding B6QEntryValue}"  >
+          <Entry.Behaviors>
+            <b:EventToCommandBehavior EventName="Completed" Command="{Binding B6QEntryCompletedCommand}"/>
+          </Entry.Behaviors>
+        </Entry>
+
+
+      </Grid>
+      <Grid Padding="10,0,10,0" ColumnSpacing="5">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="43"/>
+          <ColumnDefinition Width="Auto"/>
+          <ColumnDefinition Width="*"/>
+          <ColumnDefinition Width="Auto"/>
+          <ColumnDefinition Width="60"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+          <RowDefinition Height="*"/>
+          <RowDefinition Height="*"/>
+          <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Label Grid.Column="0"  Grid.Row="0"  Text="B7"  Style="{StaticResource LabelTitleStyle}" Margin="0,0,2,0" />
+        <Label Grid.Column="1"  Grid.Row="0"  Text="Freq"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="1"  Grid.Row="1"  Text="Gain"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="1"  Grid.Row="2"  Text="Q"  Style="{StaticResource LabelStyle}" />
+
+        <Label Grid.Column="4"  Grid.Row="0"  Text="Hz"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="4"  Grid.Row="1"  Text="Hz"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="4"  Grid.Row="2"  Text="Hz"  Style="{StaticResource LabelStyle}" />
+
+
+        <Slider  Grid.Column="2"  Grid.Row="0"  Style="{StaticResource SliderStyle}"  Maximum="{Binding FreqSliderMax}" Minimum="{Binding FreqSliderMin}" Value="{Binding B7FreqSliderValue}"/>
+        <Slider  Grid.Column="2"  Grid.Row="1"  Style="{StaticResource SliderStyle}"  Maximum="{Binding GainSliderMax}" Minimum="{Binding GainSliderMin}" Value="{Binding B7GainSliderValue}"/>
+        <Slider  Grid.Column="2"  Grid.Row="2"  Style="{StaticResource SliderStyle}"  Maximum="{Binding QSliderMax}" Minimum="{Binding QSliderMin}" Value="{Binding B7QSliderValue}"/>
+
+        <Entry Grid.Column="4" Grid.Row="0" Style="{StaticResource EntryStyle}"  Keyboard="Numeric" Text="{Binding B7FreqEntryValue}"  >
+          <Entry.Behaviors>
+            <b:EventToCommandBehavior EventName="Completed" Command="{Binding B7FreqEntryCompletedCommand}"/>
+          </Entry.Behaviors>
+        </Entry>
+        <Entry Grid.Column="4" Grid.Row="1" Style="{StaticResource EntryStyle}"  Keyboard="Numeric" Text="{Binding B7GainEntryValue}"  >
+          <Entry.Behaviors>
+            <behaviors:ParaBoostCutBehavior/>
+            <b:EventToCommandBehavior EventName="Completed" Command="{Binding B7GainEntryCompletedCommand}"/>
+          </Entry.Behaviors>
+        </Entry>
+        <Entry Grid.Column="4" Grid.Row="2" Style="{StaticResource EntryStyle}"  Keyboard="Numeric" Text="{Binding B7QEntryValue}"  >
+          <Entry.Behaviors>
+            <b:EventToCommandBehavior EventName="Completed" Command="{Binding B7QEntryCompletedCommand}"/>
+          </Entry.Behaviors>
+        </Entry>
+
+
+      </Grid>
+      <Grid Padding="10,0,10,0" ColumnSpacing="5">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="43"/>
+          <ColumnDefinition Width="Auto"/>
+          <ColumnDefinition Width="*"/>
+          <ColumnDefinition Width="Auto"/>
+          <ColumnDefinition Width="60"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+          <RowDefinition Height="*"/>
+          <RowDefinition Height="*"/>
+          <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Label Grid.Column="0"  Grid.Row="0"  Text="B8"  Style="{StaticResource LabelTitleStyle}" Margin="0,0,2,0" />
+        <Label Grid.Column="1"  Grid.Row="0"  Text="Freq"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="1"  Grid.Row="1"  Text="Gain"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="1"  Grid.Row="2"  Text="Q"  Style="{StaticResource LabelStyle}" />
+
+        <Label Grid.Column="4"  Grid.Row="0"  Text="Hz"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="4"  Grid.Row="1"  Text="Hz"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="4"  Grid.Row="2"  Text="Hz"  Style="{StaticResource LabelStyle}" />
+
+
+        <Slider  Grid.Column="2"  Grid.Row="0"  Style="{StaticResource SliderStyle}"  Maximum="{Binding FreqSliderMax}" Minimum="{Binding FreqSliderMin}" Value="{Binding B8FreqSliderValue}"/>
+        <Slider  Grid.Column="2"  Grid.Row="1"  Style="{StaticResource SliderStyle}"  Maximum="{Binding GainSliderMax}" Minimum="{Binding GainSliderMin}" Value="{Binding B8GainSliderValue}"/>
+        <Slider  Grid.Column="2"  Grid.Row="2"  Style="{StaticResource SliderStyle}"  Maximum="{Binding QSliderMax}" Minimum="{Binding QSliderMin}" Value="{Binding B8QSliderValue}"/>
+
+        <Entry Grid.Column="4" Grid.Row="0" Style="{StaticResource EntryStyle}"  Keyboard="Numeric" Text="{Binding B8FreqEntryValue}"  >
+          <Entry.Behaviors>
+            <b:EventToCommandBehavior EventName="Completed" Command="{Binding B8FreqEntryCompletedCommand}"/>
+          </Entry.Behaviors>
+        </Entry>
+        <Entry Grid.Column="4" Grid.Row="1" Style="{StaticResource EntryStyle}"  Keyboard="Numeric" Text="{Binding B8GainEntryValue}"  >
+          <Entry.Behaviors>
+            <behaviors:ParaBoostCutBehavior/>
+            <b:EventToCommandBehavior EventName="Completed" Command="{Binding B8GainEntryCompletedCommand}"/>
+          </Entry.Behaviors>
+        </Entry>
+        <Entry Grid.Column="4" Grid.Row="2" Style="{StaticResource EntryStyle}"  Keyboard="Numeric" Text="{Binding B8QEntryValue}"  >
+          <Entry.Behaviors>
+            <b:EventToCommandBehavior EventName="Completed" Command="{Binding B8QEntryCompletedCommand}"/>
+          </Entry.Behaviors>
+        </Entry>
+
+
+      </Grid>
+      <Grid Padding="10,0,10,0" ColumnSpacing="5">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="43"/>
+          <ColumnDefinition Width="Auto"/>
+          <ColumnDefinition Width="*"/>
+          <ColumnDefinition Width="Auto"/>
+          <ColumnDefinition Width="60"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+          <RowDefinition Height="*"/>
+          <RowDefinition Height="*"/>
+          <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Label Grid.Column="0"  Grid.Row="0"  Text="B9"  Style="{StaticResource LabelTitleStyle}" Margin="0,0,2,0" />
+        <Label Grid.Column="1"  Grid.Row="0"  Text="Freq"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="1"  Grid.Row="1"  Text="Gain"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="1"  Grid.Row="2"  Text="Q"  Style="{StaticResource LabelStyle}" />
+
+        <Label Grid.Column="4"  Grid.Row="0"  Text="Hz"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="4"  Grid.Row="1"  Text="Hz"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="4"  Grid.Row="2"  Text="Hz"  Style="{StaticResource LabelStyle}" />
+
+
+        <Slider  Grid.Column="2"  Grid.Row="0"  Style="{StaticResource SliderStyle}"  Maximum="{Binding FreqSliderMax}" Minimum="{Binding FreqSliderMin}" Value="{Binding B9FreqSliderValue}"/>
+        <Slider  Grid.Column="2"  Grid.Row="1"  Style="{StaticResource SliderStyle}"  Maximum="{Binding GainSliderMax}" Minimum="{Binding GainSliderMin}" Value="{Binding B9GainSliderValue}"/>
+        <Slider  Grid.Column="2"  Grid.Row="2"  Style="{StaticResource SliderStyle}"  Maximum="{Binding QSliderMax}" Minimum="{Binding QSliderMin}" Value="{Binding B9QSliderValue}"/>
+
+        <Entry Grid.Column="4" Grid.Row="0" Style="{StaticResource EntryStyle}"  Keyboard="Numeric" Text="{Binding B9FreqEntryValue}"  >
+          <Entry.Behaviors>
+            <b:EventToCommandBehavior EventName="Completed" Command="{Binding B9FreqEntryCompletedCommand}"/>
+          </Entry.Behaviors>
+        </Entry>
+        <Entry Grid.Column="4" Grid.Row="1" Style="{StaticResource EntryStyle}"  Keyboard="Numeric" Text="{Binding B9GainEntryValue}"  >
+          <Entry.Behaviors>
+            <behaviors:ParaBoostCutBehavior/>
+            <b:EventToCommandBehavior EventName="Completed" Command="{Binding B9GainEntryCompletedCommand}"/>
+          </Entry.Behaviors>
+        </Entry>
+        <Entry Grid.Column="4" Grid.Row="2" Style="{StaticResource EntryStyle}"  Keyboard="Numeric" Text="{Binding B9QEntryValue}"  >
+          <Entry.Behaviors>
+            <b:EventToCommandBehavior EventName="Completed" Command="{Binding B9QEntryCompletedCommand}"/>
+          </Entry.Behaviors>
+        </Entry>
+
+
+      </Grid>
+      <Grid Padding="10,0,10,0" ColumnSpacing="5">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="43"/>
+          <ColumnDefinition Width="Auto"/>
+          <ColumnDefinition Width="*"/>
+          <ColumnDefinition Width="Auto"/>
+          <ColumnDefinition Width="60"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+          <RowDefinition Height="*"/>
+          <RowDefinition Height="*"/>
+          <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Label Grid.Column="0"  Grid.Row="0"  Text="B10"  Style="{StaticResource LabelTitleStyle}" Margin="0,0,2,0" />
+        <Label Grid.Column="1"  Grid.Row="0"  Text="Freq"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="1"  Grid.Row="1"  Text="Gain"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="1"  Grid.Row="2"  Text="Q"  Style="{StaticResource LabelStyle}" />
+
+        <Label Grid.Column="4"  Grid.Row="0"  Text="Hz"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="4"  Grid.Row="1"  Text="Hz"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="4"  Grid.Row="2"  Text="Hz"  Style="{StaticResource LabelStyle}" />
+
+
+        <Slider  Grid.Column="2"  Grid.Row="0"  Style="{StaticResource SliderStyle}"  Maximum="{Binding FreqSliderMax}" Minimum="{Binding FreqSliderMin}" Value="{Binding B10FreqSliderValue}"/>
+        <Slider  Grid.Column="2"  Grid.Row="1"  Style="{StaticResource SliderStyle}"  Maximum="{Binding GainSliderMax}" Minimum="{Binding GainSliderMin}" Value="{Binding B10GainSliderValue}"/>
+        <Slider  Grid.Column="2"  Grid.Row="2"  Style="{StaticResource SliderStyle}"  Maximum="{Binding QSliderMax}" Minimum="{Binding QSliderMin}" Value="{Binding B10QSliderValue}"/>
+
+        <Entry Grid.Column="4" Grid.Row="0" Style="{StaticResource EntryStyle}"  Keyboard="Numeric" Text="{Binding B10FreqEntryValue}"  >
+          <Entry.Behaviors>
+            <b:EventToCommandBehavior EventName="Completed" Command="{Binding B10FreqEntryCompletedCommand}"/>
+          </Entry.Behaviors>
+        </Entry>
+        <Entry Grid.Column="4" Grid.Row="1" Style="{StaticResource EntryStyle}"  Keyboard="Numeric" Text="{Binding B10GainEntryValue}"  >
+          <Entry.Behaviors>
+            <behaviors:ParaBoostCutBehavior/>
+            <b:EventToCommandBehavior EventName="Completed" Command="{Binding B10GainEntryCompletedCommand}"/>
+          </Entry.Behaviors>
+        </Entry>
+        <Entry Grid.Column="4" Grid.Row="2" Style="{StaticResource EntryStyle}"  Keyboard="Numeric" Text="{Binding B10QEntryValue}"  >
+          <Entry.Behaviors>
+            <b:EventToCommandBehavior EventName="Completed" Command="{Binding B10QEntryCompletedCommand}"/>
+          </Entry.Behaviors>
+        </Entry>
+
+
+      </Grid>
+      <Grid Padding="10,0,10,0" ColumnSpacing="5">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="43"/>
+          <ColumnDefinition Width="Auto"/>
+          <ColumnDefinition Width="*"/>
+          <ColumnDefinition Width="Auto"/>
+          <ColumnDefinition Width="60"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+          <RowDefinition Height="*"/>
+          <RowDefinition Height="*"/>
+          <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Label Grid.Column="0"  Grid.Row="0"  Text="B11"  Style="{StaticResource LabelTitleStyle}" Margin="0,0,2,0" />
+        <Label Grid.Column="1"  Grid.Row="0"  Text="Freq"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="1"  Grid.Row="1"  Text="Gain"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="1"  Grid.Row="2"  Text="Q"  Style="{StaticResource LabelStyle}" />
+
+        <Label Grid.Column="4"  Grid.Row="0"  Text="Hz"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="4"  Grid.Row="1"  Text="Hz"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="4"  Grid.Row="2"  Text="Hz"  Style="{StaticResource LabelStyle}" />
+
+
+        <Slider  Grid.Column="2"  Grid.Row="0"  Style="{StaticResource SliderStyle}"  Maximum="{Binding FreqSliderMax}" Minimum="{Binding FreqSliderMin}" Value="{Binding B11FreqSliderValue}"/>
+        <Slider  Grid.Column="2"  Grid.Row="1"  Style="{StaticResource SliderStyle}"  Maximum="{Binding GainSliderMax}" Minimum="{Binding GainSliderMin}" Value="{Binding B11GainSliderValue}"/>
+        <Slider  Grid.Column="2"  Grid.Row="2"  Style="{StaticResource SliderStyle}"  Maximum="{Binding QSliderMax}" Minimum="{Binding QSliderMin}" Value="{Binding B11QSliderValue}"/>
+
+        <Entry Grid.Column="4" Grid.Row="0" Style="{StaticResource EntryStyle}"  Keyboard="Numeric" Text="{Binding B11FreqEntryValue}"  >
+          <Entry.Behaviors>
+            <b:EventToCommandBehavior EventName="Completed" Command="{Binding B11FreqEntryCompletedCommand}"/>
+          </Entry.Behaviors>
+        </Entry>
+        <Entry Grid.Column="4" Grid.Row="1" Style="{StaticResource EntryStyle}"  Keyboard="Numeric" Text="{Binding B11GainEntryValue}"  >
+          <Entry.Behaviors>
+            <behaviors:ParaBoostCutBehavior/>
+            <b:EventToCommandBehavior EventName="Completed" Command="{Binding B11GainEntryCompletedCommand}"/>
+          </Entry.Behaviors>
+        </Entry>
+        <Entry Grid.Column="4" Grid.Row="2" Style="{StaticResource EntryStyle}"  Keyboard="Numeric" Text="{Binding B11QEntryValue}"  >
+          <Entry.Behaviors>
+            <b:EventToCommandBehavior EventName="Completed" Command="{Binding B11QEntryCompletedCommand}"/>
+          </Entry.Behaviors>
+        </Entry>
+
+
+      </Grid>
+      <Grid Padding="10,0,10,0" ColumnSpacing="5">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="43"/>
+          <ColumnDefinition Width="Auto"/>
+          <ColumnDefinition Width="*"/>
+          <ColumnDefinition Width="Auto"/>
+          <ColumnDefinition Width="60"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+          <RowDefinition Height="*"/>
+          <RowDefinition Height="*"/>
+          <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Label Grid.Column="0"  Grid.Row="0"  Text="B12"  Style="{StaticResource LabelTitleStyle}" Margin="0,0,2,0" />
+        <Label Grid.Column="1"  Grid.Row="0"  Text="Freq"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="1"  Grid.Row="1"  Text="Gain"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="1"  Grid.Row="2"  Text="Q"  Style="{StaticResource LabelStyle}" />
+
+        <Label Grid.Column="4"  Grid.Row="0"  Text="Hz"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="4"  Grid.Row="1"  Text="Hz"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="4"  Grid.Row="2"  Text="Hz"  Style="{StaticResource LabelStyle}" />
+
+
+        <Slider  Grid.Column="2"  Grid.Row="0"  Style="{StaticResource SliderStyle}"  Maximum="{Binding FreqSliderMax}" Minimum="{Binding FreqSliderMin}" Value="{Binding B12FreqSliderValue}"/>
+        <Slider  Grid.Column="2"  Grid.Row="1"  Style="{StaticResource SliderStyle}"  Maximum="{Binding GainSliderMax}" Minimum="{Binding GainSliderMin}" Value="{Binding B12GainSliderValue}"/>
+        <Slider  Grid.Column="2"  Grid.Row="2"  Style="{StaticResource SliderStyle}"  Maximum="{Binding QSliderMax}" Minimum="{Binding QSliderMin}" Value="{Binding B12QSliderValue}"/>
+
+        <Entry Grid.Column="4" Grid.Row="0" Style="{StaticResource EntryStyle}"  Keyboard="Numeric" Text="{Binding B12FreqEntryValue}"  >
+          <Entry.Behaviors>
+            <b:EventToCommandBehavior EventName="Completed" Command="{Binding B12FreqEntryCompletedCommand}"/>
+          </Entry.Behaviors>
+        </Entry>
+        <Entry Grid.Column="4" Grid.Row="1" Style="{StaticResource EntryStyle}"  Keyboard="Numeric" Text="{Binding B12GainEntryValue}"  >
+          <Entry.Behaviors>
+            <behaviors:ParaBoostCutBehavior/>
+            <b:EventToCommandBehavior EventName="Completed" Command="{Binding B12GainEntryCompletedCommand}"/>
+          </Entry.Behaviors>
+        </Entry>
+        <Entry Grid.Column="4" Grid.Row="2" Style="{StaticResource EntryStyle}"  Keyboard="Numeric" Text="{Binding B12QEntryValue}"  >
+          <Entry.Behaviors>
+            <b:EventToCommandBehavior EventName="Completed" Command="{Binding B12QEntryCompletedCommand}"/>
+          </Entry.Behaviors>
+        </Entry>
+
+
+      </Grid>
+      <Grid Padding="10,0,10,0" ColumnSpacing="5">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="43"/>
+          <ColumnDefinition Width="Auto"/>
+          <ColumnDefinition Width="*"/>
+          <ColumnDefinition Width="Auto"/>
+          <ColumnDefinition Width="60"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+          <RowDefinition Height="*"/>
+          <RowDefinition Height="*"/>
+          <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Label Grid.Column="0"  Grid.Row="0"  Text="B13"  Style="{StaticResource LabelTitleStyle}" Margin="0,0,2,0" />
+        <Label Grid.Column="1"  Grid.Row="0"  Text="Freq"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="1"  Grid.Row="1"  Text="Gain"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="1"  Grid.Row="2"  Text="Q"  Style="{StaticResource LabelStyle}" />
+
+        <Label Grid.Column="4"  Grid.Row="0"  Text="Hz"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="4"  Grid.Row="1"  Text="Hz"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="4"  Grid.Row="2"  Text="Hz"  Style="{StaticResource LabelStyle}" />
+
+
+        <Slider  Grid.Column="2"  Grid.Row="0"  Style="{StaticResource SliderStyle}"  Maximum="{Binding FreqSliderMax}" Minimum="{Binding FreqSliderMin}" Value="{Binding B13FreqSliderValue}"/>
+        <Slider  Grid.Column="2"  Grid.Row="1"  Style="{StaticResource SliderStyle}"  Maximum="{Binding GainSliderMax}" Minimum="{Binding GainSliderMin}" Value="{Binding B13GainSliderValue}"/>
+        <Slider  Grid.Column="2"  Grid.Row="2"  Style="{StaticResource SliderStyle}"  Maximum="{Binding QSliderMax}" Minimum="{Binding QSliderMin}" Value="{Binding B13QSliderValue}"/>
+
+        <Entry Grid.Column="4" Grid.Row="0" Style="{StaticResource EntryStyle}"  Keyboard="Numeric" Text="{Binding B13FreqEntryValue}"  >
+          <Entry.Behaviors>
+            <b:EventToCommandBehavior EventName="Completed" Command="{Binding B13FreqEntryCompletedCommand}"/>
+          </Entry.Behaviors>
+        </Entry>
+        <Entry Grid.Column="4" Grid.Row="1" Style="{StaticResource EntryStyle}"  Keyboard="Numeric" Text="{Binding B13GainEntryValue}"  >
+          <Entry.Behaviors>
+            <behaviors:ParaBoostCutBehavior/>
+            <b:EventToCommandBehavior EventName="Completed" Command="{Binding B13GainEntryCompletedCommand}"/>
+          </Entry.Behaviors>
+        </Entry>
+        <Entry Grid.Column="4" Grid.Row="2" Style="{StaticResource EntryStyle}"  Keyboard="Numeric" Text="{Binding B13QEntryValue}"  >
+          <Entry.Behaviors>
+            <b:EventToCommandBehavior EventName="Completed" Command="{Binding B13QEntryCompletedCommand}"/>
+          </Entry.Behaviors>
+        </Entry>
+
+
+      </Grid>
+      <Grid Padding="10,0,10,0" ColumnSpacing="5">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="43"/>
+          <ColumnDefinition Width="Auto"/>
+          <ColumnDefinition Width="*"/>
+          <ColumnDefinition Width="Auto"/>
+          <ColumnDefinition Width="60"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+          <RowDefinition Height="*"/>
+          <RowDefinition Height="*"/>
+          <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Label Grid.Column="0"  Grid.Row="0"  Text="B14"  Style="{StaticResource LabelTitleStyle}" Margin="0,0,2,0" />
+        <Label Grid.Column="1"  Grid.Row="0"  Text="Freq"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="1"  Grid.Row="1"  Text="Gain"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="1"  Grid.Row="2"  Text="Q"  Style="{StaticResource LabelStyle}" />
+
+        <Label Grid.Column="4"  Grid.Row="0"  Text="Hz"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="4"  Grid.Row="1"  Text="Hz"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="4"  Grid.Row="2"  Text="Hz"  Style="{StaticResource LabelStyle}" />
+
+
+        <Slider  Grid.Column="2"  Grid.Row="0"  Style="{StaticResource SliderStyle}"  Maximum="{Binding FreqSliderMax}" Minimum="{Binding FreqSliderMin}" Value="{Binding B14FreqSliderValue}"/>
+        <Slider  Grid.Column="2"  Grid.Row="1"  Style="{StaticResource SliderStyle}"  Maximum="{Binding GainSliderMax}" Minimum="{Binding GainSliderMin}" Value="{Binding B14GainSliderValue}"/>
+        <Slider  Grid.Column="2"  Grid.Row="2"  Style="{StaticResource SliderStyle}"  Maximum="{Binding QSliderMax}" Minimum="{Binding QSliderMin}" Value="{Binding B14QSliderValue}"/>
+
+        <Entry Grid.Column="4" Grid.Row="0" Style="{StaticResource EntryStyle}"  Keyboard="Numeric" Text="{Binding B14FreqEntryValue}"  >
+          <Entry.Behaviors>
+            <b:EventToCommandBehavior EventName="Completed" Command="{Binding B14FreqEntryCompletedCommand}"/>
+          </Entry.Behaviors>
+        </Entry>
+        <Entry Grid.Column="4" Grid.Row="1" Style="{StaticResource EntryStyle}"  Keyboard="Numeric" Text="{Binding B14GainEntryValue}"  >
+          <Entry.Behaviors>
+            <behaviors:ParaBoostCutBehavior/>
+            <b:EventToCommandBehavior EventName="Completed" Command="{Binding B14GainEntryCompletedCommand}"/>
+          </Entry.Behaviors>
+        </Entry>
+        <Entry Grid.Column="4" Grid.Row="2" Style="{StaticResource EntryStyle}"  Keyboard="Numeric" Text="{Binding B14QEntryValue}"  >
+          <Entry.Behaviors>
+            <b:EventToCommandBehavior EventName="Completed" Command="{Binding B14QEntryCompletedCommand}"/>
+          </Entry.Behaviors>
+        </Entry>
+
+
+      </Grid>
+      <Grid Padding="10,0,10,0" ColumnSpacing="5">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="43"/>
+          <ColumnDefinition Width="Auto"/>
+          <ColumnDefinition Width="*"/>
+          <ColumnDefinition Width="Auto"/>
+          <ColumnDefinition Width="60"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+          <RowDefinition Height="*"/>
+          <RowDefinition Height="*"/>
+          <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Label Grid.Column="0"  Grid.Row="0"  Text="B15"  Style="{StaticResource LabelTitleStyle}" Margin="0,0,2,0" />
+        <Label Grid.Column="1"  Grid.Row="0"  Text="Freq"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="1"  Grid.Row="1"  Text="Gain"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="1"  Grid.Row="2"  Text="Q"  Style="{StaticResource LabelStyle}" />
+
+        <Label Grid.Column="4"  Grid.Row="0"  Text="Hz"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="4"  Grid.Row="1"  Text="Hz"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="4"  Grid.Row="2"  Text="Hz"  Style="{StaticResource LabelStyle}" />
+
+
+        <Slider  Grid.Column="2"  Grid.Row="0"  Style="{StaticResource SliderStyle}"  Maximum="{Binding FreqSliderMax}" Minimum="{Binding FreqSliderMin}" Value="{Binding B15FreqSliderValue}"/>
+        <Slider  Grid.Column="2"  Grid.Row="1"  Style="{StaticResource SliderStyle}"  Maximum="{Binding GainSliderMax}" Minimum="{Binding GainSliderMin}" Value="{Binding B15GainSliderValue}"/>
+        <Slider  Grid.Column="2"  Grid.Row="2"  Style="{StaticResource SliderStyle}"  Maximum="{Binding QSliderMax}" Minimum="{Binding QSliderMin}" Value="{Binding B15QSliderValue}"/>
+
+        <Entry Grid.Column="4" Grid.Row="0" Style="{StaticResource EntryStyle}"  Keyboard="Numeric" Text="{Binding B15FreqEntryValue}"  >
+          <Entry.Behaviors>
+            <b:EventToCommandBehavior EventName="Completed" Command="{Binding B15FreqEntryCompletedCommand}"/>
+          </Entry.Behaviors>
+        </Entry>
+        <Entry Grid.Column="4" Grid.Row="1" Style="{StaticResource EntryStyle}"  Keyboard="Numeric" Text="{Binding B15GainEntryValue}"  >
+          <Entry.Behaviors>
+            <behaviors:ParaBoostCutBehavior/>
+            <b:EventToCommandBehavior EventName="Completed" Command="{Binding B15GainEntryCompletedCommand}"/>
+          </Entry.Behaviors>
+        </Entry>
+        <Entry Grid.Column="4" Grid.Row="2" Style="{StaticResource EntryStyle}"  Keyboard="Numeric" Text="{Binding B15QEntryValue}"  >
+          <Entry.Behaviors>
+            <b:EventToCommandBehavior EventName="Completed" Command="{Binding B15QEntryCompletedCommand}"/>
+          </Entry.Behaviors>
+        </Entry>
+
+
+      </Grid>
+      <Grid Padding="10,0,10,0" ColumnSpacing="5">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="43"/>
+          <ColumnDefinition Width="Auto"/>
+          <ColumnDefinition Width="*"/>
+          <ColumnDefinition Width="Auto"/>
+          <ColumnDefinition Width="60"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+          <RowDefinition Height="*"/>
+          <RowDefinition Height="*"/>
+          <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Label Grid.Column="0"  Grid.Row="0"  Text="B16"  Style="{StaticResource LabelTitleStyle}" Margin="0,0,2,0" />
+        <Label Grid.Column="1"  Grid.Row="0"  Text="Freq"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="1"  Grid.Row="1"  Text="Gain"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="1"  Grid.Row="2"  Text="Q"  Style="{StaticResource LabelStyle}" />
+
+        <Label Grid.Column="4"  Grid.Row="0"  Text="Hz"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="4"  Grid.Row="1"  Text="Hz"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="4"  Grid.Row="2"  Text="Hz"  Style="{StaticResource LabelStyle}" />
+
+
+        <Slider  Grid.Column="2"  Grid.Row="0"  Style="{StaticResource SliderStyle}"  Maximum="{Binding FreqSliderMax}" Minimum="{Binding FreqSliderMin}" Value="{Binding B16FreqSliderValue}"/>
+        <Slider  Grid.Column="2"  Grid.Row="1"  Style="{StaticResource SliderStyle}"  Maximum="{Binding GainSliderMax}" Minimum="{Binding GainSliderMin}" Value="{Binding B16GainSliderValue}"/>
+        <Slider  Grid.Column="2"  Grid.Row="2"  Style="{StaticResource SliderStyle}"  Maximum="{Binding QSliderMax}" Minimum="{Binding QSliderMin}" Value="{Binding B16QSliderValue}"/>
+
+        <Entry Grid.Column="4" Grid.Row="0" Style="{StaticResource EntryStyle}"  Keyboard="Numeric" Text="{Binding B16FreqEntryValue}"  >
+          <Entry.Behaviors>
+            <b:EventToCommandBehavior EventName="Completed" Command="{Binding B16FreqEntryCompletedCommand}"/>
+          </Entry.Behaviors>
+        </Entry>
+        <Entry Grid.Column="4" Grid.Row="1" Style="{StaticResource EntryStyle}"  Keyboard="Numeric" Text="{Binding B16GainEntryValue}"  >
+          <Entry.Behaviors>
+            <behaviors:ParaBoostCutBehavior/>
+            <b:EventToCommandBehavior EventName="Completed" Command="{Binding B16GainEntryCompletedCommand}"/>
+          </Entry.Behaviors>
+        </Entry>
+        <Entry Grid.Column="4" Grid.Row="2" Style="{StaticResource EntryStyle}"  Keyboard="Numeric" Text="{Binding B16QEntryValue}"  >
+          <Entry.Behaviors>
+            <b:EventToCommandBehavior EventName="Completed" Command="{Binding B16QEntryCompletedCommand}"/>
+          </Entry.Behaviors>
+        </Entry>
+
+
+      </Grid>
+      <Grid Padding="10,0,10,0" ColumnSpacing="5">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="43"/>
+          <ColumnDefinition Width="Auto"/>
+          <ColumnDefinition Width="*"/>
+          <ColumnDefinition Width="Auto"/>
+          <ColumnDefinition Width="60"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+          <RowDefinition Height="*"/>
+          <RowDefinition Height="*"/>
+          <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Label Grid.Column="0"  Grid.Row="0"  Text="B17"  Style="{StaticResource LabelTitleStyle}" Margin="0,0,2,0" />
+        <Label Grid.Column="1"  Grid.Row="0"  Text="Freq"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="1"  Grid.Row="1"  Text="Gain"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="1"  Grid.Row="2"  Text="Q"  Style="{StaticResource LabelStyle}" />
+
+        <Label Grid.Column="4"  Grid.Row="0"  Text="Hz"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="4"  Grid.Row="1"  Text="Hz"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="4"  Grid.Row="2"  Text="Hz"  Style="{StaticResource LabelStyle}" />
+
+
+        <Slider  Grid.Column="2"  Grid.Row="0"  Style="{StaticResource SliderStyle}"  Maximum="{Binding FreqSliderMax}" Minimum="{Binding FreqSliderMin}" Value="{Binding B17FreqSliderValue}"/>
+        <Slider  Grid.Column="2"  Grid.Row="1"  Style="{StaticResource SliderStyle}"  Maximum="{Binding GainSliderMax}" Minimum="{Binding GainSliderMin}" Value="{Binding B17GainSliderValue}"/>
+        <Slider  Grid.Column="2"  Grid.Row="2"  Style="{StaticResource SliderStyle}"  Maximum="{Binding QSliderMax}" Minimum="{Binding QSliderMin}" Value="{Binding B17QSliderValue}"/>
+
+        <Entry Grid.Column="4" Grid.Row="0" Style="{StaticResource EntryStyle}"  Keyboard="Numeric" Text="{Binding B17FreqEntryValue}"  >
+          <Entry.Behaviors>
+            <b:EventToCommandBehavior EventName="Completed" Command="{Binding B17FreqEntryCompletedCommand}"/>
+          </Entry.Behaviors>
+        </Entry>
+        <Entry Grid.Column="4" Grid.Row="1" Style="{StaticResource EntryStyle}"  Keyboard="Numeric" Text="{Binding B17GainEntryValue}"  >
+          <Entry.Behaviors>
+            <behaviors:ParaBoostCutBehavior/>
+            <b:EventToCommandBehavior EventName="Completed" Command="{Binding B17GainEntryCompletedCommand}"/>
+          </Entry.Behaviors>
+        </Entry>
+        <Entry Grid.Column="4" Grid.Row="2" Style="{StaticResource EntryStyle}"  Keyboard="Numeric" Text="{Binding B17QEntryValue}"  >
+          <Entry.Behaviors>
+            <b:EventToCommandBehavior EventName="Completed" Command="{Binding B17QEntryCompletedCommand}"/>
+          </Entry.Behaviors>
+        </Entry>
+
+
+      </Grid>
+      <Grid Padding="10,0,10,0" ColumnSpacing="5">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="43"/>
+          <ColumnDefinition Width="Auto"/>
+          <ColumnDefinition Width="*"/>
+          <ColumnDefinition Width="Auto"/>
+          <ColumnDefinition Width="60"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+          <RowDefinition Height="*"/>
+          <RowDefinition Height="*"/>
+          <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Label Grid.Column="0"  Grid.Row="0"  Text="B18"  Style="{StaticResource LabelTitleStyle}" Margin="0,0,2,0" />
+        <Label Grid.Column="1"  Grid.Row="0"  Text="Freq"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="1"  Grid.Row="1"  Text="Gain"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="1"  Grid.Row="2"  Text="Q"  Style="{StaticResource LabelStyle}" />
+
+        <Label Grid.Column="4"  Grid.Row="0"  Text="Hz"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="4"  Grid.Row="1"  Text="Hz"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="4"  Grid.Row="2"  Text="Hz"  Style="{StaticResource LabelStyle}" />
+
+
+        <Slider  Grid.Column="2"  Grid.Row="0"  Style="{StaticResource SliderStyle}"  Maximum="{Binding FreqSliderMax}" Minimum="{Binding FreqSliderMin}" Value="{Binding B18FreqSliderValue}"/>
+        <Slider  Grid.Column="2"  Grid.Row="1"  Style="{StaticResource SliderStyle}"  Maximum="{Binding GainSliderMax}" Minimum="{Binding GainSliderMin}" Value="{Binding B18GainSliderValue}"/>
+        <Slider  Grid.Column="2"  Grid.Row="2"  Style="{StaticResource SliderStyle}"  Maximum="{Binding QSliderMax}" Minimum="{Binding QSliderMin}" Value="{Binding B18QSliderValue}"/>
+
+        <Entry Grid.Column="4" Grid.Row="0" Style="{StaticResource EntryStyle}"  Keyboard="Numeric" Text="{Binding B18FreqEntryValue}"  >
+          <Entry.Behaviors>
+            <b:EventToCommandBehavior EventName="Completed" Command="{Binding B18FreqEntryCompletedCommand}"/>
+          </Entry.Behaviors>
+        </Entry>
+        <Entry Grid.Column="4" Grid.Row="1" Style="{StaticResource EntryStyle}"  Keyboard="Numeric" Text="{Binding B18GainEntryValue}"  >
+          <Entry.Behaviors>
+            <behaviors:ParaBoostCutBehavior/>
+            <b:EventToCommandBehavior EventName="Completed" Command="{Binding B18GainEntryCompletedCommand}"/>
+          </Entry.Behaviors>
+        </Entry>
+        <Entry Grid.Column="4" Grid.Row="2" Style="{StaticResource EntryStyle}"  Keyboard="Numeric" Text="{Binding B18QEntryValue}"  >
+          <Entry.Behaviors>
+            <b:EventToCommandBehavior EventName="Completed" Command="{Binding B18QEntryCompletedCommand}"/>
+          </Entry.Behaviors>
+        </Entry>
+
+
+      </Grid>
+      <Grid Padding="10,0,10,0" ColumnSpacing="5">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="43"/>
+          <ColumnDefinition Width="Auto"/>
+          <ColumnDefinition Width="*"/>
+          <ColumnDefinition Width="Auto"/>
+          <ColumnDefinition Width="60"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+          <RowDefinition Height="*"/>
+          <RowDefinition Height="*"/>
+          <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Label Grid.Column="0"  Grid.Row="0"  Text="B19"  Style="{StaticResource LabelTitleStyle}" Margin="0,0,2,0" />
+        <Label Grid.Column="1"  Grid.Row="0"  Text="Freq"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="1"  Grid.Row="1"  Text="Gain"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="1"  Grid.Row="2"  Text="Q"  Style="{StaticResource LabelStyle}" />
+
+        <Label Grid.Column="4"  Grid.Row="0"  Text="Hz"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="4"  Grid.Row="1"  Text="Hz"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="4"  Grid.Row="2"  Text="Hz"  Style="{StaticResource LabelStyle}" />
+
+
+        <Slider  Grid.Column="2"  Grid.Row="0"  Style="{StaticResource SliderStyle}"  Maximum="{Binding FreqSliderMax}" Minimum="{Binding FreqSliderMin}" Value="{Binding B19FreqSliderValue}"/>
+        <Slider  Grid.Column="2"  Grid.Row="1"  Style="{StaticResource SliderStyle}"  Maximum="{Binding GainSliderMax}" Minimum="{Binding GainSliderMin}" Value="{Binding B19GainSliderValue}"/>
+        <Slider  Grid.Column="2"  Grid.Row="2"  Style="{StaticResource SliderStyle}"  Maximum="{Binding QSliderMax}" Minimum="{Binding QSliderMin}" Value="{Binding B19QSliderValue}"/>
+
+        <Entry Grid.Column="4" Grid.Row="0" Style="{StaticResource EntryStyle}"  Keyboard="Numeric" Text="{Binding B19FreqEntryValue}"  >
+          <Entry.Behaviors>
+            <b:EventToCommandBehavior EventName="Completed" Command="{Binding B19FreqEntryCompletedCommand}"/>
+          </Entry.Behaviors>
+        </Entry>
+        <Entry Grid.Column="4" Grid.Row="1" Style="{StaticResource EntryStyle}"  Keyboard="Numeric" Text="{Binding B19GainEntryValue}"  >
+          <Entry.Behaviors>
+            <behaviors:ParaBoostCutBehavior/>
+            <b:EventToCommandBehavior EventName="Completed" Command="{Binding B19GainEntryCompletedCommand}"/>
+          </Entry.Behaviors>
+        </Entry>
+        <Entry Grid.Column="4" Grid.Row="2" Style="{StaticResource EntryStyle}"  Keyboard="Numeric" Text="{Binding B19QEntryValue}"  >
+          <Entry.Behaviors>
+            <b:EventToCommandBehavior EventName="Completed" Command="{Binding B19QEntryCompletedCommand}"/>
+          </Entry.Behaviors>
+        </Entry>
+
+
+      </Grid>
+      <Grid Padding="10,0,10,0" ColumnSpacing="5">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="43"/>
+          <ColumnDefinition Width="Auto"/>
+          <ColumnDefinition Width="*"/>
+          <ColumnDefinition Width="Auto"/>
+          <ColumnDefinition Width="60"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+          <RowDefinition Height="*"/>
+          <RowDefinition Height="*"/>
+          <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Label Grid.Column="0"  Grid.Row="0"  Text="B20"  Style="{StaticResource LabelTitleStyle}" Margin="0,0,2,0" />
+        <Label Grid.Column="1"  Grid.Row="0"  Text="Freq"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="1"  Grid.Row="1"  Text="Gain"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="1"  Grid.Row="2"  Text="Q"  Style="{StaticResource LabelStyle}" />
+
+        <Label Grid.Column="4"  Grid.Row="0"  Text="Hz"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="4"  Grid.Row="1"  Text="Hz"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="4"  Grid.Row="2"  Text="Hz"  Style="{StaticResource LabelStyle}" />
+
+        <Slider  Grid.Column="2"  Grid.Row="0"  Style="{StaticResource SliderStyle}"  Maximum="{Binding FreqSliderMax}" Minimum="{Binding FreqSliderMin}" Value="{Binding B20FreqSliderValue}"/>
+        <Slider  Grid.Column="2"  Grid.Row="1"  Style="{StaticResource SliderStyle}"  Maximum="{Binding GainSliderMax}" Minimum="{Binding GainSliderMin}" Value="{Binding B20GainSliderValue}"/>
+        <Slider  Grid.Column="2"  Grid.Row="2"  Style="{StaticResource SliderStyle}"  Maximum="{Binding QSliderMax}" Minimum="{Binding QSliderMin}" Value="{Binding B20QSliderValue}"/>
+
+        <Entry Grid.Column="4" Grid.Row="0" Style="{StaticResource EntryStyle}"  Keyboard="Numeric" Text="{Binding B20FreqEntryValue}"  >
+          <Entry.Behaviors>
+            <b:EventToCommandBehavior EventName="Completed" Command="{Binding B20FreqEntryCompletedCommand}"/>
+          </Entry.Behaviors>
+        </Entry>
+        <Entry Grid.Column="4" Grid.Row="1" Style="{StaticResource EntryStyle}"  Keyboard="Numeric" Text="{Binding B20GainEntryValue}"  >
+          <Entry.Behaviors>
+            <behaviors:ParaBoostCutBehavior/>
+            <b:EventToCommandBehavior EventName="Completed" Command="{Binding B20GainEntryCompletedCommand}"/>
+          </Entry.Behaviors>
+        </Entry>
+        <Entry Grid.Column="4" Grid.Row="2" Style="{StaticResource EntryStyle}"  Keyboard="Numeric" Text="{Binding B20QEntryValue}"  >
+          <Entry.Behaviors>
+            <b:EventToCommandBehavior EventName="Completed" Command="{Binding B20QEntryCompletedCommand}"/>
+          </Entry.Behaviors>
+        </Entry>
+
+
+      </Grid>
+      <Grid Padding="10,0,10,0" ColumnSpacing="5">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="43"/>
+          <ColumnDefinition Width="Auto"/>
+          <ColumnDefinition Width="*"/>
+          <ColumnDefinition Width="Auto"/>
+          <ColumnDefinition Width="60"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+          <RowDefinition Height="*"/>
+          <RowDefinition Height="*"/>
+          <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Label Grid.Column="0"  Grid.Row="0"  Text="B21"  Style="{StaticResource LabelTitleStyle}" Margin="0,0,2,0" />
+        <Label Grid.Column="1"  Grid.Row="0"  Text="Freq"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="1"  Grid.Row="1"  Text="Gain"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="1"  Grid.Row="2"  Text="Q"  Style="{StaticResource LabelStyle}" />
+
+        <Label Grid.Column="4"  Grid.Row="0"  Text="Hz"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="4"  Grid.Row="1"  Text="Hz"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="4"  Grid.Row="2"  Text="Hz"  Style="{StaticResource LabelStyle}" />
+
+        <Slider  Grid.Column="2"  Grid.Row="0"  Style="{StaticResource SliderStyle}"  Maximum="{Binding FreqSliderMax}" Minimum="{Binding FreqSliderMin}" Value="{Binding B21FreqSliderValue}"/>
+        <Slider  Grid.Column="2"  Grid.Row="1"  Style="{StaticResource SliderStyle}"  Maximum="{Binding GainSliderMax}" Minimum="{Binding GainSliderMin}" Value="{Binding B21GainSliderValue}"/>
+        <Slider  Grid.Column="2"  Grid.Row="2"  Style="{StaticResource SliderStyle}"  Maximum="{Binding QSliderMax}" Minimum="{Binding QSliderMin}" Value="{Binding B21QSliderValue}"/>
+
+        <Entry Grid.Column="4" Grid.Row="0" Style="{StaticResource EntryStyle}"  Keyboard="Numeric" Text="{Binding B21FreqEntryValue}"  >
+          <Entry.Behaviors>
+            <b:EventToCommandBehavior EventName="Completed" Command="{Binding B21FreqEntryCompletedCommand}"/>
+          </Entry.Behaviors>
+        </Entry>
+        <Entry Grid.Column="4" Grid.Row="1" Style="{StaticResource EntryStyle}"  Keyboard="Numeric" Text="{Binding B21GainEntryValue}"  >
+          <Entry.Behaviors>
+            <behaviors:ParaBoostCutBehavior/>
+            <b:EventToCommandBehavior EventName="Completed" Command="{Binding B22GainEntryCompletedCommand}"/>
+          </Entry.Behaviors>
+        </Entry>
+        <Entry Grid.Column="4" Grid.Row="2" Style="{StaticResource EntryStyle}"  Keyboard="Numeric" Text="{Binding B21QEntryValue}"  >
+          <Entry.Behaviors>
+            <b:EventToCommandBehavior EventName="Completed" Command="{Binding B21QEntryCompletedCommand}"/>
+          </Entry.Behaviors>
+        </Entry>
+
+
+      </Grid>
+      <Grid Padding="10,0,10,0" ColumnSpacing="5">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="43"/>
+          <ColumnDefinition Width="Auto"/>
+          <ColumnDefinition Width="*"/>
+          <ColumnDefinition Width="Auto"/>
+          <ColumnDefinition Width="60"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+          <RowDefinition Height="*"/>
+          <RowDefinition Height="*"/>
+          <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Label Grid.Column="0"  Grid.Row="0"  Text="B22"  Style="{StaticResource LabelTitleStyle}" Margin="0,0,2,0" />
+        <Label Grid.Column="1"  Grid.Row="0"  Text="Freq"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="1"  Grid.Row="1"  Text="Gain"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="1"  Grid.Row="2"  Text="Q"  Style="{StaticResource LabelStyle}" />
+
+        <Label Grid.Column="4"  Grid.Row="0"  Text="Hz"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="4"  Grid.Row="1"  Text="Hz"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="4"  Grid.Row="2"  Text="Hz"  Style="{StaticResource LabelStyle}" />
+
+        <Slider  Grid.Column="2"  Grid.Row="0"  Style="{StaticResource SliderStyle}"  Maximum="{Binding FreqSliderMax}" Minimum="{Binding FreqSliderMin}" Value="{Binding B22FreqSliderValue}"/>
+        <Slider  Grid.Column="2"  Grid.Row="1"  Style="{StaticResource SliderStyle}"  Maximum="{Binding GainSliderMax}" Minimum="{Binding GainSliderMin}" Value="{Binding B22GainSliderValue}"/>
+        <Slider  Grid.Column="2"  Grid.Row="2"  Style="{StaticResource SliderStyle}"  Maximum="{Binding QSliderMax}" Minimum="{Binding QSliderMin}" Value="{Binding B22QSliderValue}"/>
+
+        <Entry Grid.Column="4" Grid.Row="0" Style="{StaticResource EntryStyle}"  Keyboard="Numeric" Text="{Binding B22FreqEntryValue}"  >
+          <Entry.Behaviors>
+            <b:EventToCommandBehavior EventName="Completed" Command="{Binding B22FreqEntryCompletedCommand}"/>
+          </Entry.Behaviors>
+        </Entry>
+        <Entry Grid.Column="4" Grid.Row="1" Style="{StaticResource EntryStyle}"  Keyboard="Numeric" Text="{Binding B22GainEntryValue}"  >
+          <Entry.Behaviors>
+            <behaviors:ParaBoostCutBehavior/>
+            <b:EventToCommandBehavior EventName="Completed" Command="{Binding B22GainEntryCompletedCommand}"/>
+          </Entry.Behaviors>
+        </Entry>
+        <Entry Grid.Column="4" Grid.Row="2" Style="{StaticResource EntryStyle}"  Keyboard="Numeric" Text="{Binding B22QEntryValue}"  >
+          <Entry.Behaviors>
+            <b:EventToCommandBehavior EventName="Completed" Command="{Binding B22QEntryCompletedCommand}"/>
+          </Entry.Behaviors>
+        </Entry>
+
+
+      </Grid>
+      <Grid Padding="10,0,10,0" ColumnSpacing="5">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="43"/>
+          <ColumnDefinition Width="Auto"/>
+          <ColumnDefinition Width="*"/>
+          <ColumnDefinition Width="Auto"/>
+          <ColumnDefinition Width="60"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+          <RowDefinition Height="*"/>
+          <RowDefinition Height="*"/>
+          <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Label Grid.Column="0"  Grid.Row="0"  Text="B23"  Style="{StaticResource LabelTitleStyle}" Margin="0,0,2,0" />
+        <Label Grid.Column="1"  Grid.Row="0"  Text="Freq"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="1"  Grid.Row="1"  Text="Gain"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="1"  Grid.Row="2"  Text="Q"  Style="{StaticResource LabelStyle}" />
+
+        <Label Grid.Column="4"  Grid.Row="0"  Text="Hz"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="4"  Grid.Row="1"  Text="Hz"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="4"  Grid.Row="2"  Text="Hz"  Style="{StaticResource LabelStyle}" />
+
+        <Slider  Grid.Column="2"  Grid.Row="0"  Style="{StaticResource SliderStyle}"  Maximum="{Binding FreqSliderMax}" Minimum="{Binding FreqSliderMin}" Value="{Binding B23FreqSliderValue}"/>
+        <Slider  Grid.Column="2"  Grid.Row="1"  Style="{StaticResource SliderStyle}"  Maximum="{Binding GainSliderMax}" Minimum="{Binding GainSliderMin}" Value="{Binding B23GainSliderValue}"/>
+        <Slider  Grid.Column="2"  Grid.Row="2"  Style="{StaticResource SliderStyle}"  Maximum="{Binding QSliderMax}" Minimum="{Binding QSliderMin}" Value="{Binding B23QSliderValue}"/>
+
+        <Entry Grid.Column="4" Grid.Row="0" Style="{StaticResource EntryStyle}"  Keyboard="Numeric" Text="{Binding B23FreqEntryValue}"  >
+          <Entry.Behaviors>
+            <b:EventToCommandBehavior EventName="Completed" Command="{Binding B23FreqEntryCompletedCommand}"/>
+          </Entry.Behaviors>
+        </Entry>
+        <Entry Grid.Column="4" Grid.Row="1" Style="{StaticResource EntryStyle}"  Keyboard="Numeric" Text="{Binding B23GainEntryValue}"  >
+          <Entry.Behaviors>
+            <behaviors:ParaBoostCutBehavior/>
+            <b:EventToCommandBehavior EventName="Completed" Command="{Binding B23GainEntryCompletedCommand}"/>
+          </Entry.Behaviors>
+        </Entry>
+        <Entry Grid.Column="4" Grid.Row="2" Style="{StaticResource EntryStyle}"  Keyboard="Numeric" Text="{Binding B23QEntryValue}"  >
+          <Entry.Behaviors>
+            <b:EventToCommandBehavior EventName="Completed" Command="{Binding B23QEntryCompletedCommand}"/>
+          </Entry.Behaviors>
+        </Entry>
+
+
+      </Grid>
+      <Grid Padding="10,0,10,0" ColumnSpacing="5">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="43"/>
+          <ColumnDefinition Width="Auto"/>
+          <ColumnDefinition Width="*"/>
+          <ColumnDefinition Width="Auto"/>
+          <ColumnDefinition Width="60"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+          <RowDefinition Height="*"/>
+          <RowDefinition Height="*"/>
+          <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Label Grid.Column="0"  Grid.Row="0"  Text="B24"  Style="{StaticResource LabelTitleStyle}" Margin="0,0,2,0" />
+        <Label Grid.Column="1"  Grid.Row="0"  Text="Freq"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="1"  Grid.Row="1"  Text="Gain"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="1"  Grid.Row="2"  Text="Q"  Style="{StaticResource LabelStyle}" />
+
+        <Label Grid.Column="4"  Grid.Row="0"  Text="Hz"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="4"  Grid.Row="1"  Text="Hz"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="4"  Grid.Row="2"  Text="Hz"  Style="{StaticResource LabelStyle}" />
+
+        <Slider  Grid.Column="2"  Grid.Row="0"  Style="{StaticResource SliderStyle}"  Maximum="{Binding FreqSliderMax}" Minimum="{Binding FreqSliderMin}" Value="{Binding B24FreqSliderValue}"/>
+        <Slider  Grid.Column="2"  Grid.Row="1"  Style="{StaticResource SliderStyle}"  Maximum="{Binding GainSliderMax}" Minimum="{Binding GainSliderMin}" Value="{Binding B24GainSliderValue}"/>
+        <Slider  Grid.Column="2"  Grid.Row="2"  Style="{StaticResource SliderStyle}"  Maximum="{Binding QSliderMax}" Minimum="{Binding QSliderMin}" Value="{Binding B24QSliderValue}"/>
+
+        <Entry Grid.Column="4" Grid.Row="0" Style="{StaticResource EntryStyle}"  Keyboard="Numeric" Text="{Binding B24FreqEntryValue}"  >
+          <Entry.Behaviors>
+            <b:EventToCommandBehavior EventName="Completed" Command="{Binding B24FreqEntryCompletedCommand}"/>
+          </Entry.Behaviors>
+        </Entry>
+        <Entry Grid.Column="4" Grid.Row="1" Style="{StaticResource EntryStyle}"  Keyboard="Numeric" Text="{Binding B24GainEntryValue}"  >
+          <Entry.Behaviors>
+            <behaviors:ParaBoostCutBehavior/>
+            <b:EventToCommandBehavior EventName="Completed" Command="{Binding B24GainEntryCompletedCommand}"/>
+          </Entry.Behaviors>
+        </Entry>
+        <Entry Grid.Column="4" Grid.Row="2" Style="{StaticResource EntryStyle}"  Keyboard="Numeric" Text="{Binding B24QEntryValue}"  >
+          <Entry.Behaviors>
+            <b:EventToCommandBehavior EventName="Completed" Command="{Binding B24QEntryCompletedCommand}"/>
+          </Entry.Behaviors>
+        </Entry>
+
+
+      </Grid>
+      <Grid Padding="10,0,10,0" ColumnSpacing="5">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="43"/>
+          <ColumnDefinition Width="Auto"/>
+          <ColumnDefinition Width="*"/>
+          <ColumnDefinition Width="Auto"/>
+          <ColumnDefinition Width="60"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+          <RowDefinition Height="*"/>
+          <RowDefinition Height="*"/>
+          <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Label Grid.Column="0"  Grid.Row="0"  Text="B25"  Style="{StaticResource LabelTitleStyle}" Margin="0,0,2,0" />
+        <Label Grid.Column="1"  Grid.Row="0"  Text="Freq"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="1"  Grid.Row="1"  Text="Gain"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="1"  Grid.Row="2"  Text="Q"  Style="{StaticResource LabelStyle}" />
+
+        <Label Grid.Column="4"  Grid.Row="0"  Text="Hz"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="4"  Grid.Row="1"  Text="Hz"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="4"  Grid.Row="2"  Text="Hz"  Style="{StaticResource LabelStyle}" />
+
+        <Slider  Grid.Column="2"  Grid.Row="0"  Style="{StaticResource SliderStyle}"  Maximum="{Binding FreqSliderMax}" Minimum="{Binding FreqSliderMin}" Value="{Binding B25FreqSliderValue}"/>
+        <Slider  Grid.Column="2"  Grid.Row="1"  Style="{StaticResource SliderStyle}"  Maximum="{Binding GainSliderMax}" Minimum="{Binding GainSliderMin}" Value="{Binding B25GainSliderValue}"/>
+        <Slider  Grid.Column="2"  Grid.Row="2"  Style="{StaticResource SliderStyle}"  Maximum="{Binding QSliderMax}" Minimum="{Binding QSliderMin}" Value="{Binding B25QSliderValue}"/>
+
+        <Entry Grid.Column="4" Grid.Row="0" Style="{StaticResource EntryStyle}"  Keyboard="Numeric" Text="{Binding B25FreqEntryValue}"  >
+          <Entry.Behaviors>
+            <b:EventToCommandBehavior EventName="Completed" Command="{Binding B25FreqEntryCompletedCommand}"/>
+          </Entry.Behaviors>
+        </Entry>
+        <Entry Grid.Column="4" Grid.Row="1" Style="{StaticResource EntryStyle}"  Keyboard="Numeric" Text="{Binding B25GainEntryValue}"  >
+          <Entry.Behaviors>
+            <behaviors:ParaBoostCutBehavior/>
+            <b:EventToCommandBehavior EventName="Completed" Command="{Binding B25GainEntryCompletedCommand}"/>
+          </Entry.Behaviors>
+        </Entry>
+        <Entry Grid.Column="4" Grid.Row="2" Style="{StaticResource EntryStyle}"  Keyboard="Numeric" Text="{Binding B25QEntryValue}"  >
+          <Entry.Behaviors>
+            <b:EventToCommandBehavior EventName="Completed" Command="{Binding B25QEntryCompletedCommand}"/>
+          </Entry.Behaviors>
+        </Entry>
+
+
+      </Grid>
+      <Grid Padding="10,0,10,0" ColumnSpacing="5">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="43"/>
+          <ColumnDefinition Width="Auto"/>
+          <ColumnDefinition Width="*"/>
+          <ColumnDefinition Width="Auto"/>
+          <ColumnDefinition Width="60"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+          <RowDefinition Height="*"/>
+          <RowDefinition Height="*"/>
+          <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Label Grid.Column="0"  Grid.Row="0"  Text="B26"  Style="{StaticResource LabelTitleStyle}" Margin="0,0,2,0" />
+        <Label Grid.Column="1"  Grid.Row="0"  Text="Freq"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="1"  Grid.Row="1"  Text="Gain"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="1"  Grid.Row="2"  Text="Q"  Style="{StaticResource LabelStyle}" />
+
+        <Label Grid.Column="4"  Grid.Row="0"  Text="Hz"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="4"  Grid.Row="1"  Text="Hz"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="4"  Grid.Row="2"  Text="Hz"  Style="{StaticResource LabelStyle}" />
+
+        <Slider  Grid.Column="2"  Grid.Row="0"  Style="{StaticResource SliderStyle}"  Maximum="{Binding FreqSliderMax}" Minimum="{Binding FreqSliderMin}" Value="{Binding B26FreqSliderValue}"/>
+        <Slider  Grid.Column="2"  Grid.Row="1"  Style="{StaticResource SliderStyle}"  Maximum="{Binding GainSliderMax}" Minimum="{Binding GainSliderMin}" Value="{Binding B26GainSliderValue}"/>
+        <Slider  Grid.Column="2"  Grid.Row="2"  Style="{StaticResource SliderStyle}"  Maximum="{Binding QSliderMax}" Minimum="{Binding QSliderMin}" Value="{Binding B26QSliderValue}"/>
+
+        <Entry Grid.Column="4" Grid.Row="0" Style="{StaticResource EntryStyle}"  Keyboard="Numeric" Text="{Binding B26FreqEntryValue}"  >
+          <Entry.Behaviors>
+            <b:EventToCommandBehavior EventName="Completed" Command="{Binding B26FreqEntryCompletedCommand}"/>
+          </Entry.Behaviors>
+        </Entry>
+        <Entry Grid.Column="4" Grid.Row="1" Style="{StaticResource EntryStyle}"  Keyboard="Numeric" Text="{Binding B26GainEntryValue}"  >
+          <Entry.Behaviors>
+            <behaviors:ParaBoostCutBehavior/>
+            <b:EventToCommandBehavior EventName="Completed" Command="{Binding B26GainEntryCompletedCommand}"/>
+          </Entry.Behaviors>
+        </Entry>
+        <Entry Grid.Column="4" Grid.Row="2" Style="{StaticResource EntryStyle}"  Keyboard="Numeric" Text="{Binding B26QEntryValue}"  >
+          <Entry.Behaviors>
+            <b:EventToCommandBehavior EventName="Completed" Command="{Binding B26QEntryCompletedCommand}"/>
+          </Entry.Behaviors>
+        </Entry>
+
+
+      </Grid>
+      <Grid Padding="10,0,10,0" ColumnSpacing="5">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="43"/>
+          <ColumnDefinition Width="Auto"/>
+          <ColumnDefinition Width="*"/>
+          <ColumnDefinition Width="Auto"/>
+          <ColumnDefinition Width="60"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+          <RowDefinition Height="*"/>
+          <RowDefinition Height="*"/>
+          <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Label Grid.Column="0"  Grid.Row="0"  Text="B27"  Style="{StaticResource LabelTitleStyle}" Margin="0,0,2,0" />
+        <Label Grid.Column="1"  Grid.Row="0"  Text="Freq"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="1"  Grid.Row="1"  Text="Gain"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="1"  Grid.Row="2"  Text="Q"  Style="{StaticResource LabelStyle}" />
+
+        <Label Grid.Column="4"  Grid.Row="0"  Text="Hz"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="4"  Grid.Row="1"  Text="Hz"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="4"  Grid.Row="2"  Text="Hz"  Style="{StaticResource LabelStyle}" />
+
+        <Slider  Grid.Column="2"  Grid.Row="0"  Style="{StaticResource SliderStyle}"  Maximum="{Binding FreqSliderMax}" Minimum="{Binding FreqSliderMin}" Value="{Binding B27FreqSliderValue}"/>
+        <Slider  Grid.Column="2"  Grid.Row="1"  Style="{StaticResource SliderStyle}"  Maximum="{Binding GainSliderMax}" Minimum="{Binding GainSliderMin}" Value="{Binding B27GainSliderValue}"/>
+        <Slider  Grid.Column="2"  Grid.Row="2"  Style="{StaticResource SliderStyle}"  Maximum="{Binding QSliderMax}" Minimum="{Binding QSliderMin}" Value="{Binding B27QSliderValue}"/>
+
+        <Entry Grid.Column="4" Grid.Row="0" Style="{StaticResource EntryStyle}"  Keyboard="Numeric" Text="{Binding B27FreqEntryValue}"  >
+          <Entry.Behaviors>
+            <b:EventToCommandBehavior EventName="Completed" Command="{Binding B27FreqEntryCompletedCommand}"/>
+          </Entry.Behaviors>
+        </Entry>
+        <Entry Grid.Column="4" Grid.Row="1" Style="{StaticResource EntryStyle}"  Keyboard="Numeric" Text="{Binding B27GainEntryValue}"  >
+          <Entry.Behaviors>
+            <behaviors:ParaBoostCutBehavior/>
+            <b:EventToCommandBehavior EventName="Completed" Command="{Binding B27GainEntryCompletedCommand}"/>
+          </Entry.Behaviors>
+        </Entry>
+        <Entry Grid.Column="4" Grid.Row="2" Style="{StaticResource EntryStyle}"  Keyboard="Numeric" Text="{Binding B27QEntryValue}"  >
+          <Entry.Behaviors>
+            <b:EventToCommandBehavior EventName="Completed" Command="{Binding B27QEntryCompletedCommand}"/>
+          </Entry.Behaviors>
+        </Entry>
+
+
+      </Grid>
+      <Grid Padding="10,0,10,0" ColumnSpacing="5">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="43"/>
+          <ColumnDefinition Width="Auto"/>
+          <ColumnDefinition Width="*"/>
+          <ColumnDefinition Width="Auto"/>
+          <ColumnDefinition Width="60"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+          <RowDefinition Height="*"/>
+          <RowDefinition Height="*"/>
+          <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Label Grid.Column="0"  Grid.Row="0"  Text="B28"  Style="{StaticResource LabelTitleStyle}" Margin="0,0,2,0" />
+        <Label Grid.Column="1"  Grid.Row="0"  Text="Freq"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="1"  Grid.Row="1"  Text="Gain"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="1"  Grid.Row="2"  Text="Q"  Style="{StaticResource LabelStyle}" />
+
+        <Label Grid.Column="4"  Grid.Row="0"  Text="Hz"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="4"  Grid.Row="1"  Text="Hz"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="4"  Grid.Row="2"  Text="Hz"  Style="{StaticResource LabelStyle}" />
+
+        <Slider  Grid.Column="2"  Grid.Row="0"  Style="{StaticResource SliderStyle}"  Maximum="{Binding FreqSliderMax}" Minimum="{Binding FreqSliderMin}" Value="{Binding B28FreqSliderValue}"/>
+        <Slider  Grid.Column="2"  Grid.Row="1"  Style="{StaticResource SliderStyle}"  Maximum="{Binding GainSliderMax}" Minimum="{Binding GainSliderMin}" Value="{Binding B28GainSliderValue}"/>
+        <Slider  Grid.Column="2"  Grid.Row="2"  Style="{StaticResource SliderStyle}"  Maximum="{Binding QSliderMax}" Minimum="{Binding QSliderMin}" Value="{Binding B28QSliderValue}"/>
+
+        <Entry Grid.Column="4" Grid.Row="0" Style="{StaticResource EntryStyle}"  Keyboard="Numeric" Text="{Binding B28FreqEntryValue}"  >
+          <Entry.Behaviors>
+            <b:EventToCommandBehavior EventName="Completed" Command="{Binding B28FreqEntryCompletedCommand}"/>
+          </Entry.Behaviors>
+        </Entry>
+        <Entry Grid.Column="4" Grid.Row="1" Style="{StaticResource EntryStyle}"  Keyboard="Numeric" Text="{Binding B28GainEntryValue}"  >
+          <Entry.Behaviors>
+            <behaviors:ParaBoostCutBehavior/>
+            <b:EventToCommandBehavior EventName="Completed" Command="{Binding B28GainEntryCompletedCommand}"/>
+          </Entry.Behaviors>
+        </Entry>
+        <Entry Grid.Column="4" Grid.Row="2" Style="{StaticResource EntryStyle}"  Keyboard="Numeric" Text="{Binding B28QEntryValue}"  >
+          <Entry.Behaviors>
+            <b:EventToCommandBehavior EventName="Completed" Command="{Binding B28QEntryCompletedCommand}"/>
+          </Entry.Behaviors>
+        </Entry>
+
+
+      </Grid>
+      <Grid Padding="10,0,10,0" ColumnSpacing="5">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="43"/>
+          <ColumnDefinition Width="Auto"/>
+          <ColumnDefinition Width="*"/>
+          <ColumnDefinition Width="Auto"/>
+          <ColumnDefinition Width="60"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+          <RowDefinition Height="*"/>
+          <RowDefinition Height="*"/>
+          <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Label Grid.Column="0"  Grid.Row="0"  Text="B29"  Style="{StaticResource LabelTitleStyle}" Margin="0,0,2,0" />
+        <Label Grid.Column="1"  Grid.Row="0"  Text="Freq"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="1"  Grid.Row="1"  Text="Gain"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="1"  Grid.Row="2"  Text="Q"  Style="{StaticResource LabelStyle}" />
+
+        <Label Grid.Column="4"  Grid.Row="0"  Text="Hz"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="4"  Grid.Row="1"  Text="Hz"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="4"  Grid.Row="2"  Text="Hz"  Style="{StaticResource LabelStyle}" />
+
+        <Slider  Grid.Column="2"  Grid.Row="0"  Style="{StaticResource SliderStyle}"  Maximum="{Binding FreqSliderMax}" Minimum="{Binding FreqSliderMin}" Value="{Binding B29FreqSliderValue}"/>
+        <Slider  Grid.Column="2"  Grid.Row="1"  Style="{StaticResource SliderStyle}"  Maximum="{Binding GainSliderMax}" Minimum="{Binding GainSliderMin}" Value="{Binding B29GainSliderValue}"/>
+        <Slider  Grid.Column="2"  Grid.Row="2"  Style="{StaticResource SliderStyle}"  Maximum="{Binding QSliderMax}" Minimum="{Binding QSliderMin}" Value="{Binding B29QSliderValue}"/>
+
+        <Entry Grid.Column="4" Grid.Row="0" Style="{StaticResource EntryStyle}"  Keyboard="Numeric" Text="{Binding B29FreqEntryValue}"  >
+          <Entry.Behaviors>
+            <b:EventToCommandBehavior EventName="Completed" Command="{Binding B29FreqEntryCompletedCommand}"/>
+          </Entry.Behaviors>
+        </Entry>
+        <Entry Grid.Column="4" Grid.Row="1" Style="{StaticResource EntryStyle}"  Keyboard="Numeric" Text="{Binding B29GainEntryValue}"  >
+          <Entry.Behaviors>
+            <behaviors:ParaBoostCutBehavior/>
+            <b:EventToCommandBehavior EventName="Completed" Command="{Binding B29GainEntryCompletedCommand}"/>
+          </Entry.Behaviors>
+        </Entry>
+        <Entry Grid.Column="4" Grid.Row="2" Style="{StaticResource EntryStyle}"  Keyboard="Numeric" Text="{Binding B29QEntryValue}"  >
+          <Entry.Behaviors>
+            <b:EventToCommandBehavior EventName="Completed" Command="{Binding B29QEntryCompletedCommand}"/>
+          </Entry.Behaviors>
+        </Entry>
+
+
+      </Grid>
+      <Grid Padding="10,0,10,0" ColumnSpacing="5">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="43"/>
+          <ColumnDefinition Width="Auto"/>
+          <ColumnDefinition Width="*"/>
+          <ColumnDefinition Width="Auto"/>
+          <ColumnDefinition Width="60"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+          <RowDefinition Height="*"/>
+          <RowDefinition Height="*"/>
+          <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Label Grid.Column="0"  Grid.Row="0"  Text="B30"  Style="{StaticResource LabelTitleStyle}" Margin="0,0,2,0" />
+        <Label Grid.Column="1"  Grid.Row="0"  Text="Freq"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="1"  Grid.Row="1"  Text="Gain"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="1"  Grid.Row="2"  Text="Q"  Style="{StaticResource LabelStyle}" />
+
+        <Label Grid.Column="4"  Grid.Row="0"  Text="Hz"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="4"  Grid.Row="1"  Text="Hz"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="4"  Grid.Row="2"  Text="Hz"  Style="{StaticResource LabelStyle}" />
+
+        <Slider  Grid.Column="2"  Grid.Row="0"  Style="{StaticResource SliderStyle}"  Maximum="{Binding FreqSliderMax}" Minimum="{Binding FreqSliderMin}" Value="{Binding B30FreqSliderValue}"/>
+        <Slider  Grid.Column="2"  Grid.Row="1"  Style="{StaticResource SliderStyle}"  Maximum="{Binding GainSliderMax}" Minimum="{Binding GainSliderMin}" Value="{Binding B30GainSliderValue}"/>
+        <Slider  Grid.Column="2"  Grid.Row="2"  Style="{StaticResource SliderStyle}"  Maximum="{Binding QSliderMax}" Minimum="{Binding QSliderMin}" Value="{Binding B30QSliderValue}"/>
+
+        <Entry Grid.Column="4" Grid.Row="0" Style="{StaticResource EntryStyle}"  Keyboard="Numeric" Text="{Binding B30FreqEntryValue}"  >
+          <Entry.Behaviors>
+            <b:EventToCommandBehavior EventName="Completed" Command="{Binding B30FreqEntryCompletedCommand}"/>
+          </Entry.Behaviors>
+        </Entry>
+        <Entry Grid.Column="4" Grid.Row="1" Style="{StaticResource EntryStyle}"  Keyboard="Numeric" Text="{Binding B30GainEntryValue}"  >
+          <Entry.Behaviors>
+            <behaviors:ParaBoostCutBehavior/>
+            <b:EventToCommandBehavior EventName="Completed" Command="{Binding B30GainEntryCompletedCommand}"/>
+          </Entry.Behaviors>
+        </Entry>
+        <Entry Grid.Column="4" Grid.Row="2" Style="{StaticResource EntryStyle}"  Keyboard="Numeric" Text="{Binding B30QEntryValue}"  >
+          <Entry.Behaviors>
+            <b:EventToCommandBehavior EventName="Completed" Command="{Binding B30QEntryCompletedCommand}"/>
+          </Entry.Behaviors>
+        </Entry>
+
+
+      </Grid>
+      <Grid Padding="10,0,10,0" ColumnSpacing="5">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="43"/>
+          <ColumnDefinition Width="Auto"/>
+          <ColumnDefinition Width="*"/>
+          <ColumnDefinition Width="Auto"/>
+          <ColumnDefinition Width="60"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+          <RowDefinition Height="*"/>
+          <RowDefinition Height="*"/>
+          <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Label Grid.Column="0"  Grid.Row="0"  Text="B31"  Style="{StaticResource LabelTitleStyle}" Margin="0,0,2,0" />
+        <Label Grid.Column="1"  Grid.Row="0"  Text="Freq"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="1"  Grid.Row="1"  Text="Gain"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="1"  Grid.Row="2"  Text="Q"  Style="{StaticResource LabelStyle}" />
+
+        <Label Grid.Column="4"  Grid.Row="0"  Text="Hz"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="4"  Grid.Row="1"  Text="Hz"  Style="{StaticResource LabelStyle}" />
+        <Label Grid.Column="4"  Grid.Row="2"  Text="Hz"  Style="{StaticResource LabelStyle}" />
+
+        <Slider  Grid.Column="2"  Grid.Row="0"  Style="{StaticResource SliderStyle}"  Maximum="{Binding FreqSliderMax}" Minimum="{Binding FreqSliderMin}" Value="{Binding B31FreqSliderValue}"/>
+        <Slider  Grid.Column="2"  Grid.Row="1"  Style="{StaticResource SliderStyle}"  Maximum="{Binding GainSliderMax}" Minimum="{Binding GainSliderMin}" Value="{Binding B31GainSliderValue}"/>
+        <Slider  Grid.Column="2"  Grid.Row="2"  Style="{StaticResource SliderStyle}"  Maximum="{Binding QSliderMax}" Minimum="{Binding QSliderMin}" Value="{Binding B31QSliderValue}"/>
+
+        <Entry Grid.Column="4" Grid.Row="0" Style="{StaticResource EntryStyle}"  Keyboard="Numeric" Text="{Binding B31FreqEntryValue}"  >
+          <Entry.Behaviors>
+            <b:EventToCommandBehavior EventName="Completed" Command="{Binding B31FreqEntryCompletedCommand}"/>
+          </Entry.Behaviors>
+        </Entry>
+        <Entry Grid.Column="4" Grid.Row="1" Style="{StaticResource EntryStyle}"  Keyboard="Numeric" Text="{Binding B31GainEntryValue}"  >
+          <Entry.Behaviors>
+            <behaviors:ParaBoostCutBehavior/>
+            <b:EventToCommandBehavior EventName="Completed" Command="{Binding B31GainEntryCompletedCommand}"/>
+          </Entry.Behaviors>
+        </Entry>
+        <Entry Grid.Column="4" Grid.Row="2" Style="{StaticResource EntryStyle}"  Keyboard="Numeric" Text="{Binding B31QEntryValue}"  >
+          <Entry.Behaviors>
+            <b:EventToCommandBehavior EventName="Completed" Command="{Binding B31QEntryCompletedCommand}"/>
+          </Entry.Behaviors>
+        </Entry>
+
+
+      </Grid>
+      <ActivityIndicator IsVisible="{Binding ActivityIsLoading}" IsRunning="{Binding ActivityIsLoading}" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" />
+
+    </StackLayout>
+  </ScrollView>
+
+</ContentPage>

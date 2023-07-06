@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:prism="clr-namespace:Prism.Mvvm;assembly=Prism.Forms"
+             xmlns:b="clr-namespace:Prism.Behaviors;assembly=Prism.Forms"
+             prism:ViewModelLocator.AutowireViewModel="True"
+             x:Class="K2p.Views.SettingsPage" 
+             Style="{StaticResource PageTitleStyle}" 
+             Title="Settings">
+    <ContentPage.Content>
+        <StackLayout HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" >
+            <StackLayout Orientation="Horizontal" HorizontalOptions="CenterAndExpand" >
+                <Label Text="Preset 1" Style="{StaticResource ButtonStyle}"/>
+                <Switch IsToggled="{Binding PresetIsActive1}"/>
+            </StackLayout>
+            <StackLayout Orientation="Horizontal" HorizontalOptions="CenterAndExpand" >
+                <Label Text="Preset 2" Style="{StaticResource ButtonStyle}"/>
+                <Switch IsToggled="{Binding PresetIsActive2}"/>
+            </StackLayout>
+            <StackLayout Orientation="Horizontal" HorizontalOptions="CenterAndExpand" >
+                <Label Text="Preset 3" Style="{StaticResource ButtonStyle}"/>
+                <Switch IsToggled="{Binding PresetIsActive3}"/>
+            </StackLayout>
+            <StackLayout Orientation="Horizontal" HorizontalOptions="CenterAndExpand" >
+                <Label Text="Preset 4" Style="{StaticResource ButtonStyle}"/>
+                <Switch IsToggled="{Binding PresetIsActive4}"/>
+            </StackLayout>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

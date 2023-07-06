@@ -1,0 +1,58 @@
+﻿Use Chrome Remote Desktop
+or connect with the MHL on the right monitor.
+To reconnect to the Motorola keyboard, hold the power button on the keyboard
+Pin is 585858
+PW is !Ha...Bo####
+ssh is Robert Zeff, !Harley.Bone
+
+Developer !Harley58  Now working for iTunes?
+
+Xamarin add apple account rzeff@nikola.com, !Harley58
+Apple ID is rzeffzzzz2nikola.com
+
+Update pw !Harley.Bone
+
+Open "Mac Pairing" from the toolbar
+
+Can use https://remotedesktop.google.com/access/ for remote access
+
+
+
+https://developer.apple.com/ !Harley5858
+
+
+93M5ZCQUCK.com.nikola.*
+https://developer.apple.com/services-account/QH65B2/account/ios/profile/downloadProfileContent?teamId=93M5ZCQUCK&provisioningProfileId=PKV7Z5RV52
+
+https://itunesconnect.apple.com/login
+
+Keychain password ??
+
+Bundle is case sensitive
+
+
+In Visual Studio for OSX, go to Visual Studio Community > Preferences > Publishing > Apple Developer Account and click to + button to sign in and add your developer account.
+In theory after that automatic provisioning should work.
+
+In Visual Studio for Windows, go to Tools > Options > Xamarin > Apple Accounts, you will get a prompt to install FastLane
+before your Apple ID will show up under Automatic Provisioning.
+
+Fastlane:
+https://www.youtube.com/watch?v=bamEXKLRFd4
+
+Production:
+https://www.youtube.com/watch?v=Dy-l5Tv1UZE
+
+https://developer.apple.com/videos/play/app-store-connect/101/
+
+TestFlight:
+https://developer.apple.com/testflight/
+Video:
+https://www.youtube.com/watch?v=-QEnDYLv45o&t=90s
+
+
+App specific PW is lzik-nhuh-baza-ubnh
+
+git:
+rz@nikola.com
+!Harley.Bone58

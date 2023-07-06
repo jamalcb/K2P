@@ -1,0 +1,553 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:prism="clr-namespace:Prism.Mvvm;assembly=Prism.Forms"
+             xmlns:b="clr-namespace:Prism.Behaviors;assembly=Prism.Forms"
+             prism:ViewModelLocator.AutowireViewModel="True"
+             Style="{StaticResource PageTitleStyle}" 
+             x:Class="K2p.Views.LimitersPage" Title ="Limiters" >
+
+    <ScrollView>
+        <StackLayout HorizontalOptions="CenterAndExpand" VerticalOptions="StartAndExpand" Padding="5,10,0,0">
+
+            <!--   #region Channel 1 -->
+            <Label Text="Channel 1" Style="{StaticResource LabelTitleStyle}" />
+            <Grid Padding="10,0,10,0" ColumnSpacing="5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="70"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="50"/>
+                    <ColumnDefinition Width="40"/>
+                </Grid.ColumnDefinitions>
+                <Label Grid.Column="0" Style="{StaticResource LabelStyle}"  Text="Attack"   />
+                <Slider Style="{StaticResource SliderStyle}"  Grid.Column="1"  Maximum="1000" Minimum="1" Value="{Binding Ch1AttackSliderValue}"/>
+                <Entry Style="{StaticResource EntryStyle}" Grid.Column="2" Keyboard="Numeric" Text="{Binding Ch1AttackEntryValue}"  >
+                    <Entry.Behaviors>
+                        <b:EventToCommandBehavior EventName="Completed" Command="{Binding Ch1AttackEntryCompletedCommand}"/>
+                    </Entry.Behaviors>
+                </Entry>
+                <Label Grid.Column="3" Style="{StaticResource LabelStyle}"   Text="dB/S"/>
+            </Grid>
+            <Grid Padding="10,0,10,0" ColumnSpacing="5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="70"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="50"/>
+                    <ColumnDefinition Width="40"/>
+                </Grid.ColumnDefinitions>
+                <Label Grid.Column="0" Style="{StaticResource LabelStyle}"  Text="Decay"   />
+                <Slider Style="{StaticResource SliderStyle}"  Grid.Column="1"  Maximum="23" Minimum="5" Value="{Binding Ch1DecaySliderValue}"/>
+                <Entry Style="{StaticResource EntryStyle}" Grid.Column="2" Keyboard="Numeric" Text="{Binding Ch1DecayEntryValue}"  >
+                    <Entry.Behaviors>
+                        <b:EventToCommandBehavior EventName="Completed" Command="{Binding Ch1DecayEntryCompletedCommand}"/>
+                    </Entry.Behaviors>
+                </Entry>
+                <Label Grid.Column="3" Style="{StaticResource LabelStyle}"   Text="dB/S"/>
+            </Grid>
+            <Grid Padding="10,0,10,0" ColumnSpacing="5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="70"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="50"/>
+                    <ColumnDefinition Width="40"/>
+                </Grid.ColumnDefinitions>
+                <Label Grid.Column="0" Style="{StaticResource LabelStyle}"  Text="Thresh"  />
+                <Slider Style="{StaticResource SliderStyle}"  Grid.Column="1" Maximum="{Binding ThresholdMax}" Minimum="{Binding ThresholdMin}" Value="{Binding Ch1ThresholdSliderValue}"/>
+                <Entry Style="{StaticResource EntryStyle}" Grid.Column="2" Keyboard="Numeric" Text="{Binding Ch1ThresholdEntryValue}"  >
+                    <Entry.Behaviors>
+                        <b:EventToCommandBehavior EventName="Completed" Command="{Binding Ch1ThresholdEntryCompletedCommand}"/>
+                    </Entry.Behaviors>
+                </Entry>
+                <Label Grid.Column="3" Style="{StaticResource LabelStyle}"   Text="dB"/>
+            </Grid>
+            <Grid Padding="10,0,10,0" ColumnSpacing="5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="70"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="50"/>
+                    <ColumnDefinition Width="40"/>
+                </Grid.ColumnDefinitions>
+                <Label Grid.Column="0" Style="{StaticResource LabelStyle}"  Text="Clipping"  />
+                <Slider Style="{StaticResource SliderStyle}"  Grid.Column="1"  Maximum="100" Minimum="20" Value="{Binding Ch1ClippingSliderValue}"/>
+                <Entry Style="{StaticResource EntryStyle}" Grid.Column="2" Keyboard="Numeric" Text="{Binding Ch1ClippingEntryValue}"  >
+                    <Entry.Behaviors>
+                        <b:EventToCommandBehavior EventName="Completed" Command="{Binding Ch1ClippingEntryCompletedCommand}"/>
+                    </Entry.Behaviors>
+                </Entry>
+                <Label Grid.Column="3" Style="{StaticResource LabelStyle}"   Text="%"/>
+            </Grid>
+            <!--   #endregion Channel 1 -->
+            <!--   #region Channel 2 -->
+            <Label Text="Channel 2" Style="{StaticResource LabelTitleStyle}"/>
+            <Grid Padding="10,0,10,0" ColumnSpacing="5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="70"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="50"/>
+                    <ColumnDefinition Width="40"/>
+                </Grid.ColumnDefinitions>
+                <Label Grid.Column="0" Style="{StaticResource LabelStyle}"  Text="Attack"   />
+                <Slider Style="{StaticResource SliderStyle}"  Grid.Column="1"  Maximum="1000" Minimum="1" Value="{Binding Ch2AttackSliderValue}"/>
+                <Entry Style="{StaticResource EntryStyle}" Grid.Column="2" Keyboard="Numeric" Text="{Binding Ch2AttackEntryValue}"  >
+                    <Entry.Behaviors>
+                        <b:EventToCommandBehavior EventName="Completed" Command="{Binding Ch2AttackEntryCompletedCommand}"/>
+                    </Entry.Behaviors>
+                </Entry>
+                <Label Grid.Column="3" Style="{StaticResource LabelStyle}"   Text="dB/S"/>
+            </Grid>
+            <Grid Padding="10,0,10,0" ColumnSpacing="5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="70"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="50"/>
+                    <ColumnDefinition Width="40"/>
+                </Grid.ColumnDefinitions>
+                <Label Grid.Column="0" Style="{StaticResource LabelStyle}"  Text="Decay"   />
+                <Slider Style="{StaticResource SliderStyle}"  Grid.Column="1"  Maximum="23" Minimum="5" Value="{Binding Ch2DecaySliderValue}"/>
+                <Entry Style="{StaticResource EntryStyle}" Grid.Column="2" Keyboard="Numeric" Text="{Binding Ch2DecayEntryValue}"  >
+                    <Entry.Behaviors>
+                        <b:EventToCommandBehavior EventName="Completed" Command="{Binding Ch2DecayEntryCompletedCommand}"/>
+                    </Entry.Behaviors>
+                </Entry>
+                <Label Grid.Column="3" Style="{StaticResource LabelStyle}"   Text="dB/S"/>
+            </Grid>
+            <Grid Padding="10,0,10,0" ColumnSpacing="5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="70"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="50"/>
+                    <ColumnDefinition Width="40"/>
+                </Grid.ColumnDefinitions>
+                <Label Grid.Column="0" Style="{StaticResource LabelStyle}"  Text="Thresh"  />
+                <Slider Style="{StaticResource SliderStyle}"  Grid.Column="1" Maximum="{Binding ThresholdMax}" Minimum="{Binding ThresholdMin}" Value="{Binding Ch2ThresholdSliderValue}"/>
+                <Entry Style="{StaticResource EntryStyle}" Grid.Column="2" Keyboard="Numeric" Text="{Binding Ch2ThresholdEntryValue}"  >
+                    <Entry.Behaviors>
+                        <b:EventToCommandBehavior EventName="Completed" Command="{Binding Ch2ThresholdEntryCompletedCommand}"/>
+                    </Entry.Behaviors>
+                </Entry>
+                <Label Grid.Column="3" Style="{StaticResource LabelStyle}"   Text="dB"/>
+            </Grid>
+            <Grid Padding="10,0,10,0" ColumnSpacing="5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="70"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="50"/>
+                    <ColumnDefinition Width="40"/>
+                </Grid.ColumnDefinitions>
+                <Label Grid.Column="0" Style="{StaticResource LabelStyle}"  Text="Clipping"  />
+                <Slider Style="{StaticResource SliderStyle}"  Grid.Column="1"  Maximum="100" Minimum="20" Value="{Binding Ch2ClippingSliderValue}"/>
+                <Entry Style="{StaticResource EntryStyle}" Grid.Column="2" Keyboard="Numeric" Text="{Binding Ch2ClippingEntryValue}"  >
+                    <Entry.Behaviors>
+                        <b:EventToCommandBehavior EventName="Completed" Command="{Binding Ch2ClippingEntryCompletedCommand}"/>
+                    </Entry.Behaviors>
+                </Entry>
+                <Label Grid.Column="3" Style="{StaticResource LabelStyle}"   Text="%"/>
+            </Grid>
+            <!--   #endregion Channel 2 -->
+            <!--   #region Channel 3 -->
+            <Label Text="Channel 3" Style="{StaticResource LabelTitleStyle}"/>
+            <Grid Padding="10,0,10,0" ColumnSpacing="5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="70"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="50"/>
+                    <ColumnDefinition Width="40"/>
+                </Grid.ColumnDefinitions>
+                <Label Grid.Column="0" Style="{StaticResource LabelStyle}"  Text="Attack"   />
+                <Slider Style="{StaticResource SliderStyle}"  Grid.Column="1"  Maximum="1000" Minimum="1" Value="{Binding Ch3AttackSliderValue}"/>
+                <Entry Style="{StaticResource EntryStyle}" Grid.Column="2" Keyboard="Numeric" Text="{Binding Ch3AttackEntryValue}"  >
+                    <Entry.Behaviors>
+                        <b:EventToCommandBehavior EventName="Completed" Command="{Binding Ch3AttackEntryCompletedCommand}"/>
+                    </Entry.Behaviors>
+                </Entry>
+                <Label Grid.Column="3" Style="{StaticResource LabelStyle}"   Text="dB/S"/>
+            </Grid>
+            <Grid Padding="10,0,10,0" ColumnSpacing="5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="70"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="50"/>
+                    <ColumnDefinition Width="40"/>
+                </Grid.ColumnDefinitions>
+                <Label Grid.Column="0" Style="{StaticResource LabelStyle}"  Text="Decay"   />
+                <Slider Style="{StaticResource SliderStyle}"  Grid.Column="1"  Maximum="23" Minimum="5" Value="{Binding Ch3DecaySliderValue}"/>
+                <Entry Style="{StaticResource EntryStyle}" Grid.Column="2" Keyboard="Numeric" Text="{Binding Ch3DecayEntryValue}"  >
+                    <Entry.Behaviors>
+                        <b:EventToCommandBehavior EventName="Completed" Command="{Binding Ch3DecayEntryCompletedCommand}"/>
+                    </Entry.Behaviors>
+                </Entry>
+                <Label Grid.Column="3" Style="{StaticResource LabelStyle}"   Text="dB/S"/>
+            </Grid>
+            <Grid Padding="10,0,10,0" ColumnSpacing="5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="70"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="50"/>
+                    <ColumnDefinition Width="40"/>
+                </Grid.ColumnDefinitions>
+                <Label Grid.Column="0" Style="{StaticResource LabelStyle}"  Text="Thresh"  />
+                <Slider Style="{StaticResource SliderStyle}"  Grid.Column="1" Maximum="{Binding ThresholdMax}" Minimum="{Binding ThresholdMin}" Value="{Binding Ch3ThresholdSliderValue}"/>
+                <Entry Style="{StaticResource EntryStyle}" Grid.Column="2" Keyboard="Numeric" Text="{Binding Ch3ThresholdEntryValue}"  >
+                    <Entry.Behaviors>
+                        <b:EventToCommandBehavior EventName="Completed" Command="{Binding Ch3ThresholdEntryCompletedCommand}"/>
+                    </Entry.Behaviors>
+                </Entry>
+                <Label Grid.Column="3" Style="{StaticResource LabelStyle}"   Text="dB"/>
+            </Grid>
+            <Grid Padding="10,0,10,0" ColumnSpacing="5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="70"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="50"/>
+                    <ColumnDefinition Width="40"/>
+                </Grid.ColumnDefinitions>
+                <Label Grid.Column="0" Style="{StaticResource LabelStyle}"  Text="Clipping"  />
+                <Slider Style="{StaticResource SliderStyle}"  Grid.Column="1"  Maximum="100" Minimum="20"  Value="{Binding Ch3ClippingSliderValue}"/>
+                <Entry Style="{StaticResource EntryStyle}" Grid.Column="2" Keyboard="Numeric" Text="{Binding Ch3ClippingEntryValue}"  >
+                    <Entry.Behaviors>
+                        <b:EventToCommandBehavior EventName="Completed" Command="{Binding Ch3ClippingEntryCompletedCommand}"/>
+                    </Entry.Behaviors>
+                </Entry>
+                <Label Grid.Column="3" Style="{StaticResource LabelStyle}"   Text="%"/>
+            </Grid>
+            <!--   #endregion Channel 3 -->
+            <!--   #region Channel 4 -->
+            <Label Text="Channel 4" Style="{StaticResource LabelTitleStyle}"/>
+            <Grid Padding="10,0,10,0" ColumnSpacing="5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="70"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="50"/>
+                    <ColumnDefinition Width="40"/>
+                </Grid.ColumnDefinitions>
+                <Label Grid.Column="0" Style="{StaticResource LabelStyle}"  Text="Attack"   />
+                <Slider Style="{StaticResource SliderStyle}"  Grid.Column="1"  Maximum="1000" Minimum="1" Value="{Binding Ch4AttackSliderValue}"/>
+                <Entry Style="{StaticResource EntryStyle}" Grid.Column="2" Keyboard="Numeric" Text="{Binding Ch4AttackEntryValue}"  >
+                    <Entry.Behaviors>
+                        <b:EventToCommandBehavior EventName="Completed" Command="{Binding Ch4AttackEntryCompletedCommand}"/>
+                    </Entry.Behaviors>
+                </Entry>
+                <Label Grid.Column="3" Style="{StaticResource LabelStyle}"   Text="dB/S"/>
+            </Grid>
+            <Grid Padding="10,0,10,0" ColumnSpacing="5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="70"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="50"/>
+                    <ColumnDefinition Width="40"/>
+                </Grid.ColumnDefinitions>
+                <Label Grid.Column="0" Style="{StaticResource LabelStyle}"  Text="Decay"   />
+                <Slider Style="{StaticResource SliderStyle}"  Grid.Column="1"  Maximum="23" Minimum="5" Value="{Binding Ch4DecaySliderValue}"/>
+                <Entry Style="{StaticResource EntryStyle}" Grid.Column="2" Keyboard="Numeric" Text="{Binding Ch4DecayEntryValue}"  >
+                    <Entry.Behaviors>
+                        <b:EventToCommandBehavior EventName="Completed" Command="{Binding Ch4DecayEntryCompletedCommand}"/>
+                    </Entry.Behaviors>
+                </Entry>
+                <Label Grid.Column="3" Style="{StaticResource LabelStyle}"   Text="dB/S"/>
+            </Grid>
+            <Grid Padding="10,0,10,0" ColumnSpacing="5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="70"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="50"/>
+                    <ColumnDefinition Width="40"/>
+                </Grid.ColumnDefinitions>
+                <Label Grid.Column="0" Style="{StaticResource LabelStyle}" Text="Thresh"  />
+                <Slider Style="{StaticResource SliderStyle}"  Grid.Column="1" Maximum="{Binding ThresholdMax}" Minimum="{Binding ThresholdMin}" Value="{Binding Ch4ThresholdSliderValue}"/>
+                <Entry Style="{StaticResource EntryStyle}" Grid.Column="2" Keyboard="Numeric" Text="{Binding Ch4ThresholdEntryValue}"  >
+                    <Entry.Behaviors>
+                        <b:EventToCommandBehavior EventName="Completed" Command="{Binding Ch4ThresholdEntryCompletedCommand}"/>
+                    </Entry.Behaviors>
+                </Entry>
+                <Label Grid.Column="3" Style="{StaticResource LabelStyle}"   Text="dB"/>
+            </Grid>
+            <Grid Padding="10,0,10,0" ColumnSpacing="5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="70"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="50"/>
+                    <ColumnDefinition Width="40"/>
+                </Grid.ColumnDefinitions>
+                <Label Grid.Column="0" Style="{StaticResource LabelStyle}"  Text="Clipping"  />
+                <Slider Style="{StaticResource SliderStyle}"  Grid.Column="1" Maximum="100" Minimum="20"  Value="{Binding Ch4ClippingSliderValue}"/>
+                <Entry Style="{StaticResource EntryStyle}" Grid.Column="2" Keyboard="Numeric" Text="{Binding Ch4ClippingEntryValue}"  >
+                    <Entry.Behaviors>
+                        <b:EventToCommandBehavior EventName="Completed" Command="{Binding Ch4ClippingEntryCompletedCommand}"/>
+                    </Entry.Behaviors>
+                </Entry>
+                <Label Grid.Column="3" Style="{StaticResource LabelStyle}"   Text="%"/>
+            </Grid>
+            <!--   #endregion Channel 4 -->
+            <!--   #region Channel 5 -->
+            <Label Text="Channel 5" Style="{StaticResource LabelTitleStyle}"/>
+            <Grid Padding="10,0,10,0" ColumnSpacing="5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="70"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="50"/>
+                    <ColumnDefinition Width="40"/>
+                </Grid.ColumnDefinitions>
+                <Label Grid.Column="0" Style="{StaticResource LabelStyle}"  Text="Attack"   />
+                <Slider Style="{StaticResource SliderStyle}"  Grid.Column="1"  Maximum="1000" Minimum="1" Value="{Binding Ch5AttackSliderValue}"/>
+                <Entry Style="{StaticResource EntryStyle}" Grid.Column="2" Keyboard="Numeric" Text="{Binding Ch5AttackEntryValue}"  >
+                    <Entry.Behaviors>
+                        <b:EventToCommandBehavior EventName="Completed" Command="{Binding Ch5AttackEntryCompletedCommand}"/>
+                    </Entry.Behaviors>
+                </Entry>
+                <Label Grid.Column="3" Style="{StaticResource LabelStyle}"   Text="dB/S"/>
+            </Grid>
+            <Grid Padding="10,0,10,0" ColumnSpacing="5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="70"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="50"/>
+                    <ColumnDefinition Width="40"/>
+                </Grid.ColumnDefinitions>
+                <Label Grid.Column="0" Style="{StaticResource LabelStyle}"  Text="Decay"   />
+                <Slider Style="{StaticResource SliderStyle}"  Grid.Column="1"  Maximum="23" Minimum="5" Value="{Binding Ch5DecaySliderValue}"/>
+                <Entry Style="{StaticResource EntryStyle}" Grid.Column="2" Keyboard="Numeric" Text="{Binding Ch5DecayEntryValue}"  >
+                    <Entry.Behaviors>
+                        <b:EventToCommandBehavior EventName="Completed" Command="{Binding Ch5DecayEntryCompletedCommand}"/>
+                    </Entry.Behaviors>
+                </Entry>
+                <Label Grid.Column="3" Style="{StaticResource LabelStyle}"   Text="dB/S"/>
+            </Grid>
+            <Grid Padding="10,0,10,0" ColumnSpacing="5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="70"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="50"/>
+                    <ColumnDefinition Width="40"/>
+                </Grid.ColumnDefinitions>
+                <Label Grid.Column="0" Style="{StaticResource LabelStyle}" Text="Thresh"  />
+                <Slider Style="{StaticResource SliderStyle}"  Grid.Column="1" Maximum="{Binding ThresholdMax}" Minimum="{Binding ThresholdMin}" Value="{Binding Ch5ThresholdSliderValue}"/>
+                <Entry Style="{StaticResource EntryStyle}" Grid.Column="2" Keyboard="Numeric" Text="{Binding Ch5ThresholdEntryValue}"  >
+                    <Entry.Behaviors>
+                        <b:EventToCommandBehavior EventName="Completed" Command="{Binding Ch5ThresholdEntryCompletedCommand}"/>
+                    </Entry.Behaviors>
+                </Entry>
+                <Label Grid.Column="3" Style="{StaticResource LabelStyle}"   Text="dB"/>
+            </Grid>
+            <Grid Padding="10,0,10,0" ColumnSpacing="5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="70"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="50"/>
+                    <ColumnDefinition Width="40"/>
+                </Grid.ColumnDefinitions>
+                <Label Grid.Column="0" Style="{StaticResource LabelStyle}"  Text="Clipping"  />
+                <Slider Style="{StaticResource SliderStyle}"  Grid.Column="1" Maximum="100" Minimum="20"  Value="{Binding Ch5ClippingSliderValue}"/>
+                <Entry Style="{StaticResource EntryStyle}" Grid.Column="2" Keyboard="Numeric" Text="{Binding Ch5ClippingEntryValue}"  >
+                    <Entry.Behaviors>
+                        <b:EventToCommandBehavior EventName="Completed" Command="{Binding Ch5ClippingEntryCompletedCommand}"/>
+                    </Entry.Behaviors>
+                </Entry>
+                <Label Grid.Column="3" Style="{StaticResource LabelStyle}"   Text="%"/>
+            </Grid>
+            <!--   #endregion Channel 5 -->
+            <!--   #region Channel 6 -->
+            <Label Text="Channel 6" Style="{StaticResource LabelTitleStyle}"/>
+            <Grid Padding="10,0,10,0" ColumnSpacing="5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="70"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="50"/>
+                    <ColumnDefinition Width="40"/>
+                </Grid.ColumnDefinitions>
+                <Label Grid.Column="0" Style="{StaticResource LabelStyle}"  Text="Attack"   />
+                <Slider Style="{StaticResource SliderStyle}"  Grid.Column="1"  Maximum="1000" Minimum="1" Value="{Binding Ch6AttackSliderValue}"/>
+                <Entry Style="{StaticResource EntryStyle}" Grid.Column="2" Keyboard="Numeric" Text="{Binding Ch6AttackEntryValue}"  >
+                    <Entry.Behaviors>
+                        <b:EventToCommandBehavior EventName="Completed" Command="{Binding Ch6AttackEntryCompletedCommand}"/>
+                    </Entry.Behaviors>
+                </Entry>
+                <Label Grid.Column="3" Style="{StaticResource LabelStyle}"   Text="dB/S"/>
+            </Grid>
+            <Grid Padding="10,0,10,0" ColumnSpacing="5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="70"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="50"/>
+                    <ColumnDefinition Width="40"/>
+                </Grid.ColumnDefinitions>
+                <Label Grid.Column="0" Style="{StaticResource LabelStyle}"  Text="Decay"   />
+                <Slider Style="{StaticResource SliderStyle}"  Grid.Column="1"  Maximum="23" Minimum="5" Value="{Binding Ch6DecaySliderValue}"/>
+                <Entry Style="{StaticResource EntryStyle}" Grid.Column="2" Keyboard="Numeric" Text="{Binding Ch6DecayEntryValue}"  >
+                    <Entry.Behaviors>
+                        <b:EventToCommandBehavior EventName="Completed" Command="{Binding Ch6DecayEntryCompletedCommand}"/>
+                    </Entry.Behaviors>
+                </Entry>
+                <Label Grid.Column="3" Style="{StaticResource LabelStyle}"   Text="dB/S"/>
+            </Grid>
+            <Grid Padding="10,0,10,0" ColumnSpacing="5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="70"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="50"/>
+                    <ColumnDefinition Width="40"/>
+                </Grid.ColumnDefinitions>
+                <Label Grid.Column="0" Style="{StaticResource LabelStyle}" Text="Thresh"  />
+                <Slider Style="{StaticResource SliderStyle}"  Grid.Column="1" Maximum="{Binding ThresholdMax}" Minimum="{Binding ThresholdMin}" Value="{Binding Ch6ThresholdSliderValue}"/>
+                <Entry Style="{StaticResource EntryStyle}" Grid.Column="2" Keyboard="Numeric" Text="{Binding Ch6ThresholdEntryValue}"  >
+                    <Entry.Behaviors>
+                        <b:EventToCommandBehavior EventName="Completed" Command="{Binding Ch6ThresholdEntryCompletedCommand}"/>
+                    </Entry.Behaviors>
+                </Entry>
+                <Label Grid.Column="3" Style="{StaticResource LabelStyle}"   Text="dB"/>
+            </Grid>
+            <Grid Padding="10,0,10,0" ColumnSpacing="5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="70"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="50"/>
+                    <ColumnDefinition Width="40"/>
+                </Grid.ColumnDefinitions>
+                <Label Grid.Column="0" Style="{StaticResource LabelStyle}"  Text="Clipping"  />
+                <Slider Style="{StaticResource SliderStyle}"  Grid.Column="1" Maximum="100" Minimum="20"  Value="{Binding Ch6ClippingSliderValue}"/>
+                <Entry Style="{StaticResource EntryStyle}" Grid.Column="2" Keyboard="Numeric" Text="{Binding Ch6ClippingEntryValue}"  >
+                    <Entry.Behaviors>
+                        <b:EventToCommandBehavior EventName="Completed" Command="{Binding Ch6ClippingEntryCompletedCommand}"/>
+                    </Entry.Behaviors>
+                </Entry>
+                <Label Grid.Column="3" Style="{StaticResource LabelStyle}"   Text="%"/>
+            </Grid>
+            <!--   #endregion Channel 6 -->
+            <!--   #region Channel 7 -->
+            <Label Text="Channel 7" Style="{StaticResource LabelTitleStyle}"/>
+            <Grid Padding="10,0,10,0" ColumnSpacing="5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="70"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="50"/>
+                    <ColumnDefinition Width="40"/>
+                </Grid.ColumnDefinitions>
+                <Label Grid.Column="0" Style="{StaticResource LabelStyle}"  Text="Attack"   />
+                <Slider Style="{StaticResource SliderStyle}"  Grid.Column="1"  Maximum="1000" Minimum="1" Value="{Binding Ch7AttackSliderValue}"/>
+                <Entry Style="{StaticResource EntryStyle}" Grid.Column="2" Keyboard="Numeric" Text="{Binding Ch7AttackEntryValue}"  >
+                    <Entry.Behaviors>
+                        <b:EventToCommandBehavior EventName="Completed" Command="{Binding Ch7AttackEntryCompletedCommand}"/>
+                    </Entry.Behaviors>
+                </Entry>
+                <Label Grid.Column="3" Style="{StaticResource LabelStyle}"   Text="dB/S"/>
+            </Grid>
+            <Grid Padding="10,0,10,0" ColumnSpacing="5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="70"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="50"/>
+                    <ColumnDefinition Width="40"/>
+                </Grid.ColumnDefinitions>
+                <Label Grid.Column="0" Style="{StaticResource LabelStyle}"  Text="Decay"   />
+                <Slider Style="{StaticResource SliderStyle}"  Grid.Column="1"  Maximum="23" Minimum="5" Value="{Binding Ch7DecaySliderValue}"/>
+                <Entry Style="{StaticResource EntryStyle}" Grid.Column="2" Keyboard="Numeric" Text="{Binding Ch7DecayEntryValue}"  >
+                    <Entry.Behaviors>
+                        <b:EventToCommandBehavior EventName="Completed" Command="{Binding Ch7DecayEntryCompletedCommand}"/>
+                    </Entry.Behaviors>
+                </Entry>
+                <Label Grid.Column="3" Style="{StaticResource LabelStyle}"   Text="dB/S"/>
+            </Grid>
+            <Grid Padding="10,0,10,0" ColumnSpacing="5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="70"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="50"/>
+                    <ColumnDefinition Width="40"/>
+                </Grid.ColumnDefinitions>
+                <Label Grid.Column="0" Style="{StaticResource LabelStyle}" Text="Thresh"  />
+                <Slider Style="{StaticResource SliderStyle}"  Grid.Column="1" Maximum="{Binding ThresholdMax}" Minimum="{Binding ThresholdMin}" Value="{Binding Ch7ThresholdSliderValue}"/>
+                <Entry Style="{StaticResource EntryStyle}" Grid.Column="2" Keyboard="Numeric" Text="{Binding Ch7ThresholdEntryValue}"  >
+                    <Entry.Behaviors>
+                        <b:EventToCommandBehavior EventName="Completed" Command="{Binding Ch7ThresholdEntryCompletedCommand}"/>
+                    </Entry.Behaviors>
+                </Entry>
+                <Label Grid.Column="3" Style="{StaticResource LabelStyle}"   Text="dB"/>
+            </Grid>
+            <Grid Padding="10,0,10,0" ColumnSpacing="5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="70"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="50"/>
+                    <ColumnDefinition Width="40"/>
+                </Grid.ColumnDefinitions>
+                <Label Grid.Column="0" Style="{StaticResource LabelStyle}"  Text="Clipping"  />
+                <Slider Style="{StaticResource SliderStyle}"  Grid.Column="1" Maximum="100" Minimum="20"  Value="{Binding Ch7ClippingSliderValue}"/>
+                <Entry Style="{StaticResource EntryStyle}" Grid.Column="2" Keyboard="Numeric" Text="{Binding Ch7ClippingEntryValue}"  >
+                    <Entry.Behaviors>
+                        <b:EventToCommandBehavior EventName="Completed" Command="{Binding Ch7ClippingEntryCompletedCommand}"/>
+                    </Entry.Behaviors>
+                </Entry>
+                <Label Grid.Column="3" Style="{StaticResource LabelStyle}"   Text="%"/>
+            </Grid>
+            <!--   #endregion Channel 7 -->
+            <!--   #region Channel 8 -->
+            <Label Text="Channel 8" Style="{StaticResource LabelTitleStyle}"/>
+            <Grid Padding="10,0,10,0" ColumnSpacing="5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="70"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="50"/>
+                    <ColumnDefinition Width="40"/>
+                </Grid.ColumnDefinitions>
+                <Label Grid.Column="0" Style="{StaticResource LabelStyle}"  Text="Attack"   />
+                <Slider Style="{StaticResource SliderStyle}"  Grid.Column="1"  Maximum="1000" Minimum="1" Value="{Binding Ch8AttackSliderValue}"/>
+                <Entry Style="{StaticResource EntryStyle}" Grid.Column="2" Keyboard="Numeric" Text="{Binding Ch8AttackEntryValue}"  >
+                    <Entry.Behaviors>
+                        <b:EventToCommandBehavior EventName="Completed" Command="{Binding Ch8AttackEntryCompletedCommand}"/>
+                    </Entry.Behaviors>
+                </Entry>
+                <Label Grid.Column="3" Style="{StaticResource LabelStyle}"   Text="dB/S"/>
+            </Grid>
+            <Grid Padding="10,0,10,0" ColumnSpacing="5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="70"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="50"/>
+                    <ColumnDefinition Width="40"/>
+                </Grid.ColumnDefinitions>
+                <Label Grid.Column="0" Style="{StaticResource LabelStyle}"  Text="Decay"   />
+                <Slider Style="{StaticResource SliderStyle}"  Grid.Column="1"  Maximum="23" Minimum="5" Value="{Binding Ch8DecaySliderValue}"/>
+                <Entry Style="{StaticResource EntryStyle}" Grid.Column="2" Keyboard="Numeric" Text="{Binding Ch8DecayEntryValue}"  >
+                    <Entry.Behaviors>
+                        <b:EventToCommandBehavior EventName="Completed" Command="{Binding Ch8DecayEntryCompletedCommand}"/>
+                    </Entry.Behaviors>
+                </Entry>
+                <Label Grid.Column="3" Style="{StaticResource LabelStyle}"   Text="dB/S"/>
+            </Grid>
+            <Grid Padding="10,0,10,0" ColumnSpacing="5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="70"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="50"/>
+                    <ColumnDefinition Width="40"/>
+                </Grid.ColumnDefinitions>
+                <Label Grid.Column="0" Style="{StaticResource LabelStyle}" Text="Thresh"  />
+                <Slider Style="{StaticResource SliderStyle}"  Grid.Column="1" Maximum="{Binding ThresholdMax}" Minimum="{Binding ThresholdMin}" Value="{Binding Ch8ThresholdSliderValue}"/>
+                <Entry Style="{StaticResource EntryStyle}" Grid.Column="2" Keyboard="Numeric" Text="{Binding Ch8ThresholdEntryValue}"  >
+                    <Entry.Behaviors>
+                        <b:EventToCommandBehavior EventName="Completed" Command="{Binding Ch8ThresholdEntryCompletedCommand}"/>
+                    </Entry.Behaviors>
+                </Entry>
+                <Label Grid.Column="3" Style="{StaticResource LabelStyle}"   Text="dB"/>
+            </Grid>
+            <Grid Padding="10,0,10,0" ColumnSpacing="5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="70"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="50"/>
+                    <ColumnDefinition Width="40"/>
+                </Grid.ColumnDefinitions>
+                <Label Grid.Column="0" Style="{StaticResource LabelStyle}"  Text="Clipping"  />
+                <Slider Style="{StaticResource SliderStyle}"  Grid.Column="1"  Maximum="100" Minimum="20" Value="{Binding Ch8ClippingSliderValue}"/>
+                <Entry Style="{StaticResource EntryStyle}" Grid.Column="2" Keyboard="Numeric" Text="{Binding Ch8ClippingEntryValue}"  >
+                    <Entry.Behaviors>
+                        <b:EventToCommandBehavior EventName="Completed" Command="{Binding Ch8ClippingEntryCompletedCommand}"/>
+                    </Entry.Behaviors>
+                </Entry>
+                <Label Grid.Column="3" Style="{StaticResource LabelStyle}"   Text="%"/>
+            </Grid>
+            <!--   #endregion Channel 8 -->
+
+        </StackLayout>
+    </ScrollView>
+
+</ContentPage>

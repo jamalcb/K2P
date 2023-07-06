@@ -1,0 +1,5 @@
+﻿ls -a to see .gitnore
+git commit -m "commit message"
+git push
+
+Instead, use Version Control / Review Solution and Commit

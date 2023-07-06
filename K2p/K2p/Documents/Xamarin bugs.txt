@@ -1,0 +1,12 @@
+﻿In this case, where Maximum is zero, set the minimum value 1st:
+ <Slider Style="{StaticResource SliderStyle}" Grid.Column="1"  Minimum="-40" Maximum="0"  Value="20"/>
+
+ Otherwise the page won't load.
+
+ Something changed in XAML StringFormat.
+ Proper was to escape the curly brace:
+
+ StringFormat='{}{0:yy-MM-dd}'
+ StringFormat='{}{0:N2}'
+ StringFormat='{}{0:0.00}'
+

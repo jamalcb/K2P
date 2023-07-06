@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:b="clr-namespace:Prism.Behaviors;assembly=Prism.Forms"
+             x:Class="K2p.Views.MainPage"
+             Style="{StaticResource PageTitleStyle}" 
+             Title="{Binding Title}">
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Order="Primary" Text = "{Binding ProcessorLoad, Mode=OneWay}" Priority="1"/>
+        <ToolbarItem Order="Primary" Text = "{Binding BatteryVoltage, Mode=OneWay}" Priority="2"/>
+        <ToolbarItem Order="Primary" Text = "{Binding Rssi, Mode=OneWay}" Priority="3" />
+        <ToolbarItem Order="Primary" Icon="signal.png" Priority="4" />
+    </ContentPage.ToolbarItems>
+
+    <ScrollView>
+        <!--see https://developer.xamarin.com/guides/xamarin-forms/user-interface/styles/device/-->
+        <StackLayout HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" Margin="2,5,0,0">
+            <!--<ActivityIndicator  IsVisible="{Binding IsLoading}" IsRunning="{Binding IsLoading}" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" />-->
+            <!--<StackLayout HeightRequest="40" VerticalOptions="End">
+                <ActivityIndicator IsRunning="{Binding Busy}"
+                                   IsVisible="{Binding Busy}"
+                                   HeightRequest="40"
+                                   VerticalOptions="CenterAndExpand"
+                                   HorizontalOptions="CenterAndExpand">
+                    <ActivityIndicator.WidthRequest>
+                        <OnPlatform x:TypeArguments="x:Double" iOS="100" Android="100" />
+                    </ActivityIndicator.WidthRequest>
+                    <ActivityIndicator.Color>
+                        <OnPlatform x:TypeArguments="Color"
+                                    iOS="#2499CE"  />
+                    </ActivityIndicator.Color>
+                </ActivityIndicator>
+            </StackLayout>-->
+            <Grid Padding="10,0,10,0" ColumnSpacing="10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="80"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="60"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Label Grid.Column="0"  Text="Volume" VerticalOptions="Center"  Style="{StaticResource LabelStyle}" />
+                <Slider Style="{StaticResource SliderStyle}" Grid.Column="1"  Maximum="6" Minimum="-80" Value="{Binding MasterSliderValue}"/>
+                <Entry Style="{StaticResource EntryStyle}" Grid.Column="2" Keyboard="Numeric" Text="{Binding MasterEntryValue}" VerticalOptions="Center" >
+                    <Entry.Behaviors>
+                        <b:EventToCommandBehavior EventName="Completed" Command="{Binding MasterEntryCompletedCommand}"/>
+                    </Entry.Behaviors>
+                </Entry>
+                <Label Style="{StaticResource LabelStyle}" Grid.Column="3" Text="dB" VerticalTextAlignment="Center"  />
+            </Grid>
+            <Grid Padding="10,0,10,0" ColumnSpacing="10" Margin="0,10,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="80"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="60"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Label Grid.Column="0"  Text="Bass" VerticalOptions="Center" Style="{StaticResource LabelStyle}" />
+
+                <Slider Style="{StaticResource SliderStyle}" Grid.Column="1"  Maximum="15" Minimum="-15" Value="{Binding BassSliderValue}"/>
+                <Entry Style="{StaticResource EntryStyle}" Grid.Column="2" Keyboard="Numeric"  Text="{Binding BassEntryValue}" VerticalOptions="Center" >
+                    <Entry.Behaviors>
+                        <b:EventToCommandBehavior EventName="Completed" Command="{Binding BassEntryCompletedCommand}"/>
+                    </Entry.Behaviors>
+                </Entry>
+                <Label Style="{StaticResource LabelStyle}" Grid.Column="3" Text="dB" VerticalTextAlignment="Center"  />
+            </Grid>
+            <Grid Padding="10,0,10,0" ColumnSpacing="10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="80"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="60"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Label Grid.Column="0"  Text="Midrange" VerticalOptions="Center" Style="{StaticResource LabelStyle}" />
+
+                <Slider Style="{StaticResource SliderStyle}" Grid.Column="1"  Maximum="15" Minimum="-15" Value="{Binding MidrangeSliderValue}"/>
+                <Entry Style="{StaticResource EntryStyle}" Grid.Column="2" Keyboard="Numeric" Text="{Binding MidrangeEntryValue}" VerticalOptions="Center" >
+                    <Entry.Behaviors>
+                        <b:EventToCommandBehavior EventName="Completed" Command="{Binding MidrangeEntryCompletedCommand}"/>
+                    </Entry.Behaviors>
+                </Entry>
+                <Label Style="{StaticResource LabelStyle}" Grid.Column="3" Text="dB" VerticalTextAlignment="Center"  />
+            </Grid>
+            <Grid Padding="10,0,10,0" ColumnSpacing="10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="80"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="60"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Label Grid.Column="0"  Text="Treble" VerticalOptions="Center" Style="{StaticResource LabelStyle}" />
+
+                <Slider Style="{StaticResource SliderStyle}" Grid.Column="1"  Maximum="15" Minimum="-15" Value="{Binding TrebleSliderValue}"/>
+                <Entry Style="{StaticResource EntryStyle}" Grid.Column="2" Keyboard="Numeric"  Text="{Binding TrebleEntryValue}" VerticalOptions="Center" >
+                    <Entry.Behaviors>
+                        <b:EventToCommandBehavior EventName="Completed" Command="{Binding TrebleEntryCompletedCommand}"/>
+                    </Entry.Behaviors>
+                </Entry>
+                <Label Style="{StaticResource LabelStyle}" Grid.Column="3" Text="dB" VerticalTextAlignment="Center"  />
+            </Grid>
+            <!--  <StackLayout HorizontalOptions="CenterAndExpand" >-->
+
+
+            <Grid Margin="0,20,0,0" HorizontalOptions="Center">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="110"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="110"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="{Binding ProtectedRowsGridLength}"/>
+
+                </Grid.RowDefinitions>
+                <Switch Grid.Row="0" Grid.Column="0" IsToggled="{Binding ConnectPageIsActive}"/>
+                <Button Grid.Row="0" Grid.Column="1" Text="{Binding ConnectButtonText}"  Command="{Binding GoToConnectPage}"
+                            BackgroundColor="{Binding ConnectButtonColor}" Style="{StaticResource ButtonStyle}" />
+
+                <Switch Grid.Row="0" Grid.Column="2" IsToggled="{Binding ToneControlsPageIsActive}"/>
+                <Button Grid.Row="0" Grid.Column="3" Text="Tone" Command="{Binding GoToToneControlsPage}" 
+                            BackgroundColor="{Binding NavButtonColor}" Style="{StaticResource ButtonStyle}"/>
+
+                <Switch Grid.Row="1" Grid.Column="0" IsToggled="{Binding TrimsPageIsActive}"/>
+                <Button Grid.Row="1" Grid.Column="1" Text="Output Trims" Padding="4,0,4,0" Command="{Binding GoToTrimsPage}" 
+                            BackgroundColor="{Binding NavButtonColor}" Style="{StaticResource ButtonStyle}"/>
+
+                <Switch Grid.Row="1" Grid.Column="2" IsToggled="{Binding FadersPageIsActive}"/>
+                <Button Grid.Row="1" Grid.Column="3" Text="Faders" Command="{Binding GoToFadersPage}" 
+                            BackgroundColor="{Binding NavButtonColor}" Style="{StaticResource ButtonStyle}"/>
+
+                <Switch Grid.Row="2" Grid.Column="0" IsToggled="{Binding DelayPageIsActive}"/>
+                <Button Grid.Row="2" Grid.Column="1" Text="Delay" Command="{Binding GoToDelayPage}" 
+                            BackgroundColor="{Binding NavButtonColor}" Style="{StaticResource ButtonStyle}"/>
+
+                <Switch Grid.Row="2" Grid.Column="2" IsToggled="{Binding VuMetersPageIsActive}"/>
+                <Button Grid.Row="2" Grid.Column="3" Text="VU Meters" Command="{Binding GoToVuMetersPage}" 
+                            BackgroundColor="{Binding NavButtonColor}" Style="{StaticResource ButtonStyle}"/>
+
+                <Switch Grid.Row="3" Grid.Column="0" IsToggled="{Binding ThirdOctavePageIsActive}"/>
+                <Button Grid.Row="3" Grid.Column="1" Text="1/3 Octave" Command="{Binding GoToThirdOctavePage}" 
+                            BackgroundColor="{Binding NavButtonColor}" Style="{StaticResource ButtonStyle}"/>
+
+                <Switch Grid.Row="3" Grid.Column="2" IsToggled="{Binding ParametricPageIsActive}"/>
+                <Button Grid.Row="3" Grid.Column="3" Text="Parametric"  Command="{Binding GoToParametricPage}" 
+                            BackgroundColor="{Binding NavButtonColor}" Style="{StaticResource ButtonStyle}"/>
+
+                <Switch Grid.Row="4" Grid.Column="0" IsToggled="{Binding CrossoverPageIsActive}"/>
+                <Button Grid.Row="4" Grid.Column="1" Text="Crossovers" Command="{Binding GoToCrossoverPage}"
+                            BackgroundColor="{Binding NavButtonColor}" Style="{StaticResource ButtonStyle}"/>
+
+                <Switch Grid.Row="4" Grid.Column="2" IsToggled="{Binding OptionsPageIsActive}"/>
+                <Button Grid.Row="4" Grid.Column="3" Text="Options" Command="{Binding GoToOptionsPage}" 
+                            BackgroundColor="{Binding NavButtonColor}" Style="{StaticResource ButtonStyle}"/>
+
+                <Switch Grid.Row="5" Grid.Column="0" IsToggled="{Binding ReadbackPageIsActive}"/>
+                <Button Grid.Row="5" Grid.Column="1" Text="Readback"  Command="{Binding GoToReadbackPage}" 
+                            BackgroundColor="{Binding NavButtonColor}"  Style="{StaticResource ButtonStyle}" />
+
+                <Switch Grid.Row="5" Grid.Column="2" IsToggled="{Binding LimitersPageIsActive}"/>
+                <Button Grid.Row="5" Grid.Column="3" Text="Limiters"  Command="{Binding GoToLimitersPage}" 
+                            BackgroundColor="{Binding NavButtonColor}" Style="{StaticResource ButtonStyle}" />
+
+
+
+            </Grid>
+            <!--  </StackLayout>-->
+
+            <!--<StackLayout Orientation="Horizontal" HorizontalOptions="CenterAndExpand" Margin="0,5,0,0">
+        <StackLayout Orientation="Horizontal" HorizontalOptions="CenterAndExpand" >
+          <Switch IsToggled="{Binding ConnectPageIsActive}"/>
+          <Button Text="Connect" WidthRequest="130"  Command="{Binding GoToConnectPage}"   BackgroundColor="{Binding ConnectButtonColor}" Style="{StaticResource ButtonStyle}"  />
+        </StackLayout>
+
+        <StackLayout Orientation="Horizontal" HorizontalOptions="CenterAndExpand">
+          <Switch IsToggled="{Binding ReadbackPageIsActive}"/>
+          <Button Text="Readback" WidthRequest="130"  Command="{Binding GoToReadbackPage}" BackgroundColor="{Binding NavButtonColor}"  Style="{StaticResource ButtonStyle}" />
+        </StackLayout>
+      </StackLayout >-->
+            <!--<StackLayout Orientation="Horizontal" HorizontalOptions="CenterAndExpand">
+        <StackLayout Orientation="Horizontal" HorizontalOptions="CenterAndExpand">
+          <Switch IsToggled="{Binding FadersPageIsActive}"/>
+          <Button Text="Faders"  WidthRequest="130" Command="{Binding GoToFadersPage}" BackgroundColor="{Binding NavButtonColor}" Style="{StaticResource ButtonStyle}"/>
+        </StackLayout>
+        <StackLayout Orientation="Horizontal" HorizontalOptions="CenterAndExpand">
+          <Switch IsToggled="{Binding LimitersPageIsActive}"/>
+          <Button Text="Limiters" WidthRequest="130" Command="{Binding GoToLimitersPage}" BackgroundColor="{Binding NavButtonColor}" Style="{StaticResource ButtonStyle}" />
+        </StackLayout>
+      </StackLayout >-->
+            <!--<StackLayout Orientation="Horizontal" HorizontalOptions="CenterAndExpand">
+        <StackLayout Orientation="Horizontal" HorizontalOptions="CenterAndExpand">
+          <Switch IsToggled="{Binding DelayPageIsActive}"/>
+          <Button Text="Delay" WidthRequest="130" Command="{Binding GoToDelayPage}" BackgroundColor="{Binding NavButtonColor}" Style="{StaticResource ButtonStyle}"/>
+        </StackLayout>
+        <StackLayout Orientation="Horizontal" HorizontalOptions="CenterAndExpand">
+          <Switch IsToggled="{Binding ParametricPageIsActive}"/>
+          <Button Text="Parametric EQ" WidthRequest="130" Command="{Binding GoToParametricPage}" BackgroundColor="{Binding NavButtonColor}" Style="{StaticResource ButtonStyle}"/>
+        </StackLayout>
+      </StackLayout >-->
+            <!--<StackLayout Orientation="Horizontal" HorizontalOptions="CenterAndExpand">
+        <StackLayout Orientation="Horizontal" HorizontalOptions="CenterAndExpand">
+          <Switch IsToggled="{Binding ThirdOctavePageIsActive}"/>
+          <Button Text="Third Octave EQ" WidthRequest="130" Command="{Binding GoToThirdOctavePage}" BackgroundColor="{Binding NavButtonColor}" Style="{StaticResource ButtonStyle}"/>
+        </StackLayout>
+        <StackLayout Orientation="Horizontal" HorizontalOptions="CenterAndExpand">
+          <Switch IsToggled="{Binding ToneControlsPageIsActive}"/>
+          <Button Text="Tone Controls" WidthRequest="130" Command="{Binding GoToToneControlsPage}" BackgroundColor="{Binding NavButtonColor}" Style="{StaticResource ButtonStyle}"/>
+        </StackLayout>
+      </StackLayout >-->
+            <!--<StackLayout Orientation="Horizontal" HorizontalOptions="CenterAndExpand">
+        <StackLayout Orientation="Horizontal" HorizontalOptions="CenterAndExpand">
+          <Switch IsToggled="{Binding TrimsPageIsActive}"/>
+          <Button Text="Output Trims" WidthRequest="130" Command="{Binding GoToTrimsPage}" BackgroundColor="{Binding NavButtonColor}" Style="{StaticResource ButtonStyle}"/>
+        </StackLayout>
+        <StackLayout Orientation="Horizontal" HorizontalOptions="CenterAndExpand">
+          <Switch IsToggled="{Binding CrossoverPageIsActive}"/>
+          <Button Text="Crossovers" WidthRequest="130" Command="{Binding GoToCrossoverPage}" BackgroundColor="{Binding NavButtonColor}" Style="{StaticResource ButtonStyle}"/>
+        </StackLayout>
+      </StackLayout >-->
+            <!--<StackLayout Orientation="Horizontal" HorizontalOptions="CenterAndExpand">
+        <StackLayout Orientation="Horizontal" HorizontalOptions="CenterAndExpand">
+          <Switch IsToggled="{Binding VuMetersPageIsActive}"/>
+          <Button Text="VU Meters" WidthRequest="130" Command="{Binding GoToVuMetersPage}" BackgroundColor="{Binding NavButtonColor}" Style="{StaticResource ButtonStyle}"/>
+        </StackLayout>
+      </StackLayout>-->
+
+            <!--<Label Text="Presets" HorizontalTextAlignment="Center" Style="{StaticResource LabelTitleStyle}" Margin="0,5,0,0"/>-->
+            <StackLayout HorizontalOptions="CenterAndExpand" Margin="0,20,0,0">
+                <Grid >
+                    <Grid.ColumnDefinitions>
+                        <!--<ColumnDefinition Width="40"/>-->
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Label  Grid.Row="0" Grid.Column="0" Text="Preset 1"   Style="{StaticResource LabelStyle}" />
+                    <Switch Grid.Row="0" Grid.Column="1" IsToggled="{Binding PresetIsActive1}"/>
+                    <Label  Grid.Row="0" Grid.Column="2" Text="Preset 2" Style="{StaticResource LabelStyle}" Margin="20,0,0,0"/>
+                    <Switch Grid.Row="0" Grid.Column="3" IsToggled="{Binding PresetIsActive2}"/>
+
+                    <Label  Grid.Row="1" Grid.Column="0" Text="Preset 3" Style="{StaticResource LabelStyle}" Margin="0,20,0,0"/>
+                    <Switch Grid.Row="1" Grid.Column="1" IsToggled="{Binding PresetIsActive3}" Margin="0,20,0,0"/>
+                    <Label  Grid.Row="1" Grid.Column="2" Text="Preset 4" Style="{StaticResource LabelStyle}" Margin="20,20,0,0"/>
+                    <Switch Grid.Row="1" Grid.Column="3" IsToggled="{Binding PresetIsActive4}" Margin="0,20,0,0"/>
+                    <ActivityIndicator Grid.Row="0" Grid.RowSpan="2"  Grid.Column="0" Grid.ColumnSpan="4"  IsVisible="{Binding ActivityIsLoading}" IsRunning="{Binding ActivityIsLoading}" HorizontalOptions="FillAndExpand" />
+
+
+                </Grid>
+            </StackLayout>
+
+            <!--<StackLayout Orientation="Horizontal" HorizontalOptions="CenterAndExpand" Margin="0,5,0,0" >
+        <Label Text="Preset 1" Style="{StaticResource LabelStyle}"/>
+        <Switch IsToggled="{Binding PresetIsActive1}"/>
+        <Label Text="Preset 2" Style="{StaticResource LabelStyle}" Margin="20,0,0,0"/>
+        <Switch IsToggled="{Binding PresetIsActive2}"/>
+      </StackLayout>
+      <StackLayout Orientation="Horizontal" HorizontalOptions="CenterAndExpand" Margin="0,5,0,0">
+        <Label Text="Preset 3" Style="{StaticResource LabelStyle}"/>
+        <Switch IsToggled="{Binding PresetIsActive3}"/>
+        <Label Text="Preset 4" Style="{StaticResource LabelStyle}" Margin="20,0,0,0"/>
+        <Switch IsToggled="{Binding PresetIsActive4}"/>
+      </StackLayout>-->
+            <!--<ActivityIndicator IsVisible="{Binding ActivityIsLoading}" IsRunning="{Binding ActivityIsLoading}" HorizontalOptions="FillAndExpand" />-->
+
+
+
+            <!--<StackLayout Orientation="Horizontal" HorizontalOptions="CenterAndExpand" Margin="0,5,0,0" >
+                <Label Text="Preset 1" Style="{StaticResource ButtonStyle}"/>
+                <Switch IsToggled="{Binding PresetIsActive1}"/>
+                <Label Text="Preset 2" Style="{StaticResource ButtonStyle}"/>
+                <Switch IsToggled="{Binding PresetIsActive2}"/>
+            </StackLayout>
+            <StackLayout Orientation="Horizontal" HorizontalOptions="CenterAndExpand" >
+                <Label Text="Preset 3" Style="{StaticResource ButtonStyle}"/>
+                <Switch IsToggled="{Binding PresetIsActive3}"/>
+                <Label Text="Preset 4" Style="{StaticResource ButtonStyle}"/>
+                <Switch IsToggled="{Binding PresetIsActive4}"/>
+            </StackLayout>-->
+        </StackLayout>
+    </ScrollView>
+</ContentPage>

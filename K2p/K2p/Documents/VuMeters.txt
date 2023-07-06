@@ -1,0 +1,6 @@
+﻿canvas is 0,0 at top left.
+
+
+
+Wo make things easier, we'll translate coordinates such that bottom left is 0,0
+

@@ -1,0 +1,191 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:b="clr-namespace:Prism.Behaviors;assembly=Prism.Forms"
+             xmlns:behaviors="clr-namespace:K2p.Behaviors;assembly=K2p"
+             x:Class="K2p.Views.ToneControlsPage"
+             Style="{StaticResource PageTitleStyle}" 
+             Title ="Tone Controls">
+  <ContentPage.Content>
+    <ScrollView Padding="5,0,5,0">
+      <StackLayout HorizontalOptions="CenterAndExpand" VerticalOptions="StartAndExpand">
+        <Grid >
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="70"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="70"/>
+            <ColumnDefinition Width="35"/>
+          </Grid.ColumnDefinitions>
+          <Label Grid.Column="0"  Text="Volume" VerticalOptions="Center" Style="{StaticResource LabelStyle}" />
+
+          <Slider Style="{StaticResource SliderStyle}" Grid.Column="1"  Maximum="6" Minimum="-80" Value="{Binding MasterSliderValue}"/>
+          <Entry Style="{StaticResource EntryStyle}" Grid.Column="2" Keyboard="Numeric" Text="{Binding MasterEntryValue}" VerticalOptions="Center" >
+            <Entry.Behaviors>
+              <b:EventToCommandBehavior EventName="Completed" Command="{Binding MasterEntryCompletedCommand}"/>
+            </Entry.Behaviors>
+          </Entry>
+          <Label Style="{StaticResource LabelStyle}" Grid.Column="3" Text="dB" VerticalTextAlignment="Center"  />
+        </Grid>
+        <!--Bass Contol-->
+        <Label Text="Bass" TextColor="Color.LightGreen"  VerticalOptions="Center" Style="{StaticResource LabelSubTitleStyle}" />
+        <Grid >
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="70"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="70"/>
+            <ColumnDefinition Width="35"/>
+          </Grid.ColumnDefinitions>
+          <Label Grid.Column="0"  Text="Boost" VerticalOptions="Center" Style="{StaticResource LabelStyle}" />
+
+          <Slider Style="{StaticResource SliderStyle}" Grid.Column="1" Maximum="{Binding BoostMax}" Minimum="{Binding BoostMin}" Value="{Binding BassSliderValue}"/>
+          <Entry Style="{StaticResource EntryStyle}" Grid.Column="2" Keyboard="Numeric"  Text="{Binding BassEntryValue}" VerticalOptions="Center" >
+            <Entry.Behaviors>
+              <behaviors:BoostCutBehavior />
+              <b:EventToCommandBehavior EventName="Completed" Command="{Binding BassEntryCompletedCommand}"/>
+            </Entry.Behaviors>
+          </Entry>
+          <Label Style="{StaticResource LabelStyle}" Grid.Column="3" Text="dB" VerticalTextAlignment="Center"  />
+        </Grid>
+        <Grid >
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="70"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="70"/>
+            <ColumnDefinition Width="35"/>
+          </Grid.ColumnDefinitions>
+          <Label Grid.Column="0"  Text="Freq" VerticalOptions="Center" Style="{StaticResource LabelStyle}" />
+
+          <Slider Style="{StaticResource SliderStyle}" Grid.Column="1"  Maximum="3.30103" Minimum="1.30103" Value="{Binding BassLogFreqSliderValue}"/>
+          <Entry Style="{StaticResource EntryStyle}" Grid.Column="2" Keyboard="Numeric"  Text="{Binding BassFreqEntryValue}" VerticalOptions="Center" >
+            <Entry.Behaviors>
+              <b:EventToCommandBehavior EventName="Completed" Command="{Binding BassFreqEntryCompletedCommand}"/>
+            </Entry.Behaviors>
+          </Entry>
+          <Label Style="{StaticResource LabelStyle}" Grid.Column="3" Text="Hz" VerticalTextAlignment="Center"  />
+        </Grid>
+        <Grid >
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="70"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="70"/>
+            <ColumnDefinition Width="35"/>
+          </Grid.ColumnDefinitions>
+          <Label Grid.Column="0"  Text="Slope" VerticalOptions="Center" Style="{StaticResource LabelStyle}" />
+
+          <Slider Style="{StaticResource SliderStyle}" Grid.Column="1"  Maximum="1" Minimum=".3" Value="{Binding BassSlopeSliderValue}"/>
+          <Entry Style="{StaticResource EntryStyle}" Grid.Column="2" Keyboard="Numeric"  Text="{Binding BassSlopeEntryValue}" VerticalOptions="Center" >
+            <Entry.Behaviors>
+              <b:EventToCommandBehavior EventName="Completed" Command="{Binding BassSlopeEntryCompletedCommand}"/>
+            </Entry.Behaviors>
+          </Entry>
+        </Grid>
+        <!--Midrange Contol-->
+        <Label Text="Midrange"  TextColor="Color.LightGreen" VerticalOptions="Center" Style="{StaticResource LabelSubTitleStyle}" />
+        <Grid >
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="70"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="70"/>
+            <ColumnDefinition Width="35"/>
+          </Grid.ColumnDefinitions>
+          <Label Grid.Column="0"  Text="Boost" VerticalOptions="Center" Style="{StaticResource LabelStyle}" />
+
+          <Slider Style="{StaticResource SliderStyle}" Grid.Column="1"  Maximum="{Binding BoostMax}" Minimum="{Binding BoostMin}" Value="{Binding MidrangeSliderValue}"/>
+          <Entry Style="{StaticResource EntryStyle}" Grid.Column="2" Keyboard="Numeric" Text="{Binding MidrangeEntryValue}" VerticalOptions="Center" >
+            <Entry.Behaviors>
+              <behaviors:BoostCutBehavior />
+              <b:EventToCommandBehavior EventName="Completed" Command="{Binding MidrangeEntryCompletedCommand}"/>
+            </Entry.Behaviors>
+          </Entry>
+          <Label Style="{StaticResource LabelStyle}" Grid.Column="3" Text="dB" VerticalTextAlignment="Center"  />
+        </Grid>
+        <Grid >
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="70"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="70"/>
+            <ColumnDefinition Width="35"/>
+          </Grid.ColumnDefinitions>
+          <Label Grid.Column="0"  Text="Freq" VerticalOptions="Center" Style="{StaticResource LabelStyle}" />
+
+          <Slider Style="{StaticResource SliderStyle}" Grid.Column="1"  Maximum="3.69897" Minimum="2.69897" Value="{Binding MidrangeLogFreqSliderValue}"/>
+          <Entry Style="{StaticResource EntryStyle}" Grid.Column="2" Keyboard="Numeric" Text="{Binding MidrangeFreqEntryValue}" VerticalOptions="Center" >
+            <Entry.Behaviors>
+              <b:EventToCommandBehavior EventName="Completed" Command="{Binding MidrangeFreqEntryCompletedCommand}"/>
+            </Entry.Behaviors>
+          </Entry>
+          <Label Style="{StaticResource LabelStyle}" Grid.Column="3" Text="Hz" VerticalTextAlignment="Center"  />
+        </Grid>
+        <Grid >
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="70"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="70"/>
+            <ColumnDefinition Width="35"/>
+          </Grid.ColumnDefinitions>
+          <Label Grid.Column="0"  Text="Q" VerticalOptions="Center" Style="{StaticResource LabelStyle}" />
+
+          <Slider Style="{StaticResource SliderStyle}" Grid.Column="1"  Maximum=".5" Minimum=".1" Value="{Binding MidrangeQSliderValue}"/>
+          <Entry Style="{StaticResource EntryStyle}" Grid.Column="2" Keyboard="Numeric" Text="{Binding MidrangeQEntryValue}" VerticalOptions="Center" >
+            <Entry.Behaviors>
+              <b:EventToCommandBehavior EventName="Completed" Command="{Binding MidrangeQEntryCompletedCommand}"/>
+            </Entry.Behaviors>
+          </Entry>
+        </Grid>
+        <!--Treble Contol-->
+        <Label Text="Treble" TextColor="Color.LightGreen" VerticalOptions="Center" Style="{StaticResource LabelSubTitleStyle}" />
+        <Grid >
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="70"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="70"/>
+            <ColumnDefinition Width="35"/>
+          </Grid.ColumnDefinitions>
+          <Label Grid.Column="0"  Text="Boost" VerticalOptions="Center" Style="{StaticResource LabelStyle}" />
+
+          <Slider Style="{StaticResource SliderStyle}" Grid.Column="1"  Maximum="{Binding BoostMax}" Minimum="{Binding BoostMin}" Value="{Binding TrebleSliderValue}"/>
+          <Entry Style="{StaticResource EntryStyle}" Grid.Column="2" Keyboard="Numeric"  Text="{Binding TrebleEntryValue}" VerticalOptions="Center" >
+            <Entry.Behaviors>
+              <behaviors:BoostCutBehavior />
+              <b:EventToCommandBehavior EventName="Completed" Command="{Binding TrebleEntryCompletedCommand}"/>
+            </Entry.Behaviors>
+          </Entry>
+          <Label Style="{StaticResource LabelStyle}" Grid.Column="3" Text="dB" VerticalTextAlignment="Center"  />
+        </Grid>
+        <Grid >
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="70"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="70"/>
+            <ColumnDefinition Width="35"/>
+          </Grid.ColumnDefinitions>
+          <Label Grid.Column="0"  Text="Freq" VerticalOptions="Center" Style="{StaticResource LabelStyle}" />
+
+          <Slider Style="{StaticResource SliderStyle}" Grid.Column="1"  Maximum="4" Minimum="3.69897" Value="{Binding TrebleLogFreqSliderValue}"/>
+          <Entry Style="{StaticResource EntryStyle}" Grid.Column="2" Keyboard="Numeric" Text="{Binding TrebleFreqEntryValue}" VerticalOptions="Center" >
+            <Entry.Behaviors>
+              <b:EventToCommandBehavior EventName="Completed" Command="{Binding TrebleFreqEntryCompletedCommand}"/>
+            </Entry.Behaviors>
+          </Entry>
+          <Label Style="{StaticResource LabelStyle}" Grid.Column="3" Text="Hz" VerticalTextAlignment="Center"  />
+        </Grid>
+        <Grid >
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="70"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="70"/>
+            <ColumnDefinition Width="35"/>
+          </Grid.ColumnDefinitions>
+          <Label Grid.Column="0"  Text="Slope" VerticalOptions="Center" Style="{StaticResource LabelStyle}" />
+
+          <Slider Style="{StaticResource SliderStyle}" Grid.Column="1"  Maximum="1" Minimum=".3" Value="{Binding TrebleSlopeSliderValue}"/>
+          <Entry Style="{StaticResource EntryStyle}" Grid.Column="2" Keyboard="Numeric"  Text="{Binding TrebleSlopeEntryValue}" VerticalOptions="Center" >
+            <Entry.Behaviors>
+              <b:EventToCommandBehavior EventName="Completed" Command="{Binding TrebleSlopeEntryCompletedCommand}"/>
+            </Entry.Behaviors>
+          </Entry>
+        </Grid>
+      </StackLayout>
+    </ScrollView>
+  </ContentPage.Content>
+</ContentPage>

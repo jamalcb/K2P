@@ -1,0 +1,153 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:prism="clr-namespace:Prism.Mvvm;assembly=Prism.Forms"
+             prism:ViewModelLocator.AutowireViewModel="True"
+             xmlns:behaviors="clr-namespace:K2p.Behaviors"
+             xmlns:b="clr-namespace:Prism.Behaviors;assembly=Prism.Forms"
+             xmlns:views="clr-namespace:SkiaSharp.Views.Forms;assembly=SkiaSharp.Views.Forms"
+             x:Class="K2p.Views.TouchParametric"
+             Style="{StaticResource PageTitleStyle}" 
+             Title="Parametric">
+
+    <ContentPage.Content>
+        <Grid Margin ="0,0,0,10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!--#region Enables -->
+            <Grid Margin="4,4,4,0" Grid.Row="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <!-- Ch 1 -->
+                <StackLayout Orientation="Horizontal" Grid.Column="0" Grid.Row="0" IsVisible="{Binding LinkButtonsVisible}">
+                    <Label Text="{Binding ChannelLabel0}" TextColor="{Binding TextColorCh0}"  IsEnabled="{Binding IsEnabledCh0}" Style="{StaticResource LabelStyle}"/>
+                    <Switch IsToggled="{Binding IsEnabledCh0}"/>
+                </StackLayout>
+                <!-- Ch 2 -->
+                <StackLayout Orientation="Horizontal" Grid.Column="0" Grid.Row="1" IsVisible="{Binding LinkButtonsVisible}">
+                    <Label Text="{Binding ChannelLabel1}" TextColor="{Binding TextColorCh1}" IsEnabled="{Binding IsEnabledCh1}" Style="{StaticResource LabelStyle}" />
+                    <Switch IsToggled="{Binding IsEnabledCh1}"/>
+                </StackLayout>
+                <!-- Ch 3 -->
+                <StackLayout Orientation="Horizontal" Grid.Column="1" Grid.Row="0" IsVisible="{Binding LinkButtonsVisible}">
+                    <Label Text="{Binding ChannelLabel2}" TextColor="{Binding TextColorCh2}" IsEnabled="{Binding IsEnabledCh2}" Style="{StaticResource LabelStyle}"/>
+                    <Switch IsToggled="{Binding IsEnabledCh2}"/>
+                </StackLayout>
+                <!-- Ch 4 -->
+                <StackLayout Orientation="Horizontal" Grid.Column="1" Grid.Row="1" IsVisible="{Binding LinkButtonsVisible}">
+                    <Label Text="{Binding ChannelLabel3}" TextColor="{Binding TextColorCh3}" IsEnabled="{Binding IsEnabledCh3}" Style="{StaticResource LabelStyle}"/>
+                    <Switch IsToggled="{Binding IsEnabledCh3}"/>
+                </StackLayout>
+                <!-- Ch 5 -->
+                <StackLayout Orientation="Horizontal" Grid.Column="2" Grid.Row="0" IsVisible="{Binding LinkButtonsVisible}">
+                    <Label Text="{Binding ChannelLabel4}" TextColor="{Binding TextColorCh4}"  IsEnabled="{Binding IsEnabledCh4}" Style="{StaticResource LabelStyle}"/>
+                    <Switch IsToggled="{Binding IsEnabledCh4}"/>
+                </StackLayout>
+                <!-- Ch 6 -->
+                <StackLayout Orientation="Horizontal" Grid.Column="2" Grid.Row="1" IsVisible="{Binding LinkButtonsVisible}">
+                    <Label Text="{Binding ChannelLabel5}" TextColor="{Binding TextColorCh5}" IsEnabled="{Binding IsEnabledCh5}" Style="{StaticResource LabelStyle}"/>
+                    <Switch IsToggled="{Binding IsEnabledCh5}"/>
+                </StackLayout>
+                <!-- Ch 7 -->
+                <StackLayout Orientation="Horizontal" Grid.Column="3" Grid.Row="0" IsVisible="{Binding LinkButtonsVisible}">
+                    <Label Text="{Binding ChannelLabel6}" TextColor="{Binding TextColorCh6}" IsEnabled="{Binding IsEnabledCh6}" Style="{StaticResource LabelStyle}"/>
+                    <Switch IsToggled="{Binding IsEnabledCh6}"/>
+                </StackLayout>
+                <!-- Ch 8 -->
+                <StackLayout Orientation="Horizontal" Grid.Column="3" Grid.Row="1" IsVisible="{Binding LinkButtonsVisible}">
+                    <Label Text="{Binding ChannelLabel7}" TextColor="{Binding TextColorCh7}" IsEnabled="{Binding IsEnabledCh7}" Style="{StaticResource LabelStyle}"/>
+                    <Switch IsToggled="{Binding IsEnabledCh7}"/>
+                </StackLayout>
+            </Grid>
+            <!--#endregion -->
+
+            <views:SKCanvasView x:Name="CanvasView"  Grid.Row="1"  EnableTouchEvents="True" >
+                <views:SKCanvasView.Behaviors >
+                    <behaviors:PaintSurfaceCommandBehavior Command="{Binding PaintCommand}" />
+                    <behaviors:PaintSurfaceTouchCommandBehavior Command="{Binding TouchCommand}" />
+                </views:SKCanvasView.Behaviors>
+            </views:SKCanvasView>
+            <Grid Grid.Row="2" Margin="2,0,4,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <Label Text="B:" Grid.Column="0"  Style="{StaticResource LabelStyle}" />
+                <Entry  Grid.Column="1"  Style="{StaticResource EntryStyle}" WidthRequest="48"  HeightRequest="38" Text="{Binding BandEntryValue}"  Keyboard="Numeric" >
+                    <Entry.Behaviors>
+                        <behaviors:ParaBandBehavior/>
+                        <b:EventToCommandBehavior EventName="Completed" Command="{Binding SelectedBandEntryCompletedCommand}"/>
+                    </Entry.Behaviors>
+                </Entry>
+
+
+                <Label Text="G:" Grid.Column="2"  Style="{StaticResource LabelStyle}" />           
+                <Entry  Grid.Column="3"  Style="{StaticResource EntryStyle}" WidthRequest="48"  HeightRequest="38" Text="{Binding GainEntryValue}"  Keyboard="Numeric" >
+                    <Entry.Behaviors>
+                        <behaviors:ParaBoostCutBehavior/>
+                        <b:EventToCommandBehavior EventName="Completed" Command="{Binding SelectedGainEntryCompletedCommand}"/>
+                    </Entry.Behaviors>
+                </Entry>
+
+                <Label Text="F:" Grid.Column="4"  Style="{StaticResource LabelStyle}" Margin="10,0,0,0"/>
+                <Entry  Grid.Column="5"  Style="{StaticResource EntryStyle}" WidthRequest="51"  HeightRequest="38" Text="{Binding FrequencyEntryValue}"  Keyboard="Numeric" >
+                    <Entry.Behaviors>
+                        <behaviors:ParaFrequencyBehavior/>
+                        <b:EventToCommandBehavior EventName="Completed" Command="{Binding FrequencyEntryCompletedCommand}"/>
+                    </Entry.Behaviors>
+                </Entry>
+
+                <Label Text="Q:" Grid.Column="6"  Style="{StaticResource LabelStyle}" Margin="10,0,0,0"/>
+                <Entry  Grid.Column="7"  Style="{StaticResource EntryStyle}" WidthRequest="35"  HeightRequest="38" Text="{Binding QEntryValue}"  Keyboard="Numeric" >
+                    <Entry.Behaviors>
+                        <behaviors:ParaQBehavior/>
+                        <b:EventToCommandBehavior EventName="Completed" Command="{Binding QEntryCompletedCommand}"/>
+                    </Entry.Behaviors>
+                </Entry>
+
+            </Grid>
+            <Grid Grid.Row="3">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <ImageButton BackgroundColor="AntiqueWhite" Source="arrowUp.png" Grid.Column="1" WidthRequest="35" HeightRequest="35"  CornerRadius="10" Command="{Binding ButtonBandUp}" />
+                <ImageButton BackgroundColor="AntiqueWhite" Source="arrowDown.png" Grid.Column="0" WidthRequest="35" HeightRequest="35"  CornerRadius="10" Command="{Binding ButtonBandDown}" />
+                <Button Text="Flat" Grid.Column="2" WidthRequest="60"  Command="{Binding ButtonFlat}" Style="{StaticResource ButtonStyle}"/>
+                <Button Text="Sel Flat" Grid.Column="3" Padding="2,0,2,0" Command="{Binding ButtonSelectedFlat}" Style="{StaticResource ButtonStyle}"/>
+                <Button Text="{Binding LinkAllText}" WidthRequest="75" Grid.Column="4"  Command="{Binding ButtonLinkAll}" Style="{StaticResource ButtonStyle}"/>
+                <Button Text="L" WidthRequest="35" Grid.Column="5"  Command="{Binding ButtonShowLinks}" Style="{StaticResource ButtonStyle}"/>
+                <ActivityIndicator Grid.Column="6" IsVisible="{Binding ActivityIsLoading}" IsRunning="{Binding ActivityIsLoading}" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" />
+
+            </Grid>
+
+        </Grid>
+        <!--WidthRequest="35" HeightRequest="35"-->
+    </ContentPage.Content>
+</ContentPage>

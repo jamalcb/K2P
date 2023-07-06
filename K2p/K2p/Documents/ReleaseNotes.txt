@@ -1,0 +1,3 @@
+﻿Version xx
+Round to .25 dB on 1/3 octave
+Fix "All Flat" not setting all bands flat

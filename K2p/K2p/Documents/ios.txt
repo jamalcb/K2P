@@ -1,0 +1,2 @@
+﻿Ad-Hoc for Apple:
+https://docs.microsoft.com/en-us/xamarin/ios/deploy-test/app-distribution/ad-hoc-distribution?tabs=windows

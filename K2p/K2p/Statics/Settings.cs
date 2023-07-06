@@ -1,0 +1,711 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Runtime.ExceptionServices;
+using System.Text;
+using System.Threading.Tasks;
+using K2p.ViewModels;
+using System.Diagnostics;
+using System.Security.Authentication.ExtendedProtection;
+using K2p.Views;
+using Xamarin.Forms;
+
+namespace K2p.Statics
+{
+  public static class Settings
+  {
+    public static double MasterIncrement { get; set; } = .25;
+    public static double EQGainIncrement { get; set; } = .25;
+    public static double TrimIncrement { get; set; } = .25;
+
+   
+
+    public static Peq BassTone = new Peq(100, .7071);
+    public static Peq MidTone = new Peq(1000, .7071);
+    public static Peq TrebleTone = new Peq(5000, .7071);
+
+    public static Peq[] Eq = new Peq[31];
+
+    public static Color[] mixer_2_output_brush = new Color[8];
+    public static string[] output_labels = new string[8];
+    public static string[] input_labels = new string[10];
+    public static bool PasswordEnabled;
+
+    public static void SetStandardThirdOctave()
+    {
+      for (var band = 0; band != 31; band++)
+      {
+        for (var channel = 0; channel != 8; channel++)
+        {
+          Eq[band].Frequency[channel] = ThirdOctavePageViewModel.ThirdOctaveFrequencies[band];
+          Eq[band].Q[channel] = Constants.ThirdOctaveQ;
+          Eq[band].Gain[channel] = 0;        
+        }        
+      }
+    }
+    static Settings()
+    {
+
+      Debug.WriteLine("Settings constructor");
+      for (var band = 0; band != 31; band++)
+      {
+        Eq[band] = new Peq(Response.ThirdOctaveFrequencies[band], Constants.ThirdOctaveQ);
+      }
+
+      for (var channel = 0; channel != 8; channel++)
+      {
+        OutputDelay[channel] = 0;
+        OutputDelayGroup[channel] = (ushort)channel;
+        TrimGroup[channel] = (ushort) channel;
+
+        //mixer_2_output_brush[channel] = new Color(0, 255, 0);
+        output_labels[channel] = $"Channel {channel + 1}";
+        input_labels[channel] = $"Input {channel + 1}";
+      }
+      input_labels[8] = $"Input {9}";
+      input_labels[9] = $"Input {10}";
+
+      //Color temp = Color.FromRgb(91, 208, 240);
+
+
+      mixer_2_output_brush[0] = Color.FromRgb(0, 255, 0);
+      mixer_2_output_brush[1] = Color.FromRgb(255, 0, 0);
+      mixer_2_output_brush[2] = Color.FromRgb(0, 0, 255);
+      mixer_2_output_brush[3] = Color.FromRgb(255, 255, 0);
+      mixer_2_output_brush[4] = Color.FromRgb(255, 0, 255);
+      mixer_2_output_brush[5] = Color.FromRgb(0, 255, 255);
+      mixer_2_output_brush[6] = Color.FromRgb(91, 208, 240);
+      mixer_2_output_brush[7] = Color.FromRgb(255, 255, 255);
+
+      FaderAssignment[0] = FadersPageViewModel.AssignmentE.FrontLeft;
+      FaderAssignment[1] = FadersPageViewModel.AssignmentE.FrontRight;
+      FaderAssignment[2] = FadersPageViewModel.AssignmentE.RearLeft;
+      FaderAssignment[3] = FadersPageViewModel.AssignmentE.RearRight;
+      FaderAssignment[4] = FadersPageViewModel.AssignmentE.Center;
+      FaderAssignment[5] = FadersPageViewModel.AssignmentE.Sub;
+      FaderAssignment[6] = FadersPageViewModel.AssignmentE.Sub;
+      FaderAssignment[7] = FadersPageViewModel.AssignmentE.Sub;
+
+      try
+      {
+        MasterIncrement = GetIncrement((int)Utils.GetApplicationProperty("MasterIncrement", 0));
+        TrimIncrement = GetIncrement((int)Utils.GetApplicationProperty("TrimIncrement", 0));
+        EQGainIncrement = GetIncrement((int)Utils.GetApplicationProperty("EQGainIncrement", 0));
+
+        //MasterIncrement = GetIncrement((int)Application.Current.Properties["MasterIncrement"]);
+        //TrimIncrement = GetIncrement((int)Application.Current.Properties["TrimIncrement"]);
+        //EQGainIncrement = GetIncrement((int)Application.Current.Properties["EQGainIncrement"]);
+
+      }
+      catch (Exception e)
+      {
+        Console.WriteLine(e);
+
+      }
+
+
+
+
+    }
+
+    public static double GetIncrement(int index)
+    {
+      switch (index)
+      {
+        case 0:
+          return 1.0;
+        case 1:
+          return .5;
+        case 2:
+          return .25;
+        default:
+          return .1;
+      }
+    }
+
+    public static double GetMasterIncrement(double val)
+    {
+      var iVal = (int)(val / MasterIncrement);
+      return iVal * MasterIncrement;
+    }
+    public static double GetTrimIncrement(double val)
+    {
+      var iVal = (int)(val / TrimIncrement);
+      return iVal * TrimIncrement;
+    }
+    public static double GetEQGainIncrement(double val, double min = -24.0, double max = 20.0)
+    {
+      var iVal = (int)(val / EQGainIncrement);
+      double dB = iVal * EQGainIncrement;
+      dB = dB > max ? max : dB;
+      dB = dB < min ? min : dB;
+      return dB;
+    }
+
+
+    // perhaps this array size should be found by query.
+    // private const int SettingsLength = 6744; // to get this size, search C:\Users\Robert Zeff\Documents\VS 2015\Projects\Git\K2\Firmware\K2\Debug\K2.map for settings
+    // private const int DirtyLength = 16;
+
+    //public static MainPageViewModel MainPageViewModel.MainVm;
+
+    // public static MainPageViewModel MainPageViewModel.MainVm { get; set; }
+
+
+    public static double[] Trims = new double[8];
+    public static double LeftRightFader;
+    public static double FrontRearFader;
+    public static double CenterFader;
+    public static double BassFader;
+    public static int[] TrimGroup = new int[8];
+    public static int[] OutputDelayGroup = new int[8];
+    public static FadersPageViewModel.AssignmentE[] FaderAssignment = new FadersPageViewModel.AssignmentE[8];
+    public static ushort[] OutputDelay = new ushort[8];
+    public static ushort FileVersion;
+    public static ushort FirmwareVersion;
+    public static double MasterGain;
+    // public static double[] GainTrim = new double[8];
+    public static uint PeqIsDirty;
+    public static byte InputMixerInputDirty;  // dirty bits
+    public static byte InputMixerOutputDirty;
+    public static byte OutputMixerInputDirty;
+    public static byte OutputMixerOutputDirty;
+    public static uint SettingsDirty;
+    public static dirty_source_e DirtySource;
+
+
+    public enum SettingsDirtyE
+    {
+      SETTINGS_NOT_DIRTY = 0,
+      SETTINGS_DIRTY_SURROUND = 0x0000001,
+      SETTINGS_DIRTY_MUTE = 0x0000002,
+      SETTINGS_DIRTY_OUTPUT_INVERT = 0x0000004,
+      SETTINGS_DIRTY_INPUT_INVERT = 0x0000008,
+      SETTINGS_DIRTY_INPUT_ATTENUATOR = 0x0000010,
+      SETTINGS_DIRTY_METER_CONSTANTS = 0x0000020,
+      SETTINGS_DIRTY_OTHER = 0x0000040,
+      SETTINGS_DIRTY_MUTE_DAC = 0x0000080,
+      SETTINGS_DIRTY_FADER_ASSIGNMENTS = 0x0000100,
+      SETTINGS_DIRTY_MASTER_GAIN = 0x0000200,
+      SETTINGS_DIRTY_TRIMS = 0x0000400,
+      SETTINGS_DIRTY_FADERS = 0x0000800,
+      SETTINGS_DIRTY_CLASS_D_FREQ = 0x0001000,
+      SETTINGS_DIRTY_ATTENUATOR = 0x0002000,
+      SETTINGS_DIRTY_PRESET_TENSE = 0x0004000,
+      SETTINGS_DIRTY_MUTE_DURING_PRESET = 0x0008000,
+      SETTINGS_DIRTY_TONE = 0x0010000,
+      SETTINGS_DIRTY_OUTPUT_PEQ = 0x0020000,
+      SETTINGS_DIRTY_INPUT_PEQ = 0x0040000,
+      SETTINGS_DIRTY_HIGHPASS_CROSSOVER = 0x0080000,
+      SETTINGS_DIRTY_LOWPASS_CROSSOVER = 0x0100000,
+      SETTINGS_DIRTY_INPUT_MIXER = 0x0200000,
+      SETTINGS_DIRTY_OUTPUT_MIXER = 0x0400000,
+      SETTINGS_DIRTY_INPUT_DELAY = 0x0800000,
+      SETTINGS_DIRTY_OUTPUT_DELAY = 0x1000000,
+    };
+    public static bool GetDirtyBusy;
+
+    public enum CommResult
+    {
+      OK,
+      isNull,
+      Failed,
+      Busy,
+      LengthError,
+      ChecksumError,
+      NotConnected,
+      Closed
+    };
+
+    public static bool GetDirtyEnabled = true;
+
+    //  public static bool Toggle;
+    // private static bool temp;
+
+    public static bool ForceGetSettings;
+    public static async Task<CommResult> GetDirty()
+    {
+      // if (VuMetersPage.IsActive || Meters.ReadMetersIsBusy) return CommResult.Busy;
+
+      if (!TCP.IsConnected)
+        return CommResult.NotConnected;
+      if (!GetDirtyEnabled) return CommResult.Busy;
+
+      if (TCP.WiFiStream == null)
+      {
+        return CommResult.isNull;
+      }
+
+      if (GetDirtyBusy)
+      {
+        return CommResult.Busy;
+      }
+
+      CommResult r = CommResult.NotConnected;
+      try
+      {
+        GetDirtyBusy = true;
+        var commandArray = new byte[3];
+        commandArray[0] = USB_Commands.CMD_REPORT_ID;
+        commandArray[1] = USB_Commands.CMD_START;
+        commandArray[2] = USB_Commands.CMD_GET_DIRTY;
+        Utils.Universal_Write(ref commandArray);
+
+        var array = new byte[Constants.DirtySize];
+        var result = TCP.Read(out array);
+        if (!result || array == null)
+        {
+          Debug.WriteLine("GetDirty() read failed");
+          GetDirtyBusy = false;
+          return CommResult.LengthError;
+        }
+
+        var index = 0;
+        PeqIsDirty = BitConverter.ToUInt32(array, index); index += 4;
+        InputMixerInputDirty = array[index++];
+        InputMixerOutputDirty = array[index++];
+        OutputMixerInputDirty = array[index++];
+        OutputMixerOutputDirty = array[index++];
+        SettingsDirty = BitConverter.ToUInt32(array, index); index += 4;
+        DirtySource = (dirty_source_e)array[index];
+
+        if (SettingsDirty != 0 && DirtySource != dirty_source_e.dirty_source_WIFI || ForceGetSettings)
+        {
+          Debug.WriteLine($"GetDirty calling GetSettings(), SettingsDirty: {SettingsDirty}, ForceGetSettings: {ForceGetSettings}");
+          r = await GetSettings(); // updates mainpage
+          if (r != CommResult.OK)
+          {
+            GetDirtyBusy = false;
+            return r;
+          }
+          ForceGetSettings = false;
+        }
+
+        r = GetReadback();
+        GetDirtyBusy = false;
+      }
+      catch (Exception ee)
+      {
+        Debug.WriteLine($"GetDirty() Exception {ee.Message})");
+        TCP.Disconnect();
+        GetDirtyBusy = false;
+        ForceGetSettings = false;
+      }
+
+      return r;
+    }
+    public static CommResult GetGlobal()
+    {
+      if (!TCP.IsConnected)
+        return CommResult.NotConnected;
+      var commandArray = new byte[3];
+      commandArray[0] = 0;
+      commandArray[1] = USB_Commands.CMD_START;
+      commandArray[2] = USB_Commands.CMD_GET_GLOBAL;
+      try
+      {
+        var ret = Utils.Universal_Write(ref commandArray);
+        if (!ret)
+          return CommResult.isNull;
+
+        TCP.Read(out var buffer);
+        if (buffer.Length != Constants.GlobalSize)
+        {
+          Debug.WriteLine($"Global size is incorrect: {buffer.Length }");
+          return CommResult.LengthError;
+        }
+
+        int index = 192;
+        Password = BitConverter.ToUInt16(buffer, index);
+        PasswordEnabled = (ushort)Application.Current.Properties["Password"] == Password;
+      }
+      catch (Exception ee)
+      {
+        Debug.WriteLine($"GetGlobal exception: {ee.Message}");
+        return CommResult.Failed;
+      }
+
+      return CommResult.OK;
+    }
+    public static CommResult GetReadback()
+    {
+      if (!TCP.IsConnected)
+        return CommResult.NotConnected;
+
+      var commandArray = new byte[3];
+      commandArray[0] = 0;
+      commandArray[1] = USB_Commands.CMD_START;
+      commandArray[2] = USB_Commands.CMD_GET_READBACK;
+
+      var ret = Utils.Universal_Write(ref commandArray);
+      if (!ret)
+        return CommResult.isNull;
+
+      var buffer = new byte[Constants.ReadbackSize];
+      TCP.Read(out buffer);
+
+      var index = 0;
+      MainPageViewModel.MainVm._batteryVoltage = BitConverter.ToSingle(buffer, index); index += 4;
+
+      var temp2 = BitConverter.ToSingle(buffer, index); index += 4;
+      MainPageViewModel.MainVm.TransformerTemperature = Utils.GetSteinhartTemperature(temp2);
+
+      temp2 = BitConverter.ToSingle(buffer, index); index += 4;
+      MainPageViewModel.MainVm.HeatsinkTemperature = Utils.GetSteinhartTemperature(temp2);
+
+      MainPageViewModel.MainVm.RemotePotVoltage = BitConverter.ToSingle(buffer, index); index += 4;
+
+      temp2 = BitConverter.ToSingle(buffer, index); index += 4;
+      MainPageViewModel.MainVm.TemperatureSensor = temp2;
+
+      MainPageViewModel.MainVm.PresetLines = buffer[index++];
+      MainPageViewModel.MainVm.CurrentPreset = buffer[index++];
+
+      if (Utils.ReadbackVm != null)
+      {
+        Utils.ReadbackVm.TransformerTemperature = MainPageViewModel.MainVm.TransformerTemperature;
+        Utils.ReadbackVm.HeatsinkTemperature = MainPageViewModel.MainVm.HeatsinkTemperature;
+        Utils.ReadbackVm.PresetLines = MainPageViewModel.MainVm.PresetLines;
+        Utils.ReadbackVm.CurrentPreset = MainPageViewModel.MainVm.CurrentPreset;
+      }
+
+      MainPageViewModel.MainVm.TransformerIsHot = buffer[index++] != 0;
+      MainPageViewModel.MainVm.HeatSinkIsHot = buffer[index++] != 0;
+      MainPageViewModel.MainVm.TurnOnIn = buffer[index++] != 0;
+      MainPageViewModel.MainVm.TurnOnOut = buffer[index++] != 0;
+      MainPageViewModel.MainVm.BadSettings = buffer[index++] != 0;
+      MainPageViewModel.MainVm.AdcIsclipping = buffer[index++] != 0;
+      MainPageViewModel.MainVm.SpdifIsLocked = buffer[index++] != 0;
+      MainPageViewModel.MainVm.SpdifIsMuted = buffer[index++] != 0;
+
+      index++; // wifi connected
+      MainPageViewModel.MainVm.IsStatic = buffer[index++] != 0;
+
+      MainPageViewModel.MainVm.DhcpIpAddress = BitConverter.ToUInt32(buffer, index); index += 4;
+      MainPageViewModel.MainVm.DhcpIpGateway = BitConverter.ToUInt32(buffer, index); index += 4;
+      MainPageViewModel.MainVm.DhcpIpDns = BitConverter.ToUInt32(buffer, index); index += 4;
+      MainPageViewModel.MainVm.DhcpIpMask = BitConverter.ToUInt32(buffer, index); index += 4;
+
+      MainPageViewModel.MainVm._processorLoad = BitConverter.ToUInt16(buffer, index); index += 2;
+
+      MainPageViewModel.MainVm.BaudRate = buffer[index++]; // actually SPDIF work rate
+      MainPageViewModel.MainVm.HasDsp = buffer[index++] != 0;
+
+      MainPageViewModel.MainVm.PscIsConnected = buffer[index++] != 0;
+      MainPageViewModel.MainVm.IDataIsConnected = buffer[index++] != 0;
+
+      MainPageViewModel.MainVm._rssi = (sbyte)buffer[index++];
+
+      MainPageViewModel.MainVm.UpdateProperties();
+
+      // next member is turnon state
+      return CommResult.OK;
+    }
+
+    public static ushort Password { get; set; }
+
+    private static bool _getSettingsIsBusy;
+    public static async Task<CommResult> GetSettings()
+    {
+      if (_getSettingsIsBusy)
+      {
+        Debug.WriteLine("GetSettings() is busy");
+        return CommResult.Busy;
+      }
+
+      if (!TCP.IsConnected)
+      {
+        Debug.WriteLine("GetSettings() NotConnected");
+        return CommResult.NotConnected;
+      }
+      try
+      {
+        var commandArray = new byte[3];
+        commandArray[0] = 0;
+        commandArray[1] = USB_Commands.CMD_START;
+        commandArray[2] = (byte)USB_Commands.CMD_GET_SETTINGS;
+        var res = Utils.Universal_Write(ref commandArray);
+        if (!res)
+        {
+          return CommResult.isNull;
+        }
+
+        _getSettingsIsBusy = true;
+        Debug.WriteLine("GetSettings()");
+
+        var array = new byte[Constants.SettingsSize];
+
+        var result = TCP.Read(out array);
+        var checksum = BitConverter.ToUInt32(array, array.Length - 4);
+        Debug.WriteLine($"Remote checksum {checksum:X4}");
+        int index;
+        uint ltemp = 0;
+        for (index = 0; index != array.Length - 4; index++)
+        {
+          ltemp += array[index];
+        }
+
+        ltemp = ~ltemp;
+        if (checksum != ltemp)
+        {
+          Debug.WriteLine("Invalid Checksum");
+          _getSettingsIsBusy = false;
+          return CommResult.ChecksumError;
+        }
+
+        index = 0;
+        ushort structureSize = BitConverter.ToUInt16(array, index); index += 2;
+        // FileVersion = BitConverter.ToUInt16(array, index); index += 2; // File_Version abandoned.  This could be used for something else
+        FirmwareVersion = BitConverter.ToUInt16(array, index); index += 2;
+        int color;
+        int channel;
+        for (channel = 0; channel != 8; channel++)
+        {
+          color = BitConverter.ToInt32(array, index); index += 4;
+          var alpha = (byte)(color >> 24);
+          var red = (byte)(color >> 16);
+          var green = (byte)(color >> 8);
+          var blue = (byte)color;
+
+          mixer_2_output_brush[channel] = Color.FromRgba(red, green, blue, alpha);
+
+          Debug.WriteLine(mixer_2_output_brush[channel]);
+        }
+
+        // index += 10 * 16; // oem input labels
+        for (channel = 0; channel != 10; channel++)
+        {
+          input_labels[channel] = ByteArrayToString(ref array, index); index += 16;
+        }
+
+
+        index += 10 * 16; // oem mixer output labels
+
+
+        for (channel = 0; channel != 8; channel++)
+        {
+          output_labels[channel] = ByteArrayToString(ref array, index); index += 16;
+        }
+
+        Utils.AllowSend = false;
+
+        MasterGain = BitConverter.ToSingle(array, index); index += 4;
+
+
+        Utils.AllowSend = true;
+        Debug.WriteLine("MasterGain: {0}", MasterGain);
+
+        for (channel = 0; channel != 8; channel++)
+        {
+          Trims[channel] = BitConverter.ToSingle(array, index); index += 4;
+        }
+
+        for (channel = 0; channel != 8; channel++)
+        {
+          FaderAssignment[channel] = (FadersPageViewModel.AssignmentE)array[index++];
+        }
+
+        //  index += 8; // fader assignments
+        LeftRightFader = BitConverter.ToSingle(array, index); index += 4;
+        FrontRearFader = BitConverter.ToSingle(array, index); index += 4;
+        CenterFader = BitConverter.ToSingle(array, index); index += 4;
+        BassFader = BitConverter.ToSingle(array, index); index += 4;
+
+        for (channel = 0; channel != 8; channel++)
+        {
+          TrimGroup[channel] = array[index++];
+        }
+
+        int band;
+        for (band = 0; band != 31; band++)
+        {
+          for (channel = 0; channel != 8; channel++) // 
+          {
+            Eq[band].Frequency[channel] = BitConverter.ToSingle(array, index);
+            // output_peq.peq_f_q_g[band].fc[channel] = BitConverter.ToSingle(array, index); // output peq freqs   
+            index += 4;
+          }
+          for (channel = 0; channel != 8; channel++) // 
+          {
+            Eq[band].Gain[channel] = BitConverter.ToSingle(array, index);
+            //    output_peq.peq_f_q_g[band].gain[channel] = BitConverter.ToSingle(array, index);
+            index += 4;
+          }
+          for (channel = 0; channel != 8; channel++) // 
+          {
+            Eq[band].Q[channel] = BitConverter.ToSingle(array, index);
+            //   output_peq.peq_f_q_g[band].q[channel] = BitConverter.ToSingle(array, index);
+            index += 4;
+          }
+          for (channel = 0; channel != 8; channel++) // 
+          {
+            Eq[band].IsParametric[channel] = array[index] != 0;
+            //  output_peq.peq_f_q_g[band].parametric_used[channel] = array[index] != 0;
+            index++;
+          }
+          var testband = array[index];
+          index += 4; // skip band & pads
+        }
+        // output peq
+        //  index += Constants.PeqSize * 31;
+
+        // oem peq
+        index += Constants.PeqSize * 12;
+
+        // tone peq
+        BassTone.UpdateTone(ref index, ref array);
+        index += 12;
+        MidTone.UpdateTone(ref index, ref array);
+        index += 12;
+        TrebleTone.UpdateTone(ref index, ref array);
+        index += 12;
+
+
+        // hp crossover
+        // index += 4 * 8; // freq
+        for (channel = 0; channel != 8; channel++) // 
+        {
+          Crossover.HpFrequency[channel] = BitConverter.ToSingle(array, index);
+          index += 4;
+        }
+        // index += 4 * 8; // q
+        for (channel = 0; channel != 8; channel++) // 
+        {
+          Crossover.HpQ[channel] = BitConverter.ToSingle(array, index);
+          index += 4;
+        }
+        //index += 8;     // slope
+        for (channel = 0; channel != 8; channel++) // 
+        {
+          Crossover.HpSlope[channel] = (Crossover.Slope_e)array[index++];
+        }
+        //  index += 8;     // damping
+        for (channel = 0; channel != 8; channel++) // 
+        {
+          Crossover.HpDamping[channel] = (Crossover.Damping_e)array[index++];
+        }
+
+
+        // lp crossover
+        // index += 4 * 8; // freq
+        for (channel = 0; channel != 8; channel++) // 
+        {
+          Crossover.LpFrequency[channel] = BitConverter.ToSingle(array, index);
+          index += 4;
+        }
+        // index += 4 * 8; // q
+        for (channel = 0; channel != 8; channel++) // 
+        {
+          Crossover.LpQ[channel] = BitConverter.ToSingle(array, index);
+          index += 4;
+        }
+        //index += 8;     // slope
+        for (channel = 0; channel != 8; channel++) // 
+        {
+          Crossover.LpSlope[channel] = (Crossover.Slope_e)array[index++];
+        }
+        //  index += 8;     // damping
+        for (channel = 0; channel != 8; channel++) // 
+        {
+          Crossover.LpDamping[channel] = (Crossover.Damping_e)array[index++];
+        }
+
+        index += 4 * 13 * 8; // output mixer
+        index += 4 * 10 * 10; // input mixer
+
+        for (channel = 0; channel != 8; channel++) // output delay
+        {
+          OutputDelay[channel] = BitConverter.ToUInt16(array, index); index += 2;
+          OutputDelayGroup[channel] = BitConverter.ToUInt16(array, index); index += 2;
+        }
+
+        index += 32; // input delay, sizeof(delay_t)
+
+        // soft clip
+        index += 16 * 8;
+        //index += 4 * 8 * 8; // attack
+        //index += 4 * 8 * 8; // decay
+        //index += 4 * 8 * 8; // limiter threshold
+        //index += 4 * 8 * 8; // clip threshold
+
+        // remote
+        index += 20;  // sizeof(remote_t)
+                      //index += 4 * 8;     // min
+                      //index += 4 * 8;     // max
+                      //index += 4 * 8;     // max vehicle volume
+                      //index += 4 * 8;     // min vehicle volume
+                      //index += 1;  // mask
+                      //index += 1;  // mute if min
+                      // todo pad needed here?
+
+        // input attenuators
+        index += 4;
+
+        // meter constants
+        index += 4; // hold
+        index += 4; // decay
+
+        index++; // surround mode
+        index++; // surround size
+
+        index++; // oem inverts
+        index++; // output inverts
+
+        index++; // mutes
+        index++; // enable surround
+
+        index++; //pad
+        index++; // nav ducking
+
+        index += 4;  // float nav_attenuation
+        index += 2;  // uint16_t nav_channels
+
+        index++;  //  uint8_t output_peq_selected_channel_mask
+        index++;  //  uint8_t output_peq_selected_band
+
+        index++;    // bool enable_advanced_mixer
+
+        index++;  // uint8_t bridge_mask;
+
+        //  index++; // uint8_t crossover_link_mask;
+        Crossover.LinkMask = array[index++];
+        // checksum
+
+        Utils.MainPageVm.UpdateMainPage();
+        _getSettingsIsBusy = false;
+        return CommResult.OK;
+      }
+      catch (Exception ee)
+      {
+        Debug.WriteLine($"Get Settings error: {ee.Message}");
+        return CommResult.Failed;
+      }
+
+    }
+    public enum dirty_source_e
+    {
+      dirty_source_PSC,
+      dirty_source_GUI,
+      dirty_source_IDATA,
+      dirty_source_WIFI,
+      dirty_source_BLUETOOTH,
+      dirty_source_FLASH
+    }
+
+    public static string ByteArrayToString(ref byte[] bytes, int index)
+    {
+      int i;
+      for (i = 0; i != 16; i++)
+      {
+        if (bytes[index + i] == 0)
+          break;
+      }
+      var s = Encoding.ASCII.GetString(bytes, index, i);
+      s = s.TrimEnd(' ');
+      return s;
+    }
+    // private static double _batteryVoltage;
+  }
+
+
+}

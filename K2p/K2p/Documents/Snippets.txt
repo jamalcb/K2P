@@ -1,0 +1,406 @@
+﻿Third Octave
+   <ScrollView>
+      <StackLayout HorizontalOptions="CenterAndExpand" VerticalOptions="StartAndExpand" Padding="5,5,0,0">
+        <Label Text ="Nothing working here yet" Style="{StaticResource LabelTitleStyle}"/>
+        <Grid>
+          <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+          </Grid.RowDefinitions>
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="50"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="40"/>
+           
+          </Grid.ColumnDefinitions>
+
+          <!--#region Band 0 -->
+          <Label  Grid.Row="0" Grid.Column="0" Text="20.0 Hz"  Style="{StaticResource LabelStyle}" />
+          <Slider Grid.Row="0" Grid.Column="1" Style="{StaticResource SliderStyle}"  Maximum="{Binding GainSliderMax}" Minimum="{Binding GainSliderMin}" Value="{Binding GainSliderValueB0}"/>
+          <Entry  Grid.Row="0" Grid.Column="2" Style="{StaticResource EntryStyle}"  Keyboard="Numeric" Text="{Binding GainSliderValueB0}"  >
+            <Entry.Behaviors>
+              <behaviors:ParaBoostCutBehavior/>
+              <b:EventToCommandBehavior EventName="Completed" Command="{Binding GainEntryCompletedCommandB0}"/>
+            </Entry.Behaviors>
+          </Entry>
+          <!--#endregion Band 0 -->
+          <!--#region Band 1 -->
+          <Label  Grid.Row="1" Grid.Column="0" Text="25.0 Hz"  Style="{StaticResource LabelStyle}" />
+          <Slider Grid.Row="1" Grid.Column="1" Style="{StaticResource SliderStyle}"  Maximum="{Binding GainSliderMax}" Minimum="{Binding GainSliderMin}" Value="{Binding GainSliderValueB1}"/>
+          <Entry  Grid.Row="1" Grid.Column="2" Style="{StaticResource EntryStyle}"  Keyboard="Numeric" Text="{Binding GainSliderValueB1}"  >
+            <Entry.Behaviors>
+              <behaviors:ParaBoostCutBehavior/>
+              <b:EventToCommandBehavior EventName="Completed" Command="{Binding GainEntryCompletedCommandB1}"/>
+            </Entry.Behaviors>
+          </Entry>
+          <!--#endregion Band 1 -->
+          <!--#region Band 2 -->
+          <Label  Grid.Row="2" Grid.Column="0" Text="31.5 Hz"  Style="{StaticResource LabelStyle}" />
+          <Slider Grid.Row="2" Grid.Column="1" Style="{StaticResource SliderStyle}"  Maximum="{Binding GainSliderMax}" Minimum="{Binding GainSliderMin}" Value="{Binding GainSliderValueB2}"/>
+          <Entry  Grid.Row="2" Grid.Column="2" Style="{StaticResource EntryStyle}"  Keyboard="Numeric" Text="{Binding GainSliderValueB2}"  >
+            <Entry.Behaviors>
+              <behaviors:ParaBoostCutBehavior/>
+              <b:EventToCommandBehavior EventName="Completed" Command="{Binding GainEntryCompletedCommandB2}"/>
+            </Entry.Behaviors>
+          </Entry>
+          <!--#endregion Band 2-->
+          <!--#region Band 3 -->
+          <Label  Grid.Row="3" Grid.Column="0" Text="40.0 Hz"  Style="{StaticResource LabelStyle}" />
+          <Slider Grid.Row="3" Grid.Column="1" Style="{StaticResource SliderStyle}"  Maximum="{Binding GainSliderMax}" Minimum="{Binding GainSliderMin}" Value="{Binding GainSliderValueB3}"/>
+          <Entry  Grid.Row="3" Grid.Column="2" Style="{StaticResource EntryStyle}"  Keyboard="Numeric" Text="{Binding GainSliderValueB3}"  >
+            <Entry.Behaviors>
+              <behaviors:ParaBoostCutBehavior/>
+              <b:EventToCommandBehavior EventName="Completed" Command="{Binding GainEntryCompletedCommandB3}"/>
+            </Entry.Behaviors>
+          </Entry>
+          <!--#endregion Band 3-->
+
+        </Grid>
+      </StackLayout>
+    </ScrollView>
+
+
+
+    ThirdOctaveViewModel:
+     public DelegateCommand GainEntryCompletedCommandB0 { get; }
+    public DelegateCommand GainEntryCompletedCommandB1 { get; }
+    public DelegateCommand GainEntryCompletedCommandB2 { get; }
+    public DelegateCommand GainEntryCompletedCommandB3 { get; }
+    public ThirdOctavePageViewModel()
+    {
+      GainEntryCompletedCommandB0 = new DelegateCommand(ExecuteGainEntryCompletedCommandB0);
+      GainEntryCompletedCommandB1 = new DelegateCommand(ExecuteGainEntryCompletedCommandB1);
+      GainEntryCompletedCommandB2 = new DelegateCommand(ExecuteGainEntryCompletedCommandB2);
+      GainEntryCompletedCommandB3 = new DelegateCommand(ExecuteGainEntryCompletedCommandB3);
+
+    }
+
+
+    private void ExecuteGainEntryCompletedCommandB0()
+    {
+      
+    }
+    private void ExecuteGainEntryCompletedCommandB1()
+    {
+
+    }
+    private void ExecuteGainEntryCompletedCommandB2()
+    {
+
+    }
+    private void ExecuteGainEntryCompletedCommandB3()
+    {
+
+    }
+    public double GainSliderMax { get; } = 20.0;
+    public double GainSliderMin { get; } = -24;
+
+    public double GainSliderValueB0 { get; set; }
+    public double GainSliderValueB1 { get; set; }
+    public double GainSliderValueB2 { get; set; }
+    public double GainSliderValueB3 { get; set; }
+
+
+
+
+
+    *********************************************************
+
+    using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Text;
+using System.Windows.Input;
+using K2p.Statics;
+using Prism.Commands;
+using Prism.Navigation;
+using Prism.Services;
+using SkiaSharp;
+using SkiaSharp.Views.Forms;
+using Xamarin.Forms;
+
+namespace K2p.ViewModels
+{
+  public class ThirdOctavePageViewModel : ViewModelBase
+  {
+    private double _testSlider;
+    public ICommand PaintCommand { get; private set; }
+    private readonly SKPaint[] _strokePaints = new SKPaint[8];
+    private SKPath _xAxisPath;
+    private readonly SKPaint _xAxisPaint;
+
+
+
+    public ThirdOctavePageViewModel(INavigationService navigationService, IPageDialogService dialogService) : base(
+      navigationService)
+    {
+      PaintCommand = new Command<SKPaintSurfaceEventArgs>(OnPainting);
+      Utils.ThirdOctaveVM = this;
+      _xAxisPaint = new SKPaint
+      {
+        Style = SKPaintStyle.Stroke,
+        Color = SKColors.Black,
+        StrokeWidth = 4,
+        StrokeCap = SKStrokeCap.Butt,
+        IsAntialias = true
+      };
+
+      for (var channel = 0; channel != 8; channel++)
+      {
+        _strokePaints[channel] = new SKPaint
+        {
+          Style = SKPaintStyle.Stroke,
+          Color = Settings.mixer_2_output_brush[channel].ToSKColor(),
+          StrokeWidth = 4,
+          StrokeCap = SKStrokeCap.Butt,
+          IsAntialias = true
+        };
+      }
+      PeqResponse.ComputePeqGains();
+      InitXAxisPath();
+    }
+
+    private Dictionary<long, SKPath> temporaryPaths = new Dictionary<long, SKPath>();
+    private List<SKPath> paths = new List<SKPath>();
+
+    private void InitXAxisPath()
+    {
+      float x = 0;
+      float y = 0;
+      _xAxisPath = new SKPath();
+
+
+      for (var xticks = 0; xticks != 50; xticks++)
+      {
+        _xAxisPath.MoveTo(x, 0);
+        _xAxisPath.LineTo(x, 20);
+        x += 10;
+
+      }
+    }
+  
+    private double _sliderVal;
+    public double SliderVal
+    {
+      get => _sliderVal;
+      set
+      {
+        SetProperty(ref _sliderVal, value);
+        TestVal = $"{value:N2} dB";
+        Settings.Eq[15].Gain[0] = _sliderVal;
+        PeqResponse.ComputePeqGains();
+
+        Utils.ThirdOctavePageMainView.Redraw();
+        Debug.WriteLine(TestVal);
+
+      }
+    }
+    public string TestVal = "0.0";
+    #region Enables
+    public bool IsEnabledCh0 { get; set; } = true;
+    public bool IsEnabledCh1 { get; set; } = true;
+    public bool IsEnabledCh2 { get; set; } = true;
+    public bool IsEnabledCh3 { get; set; } = true;
+    public bool IsEnabledCh4 { get; set; } = true;
+    public bool IsEnabledCh5 { get; set; } = true;
+    public bool IsEnabledCh6 { get; set; } = true;
+    public bool IsEnabledCh7 { get; set; } = true;
+
+    public string ChannelLabel0 { get; set; } = Settings.output_labels[0];
+    public string ChannelLabel1 { get; set; } = Settings.output_labels[1];
+    public string ChannelLabel2 { get; set; } = Settings.output_labels[2];
+    public string ChannelLabel3 { get; set; } = Settings.output_labels[3];
+    public string ChannelLabel4 { get; set; } = Settings.output_labels[4];
+    public string ChannelLabel5 { get; set; } = Settings.output_labels[5];
+    public string ChannelLabel6 { get; set; } = Settings.output_labels[6];
+    public string ChannelLabel7 { get; set; } = Settings.output_labels[7];
+
+    public Color TextColorCh0 { get; set; } = Settings.mixer_2_output_brush[0];
+    public Color TextColorCh1 { get; set; } = Settings.mixer_2_output_brush[1];
+    public Color TextColorCh2 { get; set; } = Settings.mixer_2_output_brush[2];
+    public Color TextColorCh3 { get; set; } = Settings.mixer_2_output_brush[3];
+    public Color TextColorCh4 { get; set; } = Settings.mixer_2_output_brush[4];
+    public Color TextColorCh5 { get; set; } = Settings.mixer_2_output_brush[5];
+    public Color TextColorCh6 { get; set; } = Settings.mixer_2_output_brush[6];
+    public Color TextColorCh7 { get; set; } = Settings.mixer_2_output_brush[7];
+
+    #endregion
+    //SKPaint textPaint = new SKPaint
+    //{
+    //  IsAntialias = true,
+    //  Style = SKPaintStyle.Fill,
+    //  Color = SKColors.Blue,
+    //  TextSize = 20,
+    //  IsVerticalText = true
+    //};
+
+    private static SKColor plotColor = new SKColor(51, 51, 51);
+
+
+    private SKPaint _strokePaint = new SKPaint
+    {
+      Style = SKPaintStyle.Stroke,
+      Color = SKColors.LightGreen,
+      StrokeWidth = 1,
+      StrokeCap = SKStrokeCap.Round,
+      IsAntialias = true
+    };
+
+
+    private void OnPainting(SKPaintSurfaceEventArgs e)
+    {
+      // we get the current surface from the event args
+      var surface = e.Surface;
+
+      // then we get the canvas that we can draw on
+      var canvas = surface.Canvas;
+      // clear the canvas / view
+      canvas.Clear(plotColor);
+    
+
+  
+      // create the paint for the path
+      //var pathStroke = new SKPaint
+      //{
+      //  IsAntialias = true,
+      //  Style = SKPaintStyle.Stroke,
+      //  Color = SKColors.LightGreen,
+      //  StrokeWidth = 1
+      //};
+
+      // create a path
+
+      //path.MoveTo(160, 60);
+      //path.LineTo(240, 140);
+      //path.MoveTo(240, 60);
+      //path.LineTo(160, 140);
+
+      // draw the path
+      //canvas.DrawPath(path, pathStroke);
+
+
+      Response.NewCurve();
+     // canvas.DrawPath(_xAxisPath, _xAxisPaint);
+
+      var channel = 0;
+      var plotPaths = new SKPath[8];
+
+      float width = e.Info.Width;
+      float height = e.Info.Height;
+
+      // float scale = (float) SliderVal + 24;
+      //canvas.Save();
+      //canvas.Scale(width / 3.301029f, height / 24);
+      //canvas.Translate(-1, 12);
+
+
+
+      // canvas.Translate(width/2, height/2);
+
+      //canvas.Scale(width/scale, height/scale);
+      //canvas.Translate(10, 10);
+
+      //Debug.WriteLine($"{SliderVal + 24}");
+
+      //SKPath testPath = new SKPath();
+
+      //testPath.MoveTo(1,0);
+      //testPath.LineTo(4, 5);
+      //testPath.LineTo(4, 3);
+      //canvas.DrawPath(testPath, _strokePaints[0]);
+      // canvas.Restore();
+
+      //foreach (SKPath plotPath in _plotpaths)
+      //{
+      //  plotPath.MoveTo(0, Response.YVals[channel, 0]);
+      //  for (var x = 0; x != Constants.PLOT_POINTS; x++)
+      //  {
+      //    plotPath.LineTo(Response.XVals[x], Response.YVals[channel, x]);
+      //  }
+      //  canvas.DrawPath(plotPath, _strokePaint);
+      //  channel++;
+      //}
+
+      var xscale = width / 4.301029f;
+      var yscale = height / 24f;
+      for (channel = 0; channel != 8; channel++)
+      {
+        plotPaths[channel] = new SKPath();
+        plotPaths[channel].MoveTo(0, 0);
+        for (var x = 0; x != Constants.PLOT_POINTS; x++)
+        {
+     //     Debug.WriteLine($"{xscale * Response.XVals[x]}, { height / 2 - yscale * Response.YVals[channel, x]}");
+          plotPaths[channel].LineTo(xscale * Response.XVals[x], height / 2 - yscale * Response.YVals[channel, x]);
+        }
+
+
+        // _strokePaint.Color = Settings.mixer_2_output_brush[channel].ToSKColor();
+        canvas.DrawPath(plotPaths[channel], _strokePaints[channel]);
+
+      }
+
+    //  canvas.Restore();
+     // canvas.Scale(width / 100, height / 100);
+      Debug.WriteLine($"Width {width}, Height {height}");
+      //canvas.Translate();
+
+      // DRAWING TEXT
+
+      // create the paint for the text
+      var textPaint = new SKPaint
+      {
+        IsAntialias = true,
+        Style = SKPaintStyle.Fill,
+        Color = SKColors.White,
+        TextSize = 50,
+        IsVerticalText = false
+      };
+      // draw the text (from the baseline)
+      //  canvas.DrawText("SkiaSharp", 60, 160 + 80, textPaint);
+      canvas.DrawText(TestVal, 10, 100, textPaint);
+
+      var size = Math.Min(width / 100, height / 100);
+
+      textPaint.TextSize = size / 400f;
+      canvas.DrawText("1.5kHz", 10, 200, textPaint);
+
+
+      // DRAWING TOUCH PATHS
+
+      // create the paint for the touch path
+      var touchPathStroke = new SKPaint
+      {
+        IsAntialias = true,
+        Style = SKPaintStyle.Stroke,
+        Color = SKColors.Purple,
+        StrokeWidth = 1
+      };
+
+      // draw the paths
+      //foreach (var touchPath in temporaryPaths)
+      //{
+      //  canvas.DrawPath(touchPath.Value, touchPathStroke);
+      //}
+      //foreach (var touchPath in paths)
+      //{
+      //  canvas.DrawPath(touchPath, touchPathStroke);
+      //}
+    }
+    public double TestSlider
+    {
+      get => _testSlider;
+      set
+      {
+        _testSlider = value;
+        RaisePropertyChanged();
+      }
+    }
+  }
+}
+

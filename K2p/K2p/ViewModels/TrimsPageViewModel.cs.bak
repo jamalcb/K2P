@@ -1,0 +1,592 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Text;
+using K2p.Statics;
+using Prism.Commands;
+using Prism.Navigation;
+using Prism.Services;
+using SkiaSharp.Views.Forms;
+using Xamarin.Forms;
+
+namespace K2p.ViewModels
+{
+  public class TrimsPageViewModel : ViewModelBase
+  {
+    // private IPageDialogService _dialogService;
+
+  //  private double _masterSliderVal;
+    private string _masterEntryValue = "0.0";
+
+    private string[] _trimEntry = new string[8];
+  //  private double[] _trimSlider = new double[8];
+    private int[] _group_index = new int[8];
+    public IList<Group> Groups => GroupData.GroupSource;
+    private Group _selectedGroupCh0;
+    private Group _selectedGroupCh1;
+    private Group _selectedGroupCh2;
+    private Group _selectedGroupCh3;
+    private Group _selectedGroupCh4;
+    private Group _selectedGroupCh5;
+    private Group _selectedGroupCh6;
+    private Group _selectedGroupCh7;
+
+    public DelegateCommand MasterEntryCompletedCommand { get; }
+    public DelegateCommand TrimEntryCompletedCommandCh0 { get; }
+    public DelegateCommand TrimEntryCompletedCommandCh1 { get; }
+    public DelegateCommand TrimEntryCompletedCommandCh2 { get; }
+    public DelegateCommand TrimEntryCompletedCommandCh3 { get; }
+    public DelegateCommand TrimEntryCompletedCommandCh4 { get; }
+    public DelegateCommand TrimEntryCompletedCommandCh5 { get; }
+    public DelegateCommand TrimEntryCompletedCommandCh6 { get; }
+    public DelegateCommand TrimEntryCompletedCommandCh7 { get; }
+
+    public DelegateCommand ButtonDefaultGroups { get; }
+
+    public TrimsPageViewModel(INavigationService navigationService, IPageDialogService dialogService) : base(navigationService)
+    {
+      // _dialogService = dialogService;
+
+      Utils.TrimPageVm = this;
+
+      MasterEntryCompletedCommand = new DelegateCommand(ExecuteMasterEntryCompleted);
+      TrimEntryCompletedCommandCh0 = new DelegateCommand(ExecuteTrimEntryCompletedCommandCh0);
+      TrimEntryCompletedCommandCh1 = new DelegateCommand(ExecuteTrimEntryCompletedCommandCh1);
+      TrimEntryCompletedCommandCh2 = new DelegateCommand(ExecuteTrimEntryCompletedCommandCh2);
+      TrimEntryCompletedCommandCh3 = new DelegateCommand(ExecuteTrimEntryCompletedCommandCh3);
+      TrimEntryCompletedCommandCh4 = new DelegateCommand(ExecuteTrimEntryCompletedCommandCh4);
+      TrimEntryCompletedCommandCh5 = new DelegateCommand(ExecuteTrimEntryCompletedCommandCh5);
+      TrimEntryCompletedCommandCh6 = new DelegateCommand(ExecuteTrimEntryCompletedCommandCh6);
+      TrimEntryCompletedCommandCh7 = new DelegateCommand(ExecuteTrimEntryCompletedCommandCh7);
+
+      ButtonDefaultGroups = new DelegateCommand(ExecuteButtonDefaultGroups);
+      _masterEntryValue = $"{Settings.MasterGain:N2}";
+      // _masterSliderVal = Settings.MasterGain;
+      RaisePropertyChanged("MasterEntryValue");
+      RaisePropertyChanged("MasterSliderValue");
+      for (var channel = 0; channel != 8; channel++)
+      {
+        // _trimSlider[channel] = Settings.Trims[channel];
+        _trimEntry[channel] = $"{Settings.Trims[channel]:N1}";
+        SetGroup(channel, Settings.OutputDelayGroup[channel]);
+      }
+    }
+
+    private void ExecuteButtonDefaultGroups()
+    {
+      for (var channel = 0; channel != 8; channel++)
+      {
+        SetGroup(channel, channel);
+      }
+    }
+
+    public Color TextColorCh0 { get; set; } = Settings.mixer_2_output_brush[0];
+    public Color TextColorCh1 { get; set; } = Settings.mixer_2_output_brush[1];
+    public Color TextColorCh2 { get; set; } = Settings.mixer_2_output_brush[2];
+    public Color TextColorCh3 { get; set; } = Settings.mixer_2_output_brush[3];
+    public Color TextColorCh4 { get; set; } = Settings.mixer_2_output_brush[4];
+    public Color TextColorCh5 { get; set; } = Settings.mixer_2_output_brush[5];
+    public Color TextColorCh6 { get; set; } = Settings.mixer_2_output_brush[6];
+    public Color TextColorCh7 { get; set; } = Settings.mixer_2_output_brush[7];
+
+    public string LabelCh0 { get; set; } = Settings.output_labels[0];
+    public string LabelCh1 { get; set; } = Settings.output_labels[1];
+    public string LabelCh2 { get; set; } = Settings.output_labels[2];
+    public string LabelCh3 { get; set; } = Settings.output_labels[3];
+    public string LabelCh4 { get; set; } = Settings.output_labels[4];
+    public string LabelCh5 { get; set; } = Settings.output_labels[5];
+    public string LabelCh6 { get; set; } = Settings.output_labels[6];
+    public string LabelCh7 { get; set; } = Settings.output_labels[7];
+    public Group SelectedGroupCh0
+    {
+      get => _selectedGroupCh0;
+      set
+      {
+        if (value == _selectedGroupCh0) return;
+        SetProperty(ref _selectedGroupCh0, value);
+        _group_index[0] = _selectedGroupCh0.GroupIndex;
+        TrimSliderValueCh0 = TrimSliderValueCh0;
+      }
+    }
+    public Group SelectedGroupCh1
+    {
+      get => _selectedGroupCh1;
+      set
+      {
+        if (value == _selectedGroupCh1) return;
+        SetProperty(ref _selectedGroupCh1, value);
+        _group_index[1] = _selectedGroupCh1.GroupIndex;
+        TrimSliderValueCh1 = TrimSliderValueCh1;
+      }
+    }
+    public Group SelectedGroupCh2
+    {
+      get => _selectedGroupCh2;
+      set
+      {
+        SetProperty(ref _selectedGroupCh2, value);
+        _group_index[2] = _selectedGroupCh2.GroupIndex;
+        TrimSliderValueCh2 = TrimSliderValueCh2;
+      }
+    }
+    public Group SelectedGroupCh3
+    {
+      get => _selectedGroupCh3;
+      set
+      {
+        SetProperty(ref _selectedGroupCh3, value);
+        _group_index[3] = _selectedGroupCh3.GroupIndex;
+        TrimSliderValueCh3 = TrimSliderValueCh3;
+      }
+    }
+    public Group SelectedGroupCh4
+    {
+      get => _selectedGroupCh4;
+      set
+      {
+        SetProperty(ref _selectedGroupCh4, value);
+        _group_index[4] = _selectedGroupCh4.GroupIndex;
+        TrimSliderValueCh4 = TrimSliderValueCh4;
+      }
+    }
+    public Group SelectedGroupCh5
+    {
+      get => _selectedGroupCh5;
+      set
+      {
+        SetProperty(ref _selectedGroupCh5, value);
+        _group_index[5] = _selectedGroupCh5.GroupIndex;
+        TrimSliderValueCh5 = TrimSliderValueCh5;
+      }
+    }
+    public Group SelectedGroupCh6
+    {
+      get => _selectedGroupCh6;
+      set
+      {
+        SetProperty(ref _selectedGroupCh6, value);
+        _group_index[6] = _selectedGroupCh6.GroupIndex;
+        TrimSliderValueCh6 = TrimSliderValueCh6;
+      }
+    }
+    public Group SelectedGroupCh7
+    {
+      get => _selectedGroupCh7;
+      set
+      {
+        SetProperty(ref _selectedGroupCh7, value);
+        _group_index[7] = _selectedGroupCh7.GroupIndex;
+        TrimSliderValueCh7 = TrimSliderValueCh7;
+      }
+    }
+    private void SetGroup(int channel, int group)
+    {
+      _group_index[channel] = group;
+      switch (channel)
+      {
+        case 0:
+          SelectedGroupCh0 = Groups[group];
+          break;
+        case 1:
+          SelectedGroupCh1 = Groups[group];
+          break;
+        case 2:
+          SelectedGroupCh2 = Groups[group];
+          break;
+        case 3:
+          SelectedGroupCh3 = Groups[group];
+          break;
+        case 4:
+          SelectedGroupCh4 = Groups[group];
+          break;
+        case 5:
+          SelectedGroupCh5 = Groups[group];
+          break;
+        case 6:
+          SelectedGroupCh6 = Groups[group];
+          break;
+        case 7:
+          SelectedGroupCh7 = Groups[group];
+          break;
+      }
+    }
+    public double TrimMax { get; set; } = Constants.TrimMax;
+    public double TrimMin { get; set; } = Constants.TrimMin;
+    public double VolMax { get; set; } = Constants.VolMax;
+    public double VolMin { get; set; } = Constants.VolMin;
+
+    #region master
+
+    private void ExecuteMasterEntryCompleted()
+    {
+      double.TryParse(MasterEntryValue, out var _temp);
+      MasterSliderValue = _temp;
+      RaisePropertyChanged("MasterEntryValue");
+    }
+
+    public string MasterEntryValue
+    {
+      get => _masterEntryValue;
+      set
+      {
+        _masterEntryValue = value;
+        Debug.WriteLine("MasterEntryValue " + value);
+        RaisePropertyChanged();
+      }
+    }
+
+    public void UpdatePage()
+    {
+      RaisePropertyChanged("MasterEntryValue");
+      RaisePropertyChanged("MasterSliderValue");
+    }
+
+    public double MasterSliderValue
+    {
+      get => Settings.MasterGain;
+      set
+      {
+        if (Math.Abs(value - Settings.MasterGain) < .01) return;
+        Settings.MasterGain = Settings.GetMasterIncrement(value);
+        _masterEntryValue = $"{Settings.MasterGain:N2}";
+
+        RaisePropertyChanged();
+        RaisePropertyChanged("MasterEntryValue");
+        Utils.MainPageVm?.UpdateMainPage();
+        //Utils.TrimPageVm?.RaisePropertyChanged("MasterEntryValue");
+        //Utils.TrimPageVm?.RaisePropertyChanged("MasterSliderValue");
+        Utils.SendFloat(USB_Commands.CMD_SET_MASTER_GAIN, Settings.MasterGain);
+      }
+    }
+
+    #endregion master
+
+    #region trims
+
+    #region completeCommands
+
+    private void ExecuteTrimEntryCompletedCommandCh0()
+    {
+      double.TryParse(_trimEntry[0], out var _temp);
+      TrimSliderValueCh0 = _temp;
+      RaisePropertyChanged("TrimEntryValueCh0");
+    }
+
+    private void ExecuteTrimEntryCompletedCommandCh1()
+    {
+      double.TryParse(_trimEntry[1], out var _temp);
+      TrimSliderValueCh1 = _temp;
+      RaisePropertyChanged("TrimEntryValueCh1");
+    }
+
+    private void ExecuteTrimEntryCompletedCommandCh2()
+    {
+      double.TryParse(_trimEntry[2], out var _temp);
+      TrimSliderValueCh2 = _temp;
+      RaisePropertyChanged("TrimEntryValueCh2");
+    }
+
+    private void ExecuteTrimEntryCompletedCommandCh3()
+    {
+      double.TryParse(_trimEntry[3], out var _temp);
+      TrimSliderValueCh3 = _temp;
+      RaisePropertyChanged("TrimEntryValueCh3");
+    }
+
+    private void ExecuteTrimEntryCompletedCommandCh4()
+    {
+      double.TryParse(_trimEntry[4], out var _temp);
+      TrimSliderValueCh4 = _temp;
+      RaisePropertyChanged("TrimEntryValueCh4");
+    }
+
+    private void ExecuteTrimEntryCompletedCommandCh5()
+    {
+      double.TryParse(_trimEntry[5], out var _temp);
+      TrimSliderValueCh5 = _temp;
+      RaisePropertyChanged("TrimEntryValueCh5");
+    }
+
+    private void ExecuteTrimEntryCompletedCommandCh6()
+    {
+      double.TryParse(_trimEntry[6], out var _temp);
+      TrimSliderValueCh6 = _temp;
+      RaisePropertyChanged("TrimEntryValueCh6");
+    }
+
+    private void ExecuteTrimEntryCompletedCommandCh7()
+    {
+      double.TryParse(_trimEntry[7], out var _temp);
+      TrimSliderValueCh7 = _temp;
+      RaisePropertyChanged("TrimEntryValueCh7");
+    }
+
+    #endregion
+
+    #region trimEntrys
+
+    public string TrimEntryValueCh0
+    {
+      get => _trimEntry[0];
+      set
+      {
+        _trimEntry[0] = value;
+        Debug.WriteLine($"TrimEntryValueCh0 {value}");
+        RaisePropertyChanged();
+      }
+    }
+
+    public string TrimEntryValueCh1
+    {
+      get => _trimEntry[1];
+      set
+      {
+        _trimEntry[1] = value;
+        Debug.WriteLine($"TrimEntryValueCh1 {value}");
+        RaisePropertyChanged();
+      }
+    }
+
+    public string TrimEntryValueCh2
+    {
+      get => _trimEntry[2];
+      set
+      {
+        _trimEntry[2] = value;
+        Debug.WriteLine($"TrimEntryValueCh2 {value}");
+        RaisePropertyChanged();
+      }
+    }
+
+    public string TrimEntryValueCh3
+    {
+      get => _trimEntry[3];
+      set
+      {
+        _trimEntry[3] = value;
+        Debug.WriteLine($"TrimEntryValueCh3 {value}");
+        RaisePropertyChanged();
+      }
+    }
+
+    public string TrimEntryValueCh4
+    {
+      get => _trimEntry[4];
+      set
+      {
+        _trimEntry[4] = value;
+        Debug.WriteLine($"TrimEntryValueCh4 {value}");
+        RaisePropertyChanged();
+      }
+    }
+
+    public string TrimEntryValueCh5
+    {
+      get => _trimEntry[5];
+      set
+      {
+        _trimEntry[5] = value;
+        Debug.WriteLine($"TrimEntryValueCh5 {value}");
+        RaisePropertyChanged();
+      }
+    }
+
+    public string TrimEntryValueCh6
+    {
+      get => _trimEntry[6];
+      set
+      {
+        _trimEntry[6] = value;
+        Debug.WriteLine($"TrimEntryValueCh6 {value}");
+        RaisePropertyChanged();
+      }
+    }
+
+    public string TrimEntryValueCh7
+    {
+      get => _trimEntry[7];
+      set
+      {
+        _trimEntry[7] = value;
+        Debug.WriteLine($"TrimEntryValueCh7 {value}");
+        RaisePropertyChanged();
+      }
+    }
+
+    #endregion
+
+    #region sliders
+
+    public double TrimSliderValueCh0
+    {
+      get => Settings.Trims[0]; //_trimSlider [0];
+      set
+      {
+        if (Math.Abs(Settings.Trims[0] - value) < .01) return;
+          Settings.Trims[0] = Settings.GetTrimIncrement(value);
+     //   _trimSlider[0] = value;
+        _trimEntry[0] = $"{Settings.Trims[0]:N2}";
+        RaisePropertyChanged();
+        RaisePropertyChanged("TrimEntryValueCh0");
+        Send_Trims(0, Settings.Trims[0]);
+      }
+    }
+
+    public double TrimSliderValueCh1
+    {
+      get => Settings.Trims[1];
+      set
+      {
+        if (Math.Abs(Settings.Trims[1] - value) < .01) return;
+        Settings.Trims[1] = Settings.GetTrimIncrement(value);
+        _trimEntry[1] = $"{Settings.Trims[1]:N2}";
+        RaisePropertyChanged();
+        RaisePropertyChanged("TrimEntryValueCh1");
+        Send_Trims(1, Settings.Trims[1]);
+      }
+    }
+
+    public double TrimSliderValueCh2
+    {
+      get => Settings.Trims[2];
+      set
+      {
+        if (Math.Abs(Settings.Trims[2] - value) < .01) return;
+        Settings.Trims[2] = Settings.GetTrimIncrement(value);
+        _trimEntry[2] = $"{Settings.Trims[2]:N2}";
+        RaisePropertyChanged();
+        RaisePropertyChanged("TrimEntryValueCh2");
+        Send_Trims(2, Settings.Trims[2]);
+      }
+    }
+
+    public double TrimSliderValueCh3
+    {
+      get => Settings.Trims[3];
+      set
+      {
+        if (Math.Abs(Settings.Trims[3] - value) < .01) return;
+        Settings.Trims[3] = Settings.GetTrimIncrement(value);
+        _trimEntry[3] = $"{Settings.Trims[3]:N2}";
+        RaisePropertyChanged();
+        RaisePropertyChanged("TrimEntryValueCh3");
+        Send_Trims(3, Settings.Trims[3]);
+      }
+    }
+
+    public double TrimSliderValueCh4
+    {
+      get => Settings.Trims[4];
+      set
+      {
+        if (Math.Abs(Settings.Trims[4] - value) < .01) return;
+        Settings.Trims[4] = Settings.GetTrimIncrement(value);
+        _trimEntry[4] = $"{Settings.Trims[4]:N2}";
+        RaisePropertyChanged();
+        RaisePropertyChanged("TrimEntryValueCh4");
+        Send_Trims(4, Settings.Trims[4]);
+      }
+    }
+
+    public double TrimSliderValueCh5
+    {
+      get => Settings.Trims[5];
+      set
+      {
+        if (Math.Abs(Settings.Trims[5] - value) < .01) return;
+        Settings.Trims[5] = Settings.GetTrimIncrement(value);
+        _trimEntry[5] = $"{Settings.Trims[5]:N2}";
+        RaisePropertyChanged();
+        RaisePropertyChanged("TrimEntryValueCh5");
+        Send_Trims(5, Settings.Trims[5]);
+      }
+    }
+
+    public double TrimSliderValueCh6
+    {
+      get => Settings.Trims[6];
+      set
+      {
+        if (Math.Abs(Settings.Trims[6] - value) < .01) return;
+        Settings.Trims[6] = Settings.GetTrimIncrement(value);
+        _trimEntry[6] = $"{Settings.Trims[6]:N2}";
+        RaisePropertyChanged();
+        RaisePropertyChanged("TrimEntryValueCh6");
+        Send_Trims(6, Settings.Trims[6]);
+      }
+    }
+
+    public double TrimSliderValueCh7
+    {
+      get => Settings.Trims[7];
+      set
+      {
+        if (Math.Abs(Settings.Trims[7] - value) < .01) return;
+        Settings.Trims[7] = Settings.GetTrimIncrement(value);
+        _trimEntry[7] = $"{Settings.Trims[7]:N2}";
+        RaisePropertyChanged();
+        RaisePropertyChanged("TrimEntryValueCh7");
+        Send_Trims(7, Settings.Trims[7]);
+      }
+    }
+
+    #endregion sliders
+
+    internal bool Send_Trims(int ch, double value)
+    {
+
+      var group = _group_index[ch];
+      var max = -1000.0;
+      var min = 1000.0;
+
+      var desiredDelta = value - Settings.Trims[ch];
+      int i;
+      for (i = 0; i != 8; i++) // find min & max for all of the group members
+      {
+        if (_group_index[i] != group) continue;
+        max = Settings.Trims[i] > max ? Settings.Trims[i] : max;
+        min = Settings.Trims[i] < min ? Settings.Trims[i] : min;
+      }
+
+      desiredDelta = max + desiredDelta >= TrimMax ? TrimMax - max : desiredDelta;
+      desiredDelta = min + desiredDelta <= TrimMin ? TrimMin - min : desiredDelta;
+
+      for (i = 0; i != 8; i++)
+      {
+        if (_group_index[i] == group)
+        {
+          Settings.Trims[i] += desiredDelta;
+          OnPropertyChanged("Gain_" + i);
+        }
+      }
+
+      // _gain_trim[ch] = value;
+
+      var CommandArray = new byte[43];
+      var index = 3;
+      CommandArray[0] = 0;
+      CommandArray[1] = USB_Commands.CMD_START;
+      CommandArray[2] = USB_Commands.CMD_SET_TRIMS;
+      int channel;
+      for (channel = 0; channel != 8; channel++)
+      {
+        Array.Copy(BitConverter.GetBytes((float)Settings.Trims[channel]), 0, CommandArray, index, 4);
+        index += 4;
+      }
+
+      for (channel = 0; channel != 8; channel++)
+      {
+        CommandArray[index++] = (byte)_group_index[channel];
+      }
+
+      var result = Utils.Universal_Write(ref CommandArray);
+
+      if (!result)
+        Debug.WriteLine("Write Error");
+      return result;
+    }
+    #endregion trims
+
+   
+  }
+}

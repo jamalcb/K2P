@@ -1,0 +1,59 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:prism="clr-namespace:Prism.Mvvm;assembly=Prism.Forms"
+             prism:ViewModelLocator.AutowireViewModel="True"
+             x:Class="K2p.Views.ReadbackPage"
+             Style="{StaticResource PageTitleStyle}" 
+             Title="Readback">
+
+  <ContentPage.Content>
+    <ScrollView>
+
+      <Grid Padding="5,10,5,0" ColumnSpacing="10">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="*"/>
+          <ColumnDefinition Width="*"/>
+          <ColumnDefinition Width="*"/>
+          <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+          <RowDefinition Height="Auto"/>
+          <RowDefinition Height="Auto"/>
+          <RowDefinition Height="Auto"/>
+          <RowDefinition Height="Auto"/>
+          <RowDefinition Height="Auto"/>
+          <RowDefinition Height="Auto"/>
+          <RowDefinition Height="Auto"/>
+          <RowDefinition Height="Auto"/>
+          <RowDefinition Height="Auto"/>
+          <RowDefinition Height="Auto"/>
+          <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Label Grid.Row="0" Grid.Column="0" Text="XFormer" Style="{StaticResource LabelTitleStyle}" />
+        <Entry Grid.Row="0" Grid.Column="1" Style="{StaticResource EntryStyle}" Text="{Binding TransformerTemperature, StringFormat='{}{0:0.00}'}" />
+        <!--<Entry Grid.Row="0" Grid.Column="1" Style="{StaticResource EntryStyle}" Text="{Binding TransformerTemperature, StringFormat=' {0:N1}C'}" />-->
+        <Label Grid.Row="0" Grid.Column="2" Text="Heatsink" Style="{StaticResource LabelTitleStyle}" />
+        <!--<Entry Grid.Row="0" Grid.Column="3" Style="{StaticResource EntryStyle}" Text="{Binding HeatsinkTemperature, StringFormat=' {0:N1}C'}" />-->
+        <Entry Grid.Row="0" Grid.Column="3" Style="{StaticResource EntryStyle}" Text="{Binding HeatsinkTemperature, StringFormat='{}{0:0.00}'}" />
+        <Label Grid.Row="1" Grid.Column="0" Text="Preset" Style="{StaticResource LabelTitleStyle}"/>
+        <Entry Grid.Row="1" Grid.Column="1" Style="{StaticResource EntryStyle}" Text="{Binding CurrentPreset}" />
+        <Label Grid.Row="1" Grid.Column="2" Text="Preset Line" Style="{StaticResource LabelTitleStyle}" />
+        <Entry Grid.Row="1" Grid.Column="3" Style="{StaticResource EntryStyle}" Text="{Binding PresetLines}"/>
+
+        <Label Grid.Row="2" Grid.Column="0" Text="Turn-on Delay" Style="{StaticResource LabelTitleStyle}"/>
+        <Entry Grid.Row="2" Grid.Column="1" Style="{StaticResource EntryStyle}" Text="{Binding TurnonDelay}" />
+        <Label Grid.Row="2" Grid.Column="2" Text="Aux Turn-on" Style="{StaticResource LabelTitleStyle}"/>
+        <Entry Grid.Row="2" Grid.Column="3" Style="{StaticResource EntryStyle}" Text="{Binding AuxTurnonDelay}" />
+
+        <Label Grid.Row="3" Grid.Column="0" Text="Aux Turn-off" Style="{StaticResource LabelTitleStyle}"/>
+        <Entry Grid.Row="3" Grid.Column="1" Style="{StaticResource EntryStyle}" Text="{Binding AuxTurnoffDelay}" />
+        <Label Grid.Row="3" Grid.Column="2" Text="Autosense Delay" Style="{StaticResource LabelTitleStyle}"/>
+        <Entry Grid.Row="3" Grid.Column="3" Style="{StaticResource EntryStyle}" Text="{Binding AutosenseDelay}" />
+
+      </Grid>
+
+    </ScrollView>
+  </ContentPage.Content>
+</ContentPage>

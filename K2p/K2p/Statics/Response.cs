@@ -1,0 +1,519 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Numerics;
+using System.Text;
+using K2p.UserControls;
+using K2p.ViewModels;
+
+namespace K2p.Statics
+{
+  public class XYVal
+  {
+    public float[] YVal;
+    public double Frequency; // as the log of frequency
+    public double FrequencyHz;
+    public int PlotPoint; // the index into this freq
+
+    public XYVal()
+    {
+      YVal = new float[8];
+    }
+  }
+
+  public static class Response
+  {
+
+    public static XYVal[] XyVals;
+
+
+    static Response()
+    {
+
+      XyVals = new XYVal[Constants.PlotPoints];
+
+      var pow = 3.0 / (Constants.PlotPoints - 1);
+      //    var pow2 = 3.0 / (Constants.PLOT_POINTS - 1);
+
+      for (var i = 0; i != Constants.PlotPoints; i++)
+      {
+        XyVals[i] = new XYVal
+        {
+          Frequency = 1.301029 + i * pow,
+          FrequencyHz = 20 * Math.Pow(10.0, i * pow),
+          PlotPoint = i
+        };
+
+      }
+    }
+
+    public static float[] ThirdOctaveFrequencies =
+    {
+      20f, 25f, 31.5f, 40f, 50f, 63f, 80f, 100f, 125f, 160f,
+      200f, 250f, 315f, 400f, 500f, 630f, 800f, 1000f, 1250f, 1600f,
+      2000f, 2500f, 3150f, 4000f, 5000f, 6300f, 8000f, 10000f, 12500f, 16000f, 20000f
+    };
+    public static int FrequencyToPlotpoint(double freq)
+    {
+      foreach (var val in XyVals)
+      {
+        if (val.FrequencyHz >= freq)
+        {
+          return val.PlotPoint;
+        }
+      }
+
+      return -1;
+    }
+
+    public static void NewPeqCurve()
+    {
+      for (var i = 0; i != Constants.PlotPoints; i++)
+      {
+        for (var channel = 0; channel != 8; channel++)
+        {
+          XyVals[i].YVal[channel] = (float)(20 * Math.Log10(PeqResponse.Gains[channel, i].Magnitude));
+        }
+      }
+    }
+   
+
+  }
+
+  public static class CrossoverResponse
+  {
+    public static XYVal[] XyVals;
+    static Complex[] z;
+    public static Complex[,] hp_gains; // channels, filters
+    public static Complex[,] lp_gains;
+    //public static double[] Frequencies;
+
+    static CrossoverResponse()
+    {
+      int i;
+      XyVals = new XYVal[Constants.PlotPoints];
+      var pow = 3.0 / (Constants.PlotPoints - 1);
+     // Frequencies = new double[Constants.PlotPoints];
+      lp_gains = new Complex[8, Constants.PlotPoints];
+      hp_gains = new Complex[8, Constants.PlotPoints];
+
+      z = new Complex[Constants.PlotPoints];  // jW for crossovers   
+     
+      for (var channel = 0; channel != 8; channel++)
+      {
+        Clear_HP(channel);
+        Clear_LP(channel);
+      }
+      for (i = 0; i != Constants.PlotPoints; i++)
+      {
+       
+        XyVals[i] = new XYVal
+        {
+          Frequency = 1.301029 + i * pow,
+          FrequencyHz = 20 * Math.Pow(10.0, i * pow),
+          PlotPoint = i
+        };
+      //  Frequencies[i] = XyVals[i].FrequencyHz;
+        z[i] = new Complex(0, 2.0 * Math.PI * XyVals[i].FrequencyHz);
+      }
+    
+    }
+    public static void Clear_HP(int channel)
+    {
+      for (var i = 0; i != Constants.PlotPoints; i++)
+      {
+        hp_gains[channel, i] = Complex.One;
+      }
+    }
+    public static void Clear_LP(int channel)
+    {
+      for (var i = 0; i != Constants.PlotPoints; i++)
+      {
+        lp_gains[channel, i] = Complex.One;
+      }
+    }
+    private static Complex HP_transfer(Complex S, double Q)
+    {
+      return S * S / (1 + S * S + S / Q);
+    }
+    private static Complex LP_transfer(Complex S, double Q)
+    {
+      return 1.0 / (1 + S * S + S / Q);
+    }
+    //public enum Slope_e
+    //{
+    //  dB6,
+    //  dB12,
+    //  dB18,
+    //  dB24,
+    //  dB30,
+    //  dB36,
+    //  dB42,
+    //  dB48,
+    //  Flat,
+    //};
+    //public enum Damping_e
+    //{
+    //  Butterworth, Linkwitz_Riley, Bessel, Chebyshev_25, Chebyshev_10, Chebyshev_01, Variable_Q, Bypass, All_Pass
+    //};
+    //public static void NewCrossoverCurve()
+    //{
+    //  for (var i = 0; i != Constants.PlotPoints; i++)
+    //  {
+    //    for (var channel = 0; channel != 8; channel++)
+    //    {
+    // //     XyVals[i].YVal[channel] = (float) (20 * Math.Log10( (hp_gains[channel, i] * lp_gains[channel, i]).Magnitude));
+
+    //      var hp = hp_gains[channel, i].Magnitude;
+    //      var lp = lp_gains[channel, i].Magnitude;
+
+    //      XyVals[i].YVal[channel] = (float)(20 * Math.Log10(hp*lp));
+    //      if (i == 255)
+    //      {
+    //        Debug.WriteLine(lp);
+    //      }
+    //    }
+    //  }
+    //}
+    public static Complex TransferHP(int index, double radians, Crossover.Slope_e slope, Crossover.Damping_e damping, double q)
+    {
+      Complex S = z[index] / radians;
+
+
+      double[] Freq = new double[4];
+      double[] Q = new double[4];
+      ValueLookup.Get_Filter_Values(damping, slope, ref Freq, ref Q);
+
+      switch (damping)  // KEY_ADD_DAMPING
+      {
+        case Crossover.Damping_e.Variable_Q:
+          return HP_transfer(S, q);
+        case Crossover.Damping_e.Bessel:
+        case Crossover.Damping_e.Butterworth:
+        case Crossover.Damping_e.Linkwitz_Riley:
+        //   case XOver.Damping.Chebyshev_50:
+        case Crossover.Damping_e.Chebyshev_25:
+        case Crossover.Damping_e.Chebyshev_10:
+        case Crossover.Damping_e.Chebyshev_01:
+          //         value_lookup.Get_Filter_Values(damping, slope, ref Freq, ref Q);
+          switch (slope)
+          {
+            case Crossover.Slope_e.dB6:
+              return S / (1.0 + S);
+            case Crossover.Slope_e.dB12:
+              return HP_transfer(S / Freq[0], Q[0]);
+            case Crossover.Slope_e.dB18:
+              return (S / Freq[0] / (1.0 + S / Freq[0])) * HP_transfer(S / Freq[1], Q[1]);
+            case Crossover.Slope_e.dB24:
+              return HP_transfer(S / Freq[0], Q[0]) * HP_transfer(S / Freq[1], Q[1]);
+            case Crossover.Slope_e.dB30:
+              return (S / Freq[0] / (1.0 + S / Freq[0])) * HP_transfer(S / Freq[1], Q[1]) * HP_transfer(S / Freq[2], Q[2]);
+            case Crossover.Slope_e.dB36:
+              return HP_transfer(S / Freq[0], Q[0]) * HP_transfer(S / Freq[1], Q[1]) * HP_transfer(S / Freq[2], Q[2]);
+            case Crossover.Slope_e.dB42:
+              return (S / Freq[0] / (1.0 + S / Freq[0])) * HP_transfer(S / Freq[1], Q[1]) * HP_transfer(S / Freq[2], Q[2]) * HP_transfer(S / Freq[3], Q[3]);
+            case Crossover.Slope_e.dB48:
+              return HP_transfer(S / Freq[0], Q[0]) * HP_transfer(S / Freq[1], Q[1]) * HP_transfer(S / Freq[2], Q[2]) * HP_transfer(S / Freq[3], Q[3]);
+          }
+          break;
+      }
+      return S;
+    }
+    public static Complex TransferLP(int index, double radians, Crossover.Slope_e slope, Crossover.Damping_e damping, double q)
+    {
+      Complex S = z[index] / radians;
+
+      var Freq = new double[4];
+      var Q = new double[4];
+      ValueLookup.Get_Filter_Values(damping, slope, ref Freq, ref Q);
+      try
+      {
+        switch (damping)
+        {
+          case Crossover.Damping_e.Variable_Q:
+            return LP_transfer(S, q);
+          case Crossover.Damping_e.Bessel:
+          case Crossover.Damping_e.Butterworth:
+          case Crossover.Damping_e.Linkwitz_Riley:
+          case Crossover.Damping_e.Chebyshev_25:
+          case Crossover.Damping_e.Chebyshev_10:
+          case Crossover.Damping_e.Chebyshev_01:
+            switch (slope)
+            {
+              case Crossover.Slope_e.dB6:
+                return 1 / (1.0 + S);
+              case Crossover.Slope_e.dB12:
+                return LP_transfer(S * Freq[0], Q[0]);
+              case Crossover.Slope_e.dB18:
+                return (1 / (1.0 + S * Freq[0])) * LP_transfer(S * Freq[1], Q[1]);
+              case Crossover.Slope_e.dB24:
+                return LP_transfer(S * Freq[0], Q[0]) * LP_transfer(S * Freq[1], Q[1]);
+              case Crossover.Slope_e.dB30:
+                return (1 / (1.0 + S * Freq[0])) * LP_transfer(S * Freq[1], Q[1]) * LP_transfer(S * Freq[2], Q[2]);
+              case Crossover.Slope_e.dB36:
+                return LP_transfer(S * Freq[0], Q[0]) * LP_transfer(S * Freq[1], Q[1]) * LP_transfer(S * Freq[2], Q[2]);
+              case Crossover.Slope_e.dB42:
+                return (1 / (1.0 + S * Freq[0])) * LP_transfer(S * Freq[1], Q[1]) * LP_transfer(S * Freq[2], Q[2]) * LP_transfer(S * Freq[3], Q[3]);
+              case Crossover.Slope_e.dB48:
+                return LP_transfer(S * Freq[0], Q[0]) * LP_transfer(S * Freq[1], Q[1]) * LP_transfer(S * Freq[2], Q[2]) * LP_transfer(S * Freq[3], Q[3]);
+            }
+            break;
+        }
+      }
+      catch
+      {
+        return S;
+      }
+      return S;
+    }
+    public static void Crunch_HP(int channel, double frequency, Crossover.Slope_e slope, Crossover.Damping_e damping, double q)
+    {
+      if (slope == Crossover.Slope_e.Flat)
+        return;
+      for (var i = 0; i != Constants.PlotPoints; i++)
+      {
+        hp_gains[channel, i] *= TransferHP(i, 2.0 * Math.PI * frequency, slope, damping, q);
+        //if (i == Constants.PlotPoints - 10)
+        //{
+        //  Debug.WriteLine($"{hp_gains[0,i]}");
+        //}
+      }
+    }
+
+    public static void Crunch_LP(int channel, double frequency, Crossover.Slope_e slope, Crossover.Damping_e damping, double q)
+    {
+      if (slope == Crossover.Slope_e.Flat)
+        return;
+      for (var i = 0; i != Constants.PlotPoints; i++)
+        lp_gains[channel, i] *= TransferLP(i, 2.0 * Math.PI * frequency, slope, damping, q);
+    }
+
+
+  }
+
+  public static class ValueLookup
+  {
+    // see http://www.analog.com/designtools/en/filterwizard/
+    // These are High pass tables.  Invert for low pass
+
+    internal static double[,,] FMod =
+    {                // 6 dB                                    12 db                               18 db                       24 db                             30 db                           36 db                         42 db                          48 db
+/*BUTTERWORTH*/    { { 1.000, 1.000, 1.000, 1.000 }, { 1.000, 1.000, 1.000, 1.000 }, { 1.000, 1.000, 1.000, 1.000 }, { 1.000, 1.000, 1.000, 1.000 }, { 1.000, 1.000, 1.000, 1.000 }, { 1.000, 1.000, 1.000, 1.000 }, { 1.000, 1.000, 1.000, 1.000 }, { 1.000, 1.000, 1.000, 1.000 } }, 
+/*LINKWITZ_RILEY*/ { { -1.00, -1.00, -1.00, -1.00 }, { 1.000, 1.000, 1.000, 1.000 }, { -1.00, -1.00, -1.00, -1.00 }, { 1.000, 1.000, 1.000, 1.000 }, { -1.00, -1.00, -1.00, -1.00 }, { 1.000, 1.000, 1.000, 1.000 }, { -1.00, -1.00, -1.00, -1.00},  { 1.000, 1.000, 1.000, 1.000 } },   
+                 
+/*BESSEL*/         { { -1.00, -1.00, -1.00, -1.00 }, { .7843, 1.000, 1.000, 1.000 }, { .7548, .6897, 1.000, 1.000 }, { .6981, .6227, 1.000, 1.000 }, { .6645, .6415, .5687, 1.000 }, { .6227, .5913, .5244, 1.000 }, { .5935, .5824, .5482, .4876 }, { .5605, .4556, .5105, .5441 } },
+
+/*CHEBYSHEV_50*/ //  { { -1.00, -1.00, -1.00, -1.00 }, { .8123, 1.000, 1.000, 1.000 }, { 1.596, .9355, 1.000, 1.000 }, { 1.675, .9699, 1.000, 1.000 }, { 2.762, 1.447, .9823, 1.000 }, { 2.523, 1.302, .9891, 1.000 }, { 3.906, 1.984, 1.215, .9921 }, { 3.369, 1.669, 1.161, .9940 } },
+/*CHEBYSHEV_25*/   { { -1.00, -1.00, -1.00, -1.00 }, { 1.099, 1.000, 1.000, 1.000 }, { 1.633, 1.083, 1.000, 1.000 }, { 1.690, 1.057, 1.000, 1.000 }, { 2.492, 1.487, 1.040, 1.000 }, { 2.390, 1.337, 1.029, 1.000 }, { 3.397, 1.965, 1.244, 1.022 }, { 3.119, 1.677, 1.180, 1.017 } },
+/*CHEBYSHEV_10*/   { { -1.00, -1.00, -1.00, -1.00 }, { 1.067, 1.000, 1.000, 1.000 }, { 1.435, 1.068, 1.000, 1.000 }, { 1.052, 1.537, 1.000, 1.000 }, { 2.105, 1.423, 1.038, 1.000 }, { 2.130, 1.310, 1.028, 1.000 }, { 2.834, 1.859, 1.231, 1.022 }, { 2.759, 1.632, 1.178, 1.0180 } },
+/*CHEBYSHEV_01*/   { { -1.00, -1.00, -1.00, -1.00 }, { 1.003, 1.000, 1.000, 1.000 }, { 1.178, 1.037, 1.000, 1.000 }, { 1.287, 1.036, 1.000, 1.000 }, { 1.580, 1.282, 1.030, 1.000 }, { 1.686, 1.238, 1.024, 1.000 }, { 2.051, 1.619, 1.192, 1.019 }, { 2.131, 1.508, 1.155, 1.016 } },
+/*VARIABLE-Q*/     { { 1.000, 1.000, 1.000, 1.000 }, { 1.000, 1.000, 1.000, 1.000 }, { 1.000, 1.000, 1.000, 1.000 }, { 1.000, 1.000, 1.000, 1.000 }, { 1.000, 1.000, 1.000, 1.000 }, { 1.000, 1.000, 1.000, 1.000 }, { 1.000, 1.000, 1.000, 1.000 }, { 1.000, 1.000, 1.000, 1.000 } },
+/*VARIABLE-Q*/     { { 1.000, 1.000, 1.000, 1.000 }, { 1.000, 1.000, 1.000, 1.000 }, { 1.000, 1.000, 1.000, 1.000 }, { 1.000, 1.000, 1.000, 1.000 }, { 1.000, 1.000, 1.000, 1.000 }, { 1.000, 1.000, 1.000, 1.000 }, { 1.000, 1.000, 1.000, 1.000 }, { 1.000, 1.000, 1.000, 1.000 } },
+    };
+    internal static double[,,] QMod =
+    {                        // 6 dB                                  12 db                         18 db                       24 db                             30 db                           36 db                         42 db                          48 db
+/*BUTTERWORTH*/    { { 1.000, 1.000, 1.000, 1.000 }, { .707,  1.000, 1.000, 1.000 }, { 1.000, 1.000, 1.000, 1.000 }, { .5412, 1.307, 1.000, 1.000 }, { 1.000, .6180, 1.618, 1.000 }, { .5176, .7071, 1.932, 1.000 }, { 1.000, .5550, .8019, 2.270 }, { .5098, .6013, .9000, 2.563 } }, 
+/*LINKWITZ_RILEY*/ { { -1.00, -1.00, -1.00, -1.00 }, { .5000, 1.000, 1.000, 1.000 }, { -1.00, -1.00, -1.00, -1.00 }, { .7071, .7071, 1.000, 1.000 }, { -1.00, -1.00, -1.00, -1.00 }, { .5000, 1.000, 1.000, 1.000 }, { -1.00, -1.00, -1.00, -1.00 }, { .5400, 1.340, .5400, 1.340 } },  
+            
+/*BESSEL*/         { { 1.000, 1.000, 1.000, 1.000 }, { .5771, 1.000, 1.000, 1.000 }, { 1.000, .6910, 1.000, 1.000 }, { .5219, .8055, 1.000, 1.000 }, { 1.000, .5635, .9165, 1.000 }, { .5103, .6112, 1.023, 1.000 }, { 1.000, .5550, .6608, 1.126 }, { .5060, 1.226, .7109, .5597 } },
+
+/*CHEBYSHEV_50*/ //  { { -1.00, -1.00, -1.00, -1.00 }, { .8640, 1.000, 1.000, 1.000 }, { 1.000, 1.710, 1.000, 1.000 }, { .7051, 2.940, 1.000, 1.000 }, { 1.000, 1.188, 4.545, 1.000 }, { .6836, 1.811, 6.512, 1.000 }, { 1.000, 1.092, 2.577, 8.849 }, { .6767, 1.611, 3.466, 11.53 } },
+/*CHEBYSHEV_25*/   { { -1.00, -1.00, -1.00, -1.00 }, { .8093, 1.000, 1.000, 1.000 }, { 1.000, 1.508, 1.000, 1.000 }, { .6572, 2.536, 1.000, 1.000 }, { 1.000, 1.036, 3.876, 1.000 }, { .6371, 1.556, 5.521, 1.000 }, { 1.000, .9596, 2.191, 7.468 }, { .6304, 1.3832, 2.9309, 9.7173 } },
+/*CHEBYSHEV_10*/   { { -1.00, -1.00, -1.00, -1.00 }, { .7673, 1.000, 1.000, 1.000 }, { 1.000, 1.341, 1.000, 1.000 }, { 2.183, .6188, 1.000, 1.000 }, { 1.000, .9145, 3.281, 1.000 }, { .5995, 1.332, 4.635, 1.000 }, { 1.000, .8464, 1.847, 6.234 }, { .5932, 1.183, 2.4531, 8.0819 } },
+/*CHEBYSHEV_01*/   { { -1.00, -1.00, -1.00, -1.00 }, { .7427, 1.000, 1.000, 1.000 }, { 1.000, 1.139, 1.000, 1.000 }, { .5746, 1.724, 1.000, 1.000 }, { 1.000, .7613, 2.482, 1.000 }, { .5557, 1.034, 3.414, 1.000 }, { 1.000, .7028, 1.380, 4.521 }, { .5498, .9162, 1.7906, 5.7978 } },
+/*VARIABLE-Q*/     { { 1.000, 1.000, 1.000, 1.000 }, { .707,  1.000, 1.000, 1.000 }, { 1.000, 1.000, 1.000, 1.000 }, { .5412, 1.307, 1.000, 1.000 }, { 1.000, .6180, 1.618, 1.000 }, { .5176, .7071, 1.932, 1.000 }, { 1.000, .5550, .8019, 2.270 }, { .5098, .6013, .9000, 2.563 } },
+   };
+
+
+    internal static void Get_Filter_Values(Crossover.Damping_e _damping, Crossover.Slope_e _slope, ref double[] freq, ref double[] q)
+    {
+      for (var stage = 0; stage != 4; stage++)
+      {
+        freq[stage] = FMod[(int)_damping, (int)_slope, stage];
+        q[stage] = QMod[(int)_damping, (int)_slope, stage];
+      }
+    }
+  }
+
+  static class PeqResponse
+  {
+    static Complex[] z_1;
+    static Complex[] z_2;
+
+    public static Complex[,] Gains; // channels, bands
+    public static double[] Frequencies;
+
+    static int points;
+    static double two_pi = Math.PI * 2.0;
+    static double DspSampleRate = Constants.Sample_Rate;
+
+    static PeqResponse() // Constructor
+    {
+
+      var pow = 3.0 / (Constants.PlotPoints - 1);
+      Frequencies = new double[Constants.PlotPoints];
+      int i;
+      for (i = 0; i != Constants.PlotPoints; i++)
+      {
+        Frequencies[i] = 20.0 * Math.Pow(10.0, i * pow);
+      }
+
+      points = Constants.PlotPoints;
+      Gains = new Complex[8, points];
+
+      for (i = 0; i != points; i++)
+      {
+        for (var k = 0; k != 8; k++)
+        {
+          Gains[k, i] = new Complex(1, 0);
+        }
+      }
+
+      //  z = new Complex[points];  // jW for crossovers
+      z_1 = new Complex[points];
+      z_2 = new Complex[points];
+
+      for (i = 0; i != points; i++)
+      {
+        var jW = new Complex(0, 2.0 * Math.PI * Frequencies[i] / DspSampleRate);
+
+        var temp = Complex.Pow(Math.E, jW);
+
+        z_1[i] = 1.0 / temp;
+        z_2[i] = z_1[i] * z_1[i];
+      }
+    }
+
+    public static void Clear(int channel)
+    {
+      for (var i = 0; i != points; i++)
+      {
+        Gains[channel, i] = Complex.One;
+      }
+    }
+    public static bool IsPEQ
+    {
+      get
+      {
+        for (var channel = 0; channel != 8; channel++)
+        {
+          for (var band = 0; band != 31; band++)
+          {
+            if (Math.Abs(Settings.Eq[band].Frequency[channel] - Response.ThirdOctaveFrequencies[band]) > .1)
+            {
+              return true;
+            }
+
+            if (Math.Abs(Settings.Eq[band].Q[channel] - Constants.ThirdOctaveQ) > .05)
+            {
+              return true;
+            }
+          }
+        }
+        return false;
+      }
+    }
+
+    /// <summary>
+    /// Computes the gains for the points array
+    /// </summary>
+    /// <returns></returns>
+    public static void ComputePeqGains()
+    {
+      int channel;
+      for (channel = 0; channel != 8; channel++)
+      {
+        Clear(channel);
+        foreach (var peq in Settings.Eq) // vm.output_peq.peq_f_q_g)
+        {
+          if (Math.Abs(peq.Gain[channel]) > .01) // Complex.Zero)
+          {
+            Crunch(peq.Frequency[channel], peq.Gain[channel], peq.Q[channel], channel);
+          }
+        }
+      }
+      //UpDatePlot();
+    }
+
+
+    /// <summary>
+    /// From Cirrus's Python code
+    /// </summary>
+    /// <param name="freq"></param>
+    /// <param name="gain"></param>
+    /// <param name="Q"></param>
+    /// <param name="result"></param>
+    public static void Crunch(double freq, double gain, double Q, int channel)
+    {
+      double omega_c = two_pi * freq / DspSampleRate;
+
+      //double PrePostGainLinear = 0;
+
+      double soc64 = Math.Sin(omega_c) / 64.0;
+      double coc = Math.Cos(omega_c);
+      double omega_3 = omega_c * (Math.Sqrt((Q / 32.0 * Q / 32.0 + 1 / 4096.0)) - 1 / 64.0) / (Q / 32.0);
+      double Qb = Math.Sin(omega_3) * soc64 / (Math.Cos(omega_3) - coc);
+
+      double gain_lin = 1.0;
+      if (gain != 0)
+        gain_lin = Math.Pow(10.0, gain / 20.0);
+
+      if (gain < 0)
+        Qb *= gain_lin;
+
+      double den = (Qb + soc64);
+      double ca1 = (Qb * coc) / (den);
+      double ca2 = (-Qb + soc64) / (den * 2.0);
+
+      double opa2 = (1.0 / 2.0 - ca2);
+      double gtoma2 = gain_lin * (1.0 / 2.0 + ca2);
+
+      double cb0 = (opa2 + gtoma2) / 4.0;
+      double cb1 = -ca1 / 2.0;
+      double cb2 = (opa2 - gtoma2) / 4.0;
+
+      double b0 = 4.0 * cb0;
+      double b1 = 4.0 * cb1;
+      double b2 = 4.0 * cb2;
+      double a1 = -2.0 * ca1;
+      double a2 = -2.0 * ca2;
+
+      double[] a = new double[2];
+      double[] b = new double[3];
+
+      a[0] = a1;
+      a[1] = a2;
+
+      b[0] = b0;
+      b[1] = b1;
+      b[2] = b2;
+
+      for (var i = 0; i != points; i++)
+      {
+        Gains[channel, i] *= Transfer(ref a, ref b, i);
+      }
+    }
+
+    /// <summary>
+    /// Returns the complex result of the z-transform
+    /// </summary>
+    /// <param name="a"> a1-a2</param>
+    /// <param name="b"> b0-b2</param>
+    /// <param name="z"></param>
+    /// <returns>Returns the complex result of the z-transform</returns>
+    public static Complex Transfer(ref double[] a, ref double[] b, int index)
+    {
+      /*  Complex result = (b[0] + b[1] * Complex.Pow(z, -1) + b[2] * Complex.Pow(z, -2.0)) / 
+          (1.0 + a[0] * Complex.Pow(z, -1.0) + a[1] * Complex.Pow(z, -2.0)); */
+
+      Complex result = (b[0] + b[1] * z_1[index] + b[2] * z_2[index]) /
+          (1.0 + a[0] * z_1[index] + a[1] * z_2[index]);
+
+      return result;
+    }
+
+
+
+
+  }
+}

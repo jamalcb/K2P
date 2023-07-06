@@ -1,0 +1,167 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:b="clr-namespace:Prism.Behaviors;assembly=Prism.Forms"
+             xmlns:views="clr-namespace:SkiaSharp.Views.Forms;assembly=SkiaSharp.Views.Forms"
+             xmlns:prism="clr-namespace:Prism.Mvvm;assembly=Prism.Forms"
+             xmlns:behaviors="clr-namespace:K2p.Behaviors;assembly=K2p"
+          
+    
+             prism:ViewModelLocator.AutowireViewModel="True"
+             Style="{StaticResource PageTitleStyle}"
+             x:Class="K2p.Views.CrossoverPage"
+             Title ="Crossovers">
+
+    <ContentPage.Content>
+        <ScrollView  >
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="85"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="64"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Picker Grid.Row="0" Grid.Column="0" Title="Channels" ItemsSource="{Binding ChannelNames}" ItemDisplayBinding="{Binding Name}" SelectedIndex="{Binding ChannelPairIndex}" Style="{StaticResource PickerStyle}"/>
+
+                <!--#region Ch0 -->
+                <Label  Grid.Row="1" Grid.Column="0" Text="Left Front" TextColor="{Binding TextColorCh0}" Style="{StaticResource LabelStyle}" Margin="5,0,0,0" />
+                <!--#region HP -->
+                <Picker Grid.Row="1" Grid.Column="1" Title="HP Damping" ItemsSource="{Binding DampingNames}" ItemDisplayBinding="{Binding Name}" SelectedIndex ="{Binding HpDampingIndexCh0}" Style="{StaticResource PickerStyle}"/>
+
+
+                <Picker Grid.Row="1" Grid.Column="2" Title="HP Slope" ItemsSource="{Binding HPSlopeNamesCh0}" SelectedIndex="{Binding HPSlopeIndexCh0}" IsVisible="{Binding HpSlopeVisibleIsVisibleCh0}" ItemDisplayBinding="{Binding Name}" Style="{StaticResource PickerStyle}"/>
+
+
+                <Label  Grid.Row="1" Grid.Column="2" Text="Q" HorizontalOptions="End" TextColor="{Binding TextColorCh0}"  Style="{StaticResource LabelStyle}" IsVisible="{Binding HpQVisibleCh0}" />
+                <Slider Grid.Row="1" Grid.Column="3" Grid.ColumnSpan="2"  Maximum="3" Minimum=".1" Value="{Binding HpSliderQCh0}" Style="{StaticResource SliderStyle}" IsVisible="{Binding HpQVisibleCh0}"/>
+                <Entry  Grid.Row="1" Grid.Column="5" Text="{Binding HpQCh0}" Keyboard="Numeric"  Style="{StaticResource EntryStyle}" IsVisible="{Binding HpQVisibleCh0}">
+                    <Entry.Behaviors>
+                        <b:EventToCommandBehavior EventName="Completed" Command="{Binding HpQEntryCompletedCommandCh0}"/>
+                    </Entry.Behaviors>
+                </Entry>
+
+                <Label  Grid.Row="2" Grid.Column="0" Text="HP Freq" TextColor="{Binding TextColorCh0}"  Style="{StaticResource LabelStyle}" IsVisible="{Binding HpFreqVisibleCh0}" Margin="5,0,0,0" />
+                <Slider Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="4" Maximum="4.30103"  Minimum="1"  Value="{Binding HpLogControlFreqCh0}" IsVisible="{Binding HpFreqVisibleCh0}"  Style="{StaticResource SliderStyle}"/>
+                <Entry  Grid.Row="2" Grid.Column="5" Text="{Binding HpFreqEntryCh0}" Keyboard="Numeric" Style="{StaticResource EntryStyle}" IsVisible="{Binding HpFreqVisibleCh0}" >
+                    <Entry.Behaviors>
+                        <b:EventToCommandBehavior EventName="Completed" Command="{Binding HpFreqEntryCompletedCommandCh0}"/>
+                    </Entry.Behaviors>
+                </Entry>
+                <!--#endregion HP-->
+                <!--#region LP -->
+                <Picker Grid.Row="3" Grid.Column="1" Title="LP Damping" ItemsSource="{Binding DampingNames}" ItemDisplayBinding="{Binding Name}" SelectedIndex ="{Binding LpDampingIndexCh0}" Style="{StaticResource PickerStyle}"/>
+
+                <Picker Grid.Row="3" Grid.Column="2" Title="LP Slope" ItemsSource="{Binding LPSlopeNamesCh0}" ItemDisplayBinding="{Binding Name}" SelectedIndex="{Binding LPSlopeIndexCh0}" IsVisible="{Binding LpSlopeVisibleIsVisibleCh0}" Style="{StaticResource PickerStyle}"/>
+
+                <Label  Grid.Row="3" Grid.Column="2" Text="Q" HorizontalOptions="End" TextColor="{Binding TextColorCh0}" Style="{StaticResource LabelStyle}"  IsVisible="{Binding LpQVisibleCh0}" />
+                <Slider Grid.Row="3" Grid.Column="3" Grid.ColumnSpan="2" Maximum="3" Minimum=".1"  Value="{Binding LpSliderQCh0}" Style="{StaticResource SliderStyle}"  IsVisible="{Binding LpQVisibleCh0}"/>
+                <Entry  Grid.Row="3" Grid.Column="5" Text="{Binding LpQCh0}" Keyboard="Numeric" Style="{StaticResource EntryStyle}"  IsVisible="{Binding LpQVisibleCh0}">
+                    <Entry.Behaviors>
+                        <b:EventToCommandBehavior EventName="Completed" Command="{Binding LpQEntryCompletedCommandCh0}"/>
+                    </Entry.Behaviors>
+                </Entry>
+
+
+                <Label  Grid.Row="4" Grid.Column="0" Text="LP Freq" TextColor="{Binding TextColorCh0}" IsVisible="{Binding LpFreqVisibleCh0}"  Style="{StaticResource LabelStyle}"  Margin="5,0,0,0" />
+                <Slider Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="4" Maximum="4.30103"  Minimum="1" Value="{Binding LpLogControlFreqCh0}" IsVisible="{Binding LpFreqVisibleCh0}" Style="{StaticResource SliderStyle}"/>
+                <Entry  Grid.Row="4" Grid.Column="5"  Text="{Binding LpFreqEntryCh0}" Keyboard="Numeric" IsVisible="{Binding LpFreqVisibleCh0}" Style="{StaticResource EntryStyle}">
+                    <Entry.Behaviors>
+                        <b:EventToCommandBehavior EventName="Completed" Command="{Binding LpFreqEntryCompletedCommandCh0}"/>
+                    </Entry.Behaviors>
+                </Entry>
+                <!--#endregion LP-->
+                <!--#endregion -->
+
+
+                <!-- Linked -->
+                <Grid Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="4">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <BoxView Grid.Column="0" HeightRequest ="3" WidthRequest="1000" Color="White"  VerticalOptions="Center"/>
+
+                    <Label Grid.Column="1"  Text="Linked"  Style="{StaticResource LabelStyle}"  />
+                    <Switch Grid.Column="2"  IsToggled="{Binding IsLinked}" HeightRequest="10"/>
+                    <BoxView Grid.Column="3" HeightRequest ="3" WidthRequest="1000" Color="White"  VerticalOptions="Center"/>
+                </Grid>
+
+
+                <!--#region Ch1 -->
+                <Label  Grid.Row="6" Grid.Column="0" Text="Right Front" TextColor="{Binding TextColorCh1}" Style="{StaticResource LabelStyle}" Margin="5,0,0,0" />
+                <!--#region HP -->
+                <Picker Grid.Row="6" Grid.Column="1" Title="HP Damping" ItemsSource="{Binding DampingNames}" ItemDisplayBinding="{Binding Name}" SelectedIndex="{Binding HpDampingIndexCh1}" Style="{StaticResource PickerStyle}"/>
+                <Picker Grid.Row="6" Grid.Column="2" Title="Slope" ItemsSource="{Binding HPSlopeNamesCh1}" ItemDisplayBinding="{Binding Name}" SelectedIndex="{Binding HPSlopeIndexCh1}" IsVisible="{Binding HpSlopeVisibleIsVisibleCh1}" Style="{StaticResource PickerStyle}"/>
+                <Label  Grid.Row="6" Grid.Column="2" Text="Q" HorizontalOptions="End" TextColor="{Binding TextColorCh1}" Style="{StaticResource LabelStyle}" IsVisible="{Binding HpQVisibleCh1}"/>
+                <Slider Grid.Row="6" Grid.Column="3"  Grid.ColumnSpan="2" Maximum="3" Minimum=".1" Value="{Binding HpSliderQCh1}" Style="{StaticResource SliderStyle}" IsVisible="{Binding HpQVisibleCh1}"/>
+                <Entry  Grid.Row="6" Grid.Column="5" Text="{Binding HpQCh1}"  Keyboard="Numeric" Style="{StaticResource EntryStyle}" IsVisible="{Binding HpQVisibleCh1}">
+                    <Entry.Behaviors>
+                        <b:EventToCommandBehavior EventName="Completed" Command="{Binding HpQEntryCompletedCommandCh1}"/>
+                    </Entry.Behaviors>
+                </Entry>
+
+
+                <Label  Grid.Row="7" Grid.Column="0" Text="HP Freq" TextColor="{Binding TextColorCh1}" Style="{StaticResource LabelStyle}" IsVisible="{Binding HpFreqVisibleCh1}" Margin="5,0,0,0" />
+                <Slider Grid.Row="7" Grid.Column="1" Grid.ColumnSpan="4" Maximum="4.30103" Minimum="1" Value="{Binding HpLogControlFreqCh1}" IsVisible="{Binding HpFreqVisibleCh1}" Style="{StaticResource SliderStyle}"/>
+                <Entry  Grid.Row="7" Grid.Column="5" Text="{Binding HpFreqEntryCh1}" Keyboard="Numeric" Style="{StaticResource EntryStyle}" IsVisible="{Binding HpFreqVisibleCh1}">
+                    <Entry.Behaviors>
+                        <b:EventToCommandBehavior EventName="Completed" Command="{Binding HpFreqEntryCompletedCommandCh1}"/>
+                    </Entry.Behaviors>
+                </Entry>
+                <!--#endregion HP-->
+                <!--#region LP -->
+                <Picker Grid.Row="8" Grid.Column="1" Title="Damping" ItemsSource="{Binding DampingNames}" ItemDisplayBinding="{Binding Name}" SelectedIndex="{Binding LpDampingIndexCh1}" Style="{StaticResource PickerStyle}"/>
+                <Picker Grid.Row="8" Grid.Column="2" Title="Slope" ItemsSource="{Binding LPSlopeNamesCh1}" ItemDisplayBinding="{Binding Name}" SelectedIndex="{Binding LPSlopeIndexCh1}" IsVisible="{Binding LpSlopeVisibleIsVisibleCh1}" Style="{StaticResource PickerStyle}"/>
+                <Label  Grid.Row="8" Grid.Column="2" Text="Q" HorizontalOptions="End" TextColor="{Binding TextColorCh1}" Style="{StaticResource LabelStyle}"  IsVisible="{Binding LpQVisibleCh1}"/>
+                <Slider Grid.Row="8" Grid.Column="3"  Grid.ColumnSpan="2" Maximum="3" Minimum=".1" Value="{Binding LpSliderQCh1}" Style="{StaticResource SliderStyle}" IsVisible="{Binding LpQVisibleCh1}"/>
+                <Entry  Grid.Row="8" Grid.Column="5" Text="{Binding LpQCh1}"  Keyboard="Numeric" Style="{StaticResource EntryStyle}" IsVisible="{Binding LpQVisibleCh1}">
+                    <Entry.Behaviors>
+                        <b:EventToCommandBehavior EventName="Completed" Command="{Binding LpQEntryCompletedCommandCh1}"/>
+                    </Entry.Behaviors>
+                </Entry>
+
+                <Label  Grid.Row="9" Grid.Column="0" Text="LP Freq" TextColor="{Binding TextColorCh1}" Style="{StaticResource LabelStyle}" IsVisible="{Binding LpFreqVisibleCh1}" Margin="5,0,0,0" />
+                <Slider Grid.Row="9" Grid.Column="1" Grid.ColumnSpan="4" Maximum="4.30103"  Minimum="1" Value="{Binding LpLogControlFreqCh1}" IsVisible="{Binding LpFreqVisibleCh1}" Style="{StaticResource SliderStyle}"/>
+                <Entry  Grid.Row="9" Grid.Column="5" Text="{Binding LpFreqEntryCh1}"  Keyboard="Numeric" IsVisible="{Binding LpFreqVisibleCh1}" Style="{StaticResource EntryStyle}" >
+                    <Entry.Behaviors>
+                        <b:EventToCommandBehavior EventName="Completed" Command="{Binding LpFreqEntryCompletedCommandCh1}"/>
+                    </Entry.Behaviors>
+                </Entry>
+                <!--#endregion LP-->
+                <!--#endregion -->
+
+                <views:SKCanvasView x:Name="CanvasView"  Grid.Row="{Binding PlotRow}" Grid.Column="{Binding PlotColumn}"  Grid.RowSpan="{Binding PlotRowSpan}"
+                             Grid.ColumnSpan="{Binding PlotColumnSpan}"  HeightRequest ="{Binding PlotHeight}" WidthRequest="{Binding PlotWidth}"
+                             IsVisible="{Binding PlotVisibleCh0}"  EnableTouchEvents="False" >
+                    <views:SKCanvasView.Behaviors >
+                        <behaviors:PaintSurfaceCommandBehavior Command="{Binding PaintCommand}" />
+                        <!--<behaviors:PaintSurfaceTouchCommandBehavior Command="{Binding TouchCommand}" />-->
+                    </views:SKCanvasView.Behaviors>
+                </views:SKCanvasView>
+
+            </Grid>
+        </ScrollView>
+    </ContentPage.Content>
+</ContentPage>

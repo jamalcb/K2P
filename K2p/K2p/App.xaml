@@ -1,0 +1,89 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<prism:PrismApplication xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:prism="clr-namespace:Prism.Unity;assembly=Prism.Unity.Forms"
+             x:Class="K2p.App">
+
+  <Application.Resources>
+
+    <!--http://colormind.io/-->
+    <!--<ResourceDictionary>-->
+    <!--<Style x:Key="ButtonStyle" TargetType="Button">
+                <Setter Property="HorizontalOptions" Value="Center" />
+                <Setter Property="VerticalOptions" Value="CenterAndExpand" />
+                <Setter Property="BorderColor" Value="Black" />
+                <Setter Property="BorderRadius" Value="15" />
+                <Setter Property="BorderWidth" Value="1" />
+                <Setter Property="WidthRequest" Value="200" />
+                <Setter Property="TextColor" Value="Teal" />
+            </Style>-->
+
+    <!-- Search for web color picker -->
+    <Style x:Key="SwitchStyle" TargetType="Switch">
+      <Setter Property="OnColor" Value="#38f4f4" />
+    </Style>
+
+    <Style x:Key="PageTitleStyle" TargetType="Label">
+      <Setter Property="BackgroundColor" Value="#1c2128" />
+    </Style>
+    <!--Value="#1481aa"-->
+    <Style x:Key="ButtonStyle" TargetType="Button">
+      <Setter Property="TextColor" Value="#1481aa" />
+      <Setter Property="HeightRequest" Value="40" />
+      <Setter Property="BackgroundColor" Value="AntiqueWhite"/>
+      <Setter Property="CornerRadius" Value="8"/>
+      <Setter Property="FontSize" Value="13" />
+    </Style>
+    <Style x:Key="SliderStyle" TargetType="Slider">
+      <!--<Setter Property="BackgroundColor" Value="#6E8089" />-->
+      <!--<Setter Property="BackgroundColor" Value="#000000" />-->
+      <Setter Property="HeightRequest" Value="20"/>
+    </Style>
+    <!-- Warning, validation checking in behaviors will ovveride these colors!!!!! -->
+    <Style x:Key="EntryStyle" TargetType="Entry">
+      <Setter Property="BackgroundColor" Value="#1c2128" />
+      <Setter Property="TextColor" Value="White"/>
+      <Setter Property="VerticalOptions" Value="Center" />
+      <Setter Property="FontSize" Value="14"/>
+    </Style>
+    <Style x:Key="PasswordStyle" TargetType="Entry">
+      <Setter Property="BackgroundColor" Value="#1c2128" />
+      <Setter Property="TextColor" Value="White"/>
+      <Setter Property="VerticalOptions" Value="Center" />
+      <Setter Property="IsPassword" Value="True"/>
+      <Setter Property="Keyboard" Value="Numeric"/>
+      <Setter Property="FontSize" Value="14"/>
+    </Style>
+    <Style x:Key="PickerStyle" TargetType="Picker">
+      <Setter Property="BackgroundColor" Value="#1c2128" />
+      <Setter Property="TextColor" Value="White"/>
+      <Setter Property="FontSize" Value="14"/>
+      <Setter Property="TitleColor" Value="Blue"/>
+    </Style>
+    <Style x:Key="LabelStyle" TargetType="Label">
+      <Setter Property="BackgroundColor" Value="#1c2128" />
+      <Setter Property="TextColor" Value="Aqua" />
+      <Setter Property="VerticalOptions" Value="Center" />
+    </Style>
+    <Style x:Key="LabelTitleStyle" TargetType="Label" >
+      <Setter Property="BackgroundColor" Value="#1c2128" />
+      <Setter Property="TextColor" Value="Aqua" />
+      <Setter Property="VerticalOptions" Value="Center" />
+      <Setter Property="FontSize" Value="16" />
+    </Style>
+    <Style x:Key="LabelTitleStyleNoColor" TargetType="Label" >
+      <Setter Property="BackgroundColor" Value="#1c2128" />
+      <Setter Property="VerticalOptions" Value="Center" />
+      <Setter Property="FontSize" Value="16" />
+    </Style>
+    <Style x:Key="LabelSubTitleStyle" TargetType="Label" >
+      <Setter Property="BackgroundColor" Value="#1c2128" />
+      <Setter Property="TextColor" Value="Aqua" />
+      <Setter Property="VerticalOptions" Value="Center" />
+    </Style>
+
+    <!--</ResourceDictionary>-->
+
+
+  </Application.Resources>
+</prism:PrismApplication>

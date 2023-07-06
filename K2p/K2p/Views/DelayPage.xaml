@@ -1,0 +1,194 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:b="clr-namespace:Prism.Behaviors;assembly=Prism.Forms"
+             xmlns:prism="clr-namespace:Prism.Mvvm;assembly=Prism.Forms"
+             prism:ViewModelLocator.AutowireViewModel="True"
+             x:Class="K2p.Views.DelayPage" 
+             Style="{StaticResource PageTitleStyle}" 
+             Title="Delays">
+
+    <ContentPage.Content>
+        <ScrollView>
+            <StackLayout HorizontalOptions="CenterAndExpand" VerticalOptions="StartAndExpand" Padding="5,10,0,0">
+                <Grid Padding="2,0,10,0" ColumnSpacing="10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="80"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="50"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Label Grid.Column="0"  Text="{Binding LabelCh0}" TextColor="{Binding TextColorCh0}" Style="{StaticResource LabelTitleStyleNoColor}" />
+
+                    <Slider Grid.Column="1" Maximum="{Binding SliderMax}" Minimum="0" Style="{StaticResource SliderStyle}" Value="{Binding SliderValueCh0}"/>
+
+                    <Entry Grid.Column="2" Keyboard="Numeric" Text="{Binding EntryValueCh0}"  Style="{StaticResource EntryStyle}" >
+                        <Entry.Behaviors>
+                            <b:EventToCommandBehavior EventName="Completed" Command="{Binding EntryCompletedCommandCh0}"/>
+                        </Entry.Behaviors>
+                    </Entry>
+                    <Label Grid.Column="3" Text="ms" VerticalTextAlignment="Center" Style="{StaticResource LabelStyle}" />
+                </Grid>
+
+                <Grid Padding="2,0,10,0" ColumnSpacing="10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="80"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="50"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Label Grid.Column="0"  Text="{Binding LabelCh1}" TextColor="{Binding TextColorCh1}" Style="{StaticResource LabelTitleStyleNoColor}"  />
+                    <Slider Grid.Column="1" Maximum="{Binding SliderMax}" Minimum="0" Style="{StaticResource SliderStyle}" Value="{Binding SliderValueCh1}"/>
+                    <Entry Grid.Column="2" Keyboard="Numeric" Text="{Binding EntryValueCh1}"  Style="{StaticResource EntryStyle}" >
+                        <Entry.Behaviors>
+                            <b:EventToCommandBehavior EventName="Completed" Command="{Binding EntryCompletedCommandCh1}"/>
+                        </Entry.Behaviors>
+                    </Entry>
+                    <Label Grid.Column="3" Text="ms" VerticalTextAlignment="Center" Style="{StaticResource LabelStyle}" />
+                </Grid>
+
+                <Grid Padding="2,0,10,0" ColumnSpacing="10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="80"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="50"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Label Grid.Column="0"  Text="{Binding LabelCh2}" TextColor="{Binding TextColorCh2}" Style="{StaticResource LabelTitleStyleNoColor}"  />
+                    <Slider Grid.Column="1" Maximum="{Binding SliderMax}" Minimum="0" Style="{StaticResource SliderStyle}" Value="{Binding SliderValueCh2}"/>
+                    <Entry Grid.Column="2" Keyboard="Numeric" Text="{Binding EntryValueCh2}"  Style="{StaticResource EntryStyle}" >
+                        <Entry.Behaviors>
+                            <b:EventToCommandBehavior EventName="Completed" Command="{Binding EntryCompletedCommandCh2}"/>
+                        </Entry.Behaviors>
+                    </Entry>
+                    <Label Grid.Column="3" Text="ms" VerticalTextAlignment="Center" Style="{StaticResource LabelStyle}" />
+                </Grid>
+
+                <Grid Padding="2,0,10,0" ColumnSpacing="10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="80"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="50"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Label Grid.Column="0" Text="{Binding LabelCh3}" TextColor="{Binding TextColorCh3}" Style="{StaticResource LabelTitleStyleNoColor}"  />
+                    <Slider Grid.Column="1" Maximum="{Binding SliderMax}" Minimum="0" Style="{StaticResource SliderStyle}" Value="{Binding SliderValueCh3}"/>
+                    <Entry Grid.Column="2" Keyboard="Numeric" Text="{Binding EntryValueCh3}"  Style="{StaticResource EntryStyle}" >
+                        <Entry.Behaviors>
+                            <b:EventToCommandBehavior EventName="Completed" Command="{Binding EntryCompletedCommandCh3}"/>
+                        </Entry.Behaviors>
+                    </Entry>
+                    <Label Grid.Column="3" Text="ms" VerticalTextAlignment="Center" Style="{StaticResource LabelStyle}" />
+                </Grid>
+
+                <Grid Padding="2,0,10,0" ColumnSpacing="10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="80"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="50"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Label Grid.Column="0" Text="{Binding LabelCh4}" TextColor="{Binding TextColorCh4}" Style="{StaticResource LabelTitleStyleNoColor}" />
+                    <Slider Grid.Column="1" Maximum="{Binding SliderMax}" Minimum="0" Style="{StaticResource SliderStyle}" Value="{Binding SliderValueCh4}"/>
+                    <Entry Grid.Column="2" Keyboard="Numeric" Text="{Binding EntryValueCh4}"  Style="{StaticResource EntryStyle}" >
+                        <Entry.Behaviors>
+                            <b:EventToCommandBehavior EventName="Completed" Command="{Binding EntryCompletedCommandCh4}"/>
+                        </Entry.Behaviors>
+                    </Entry>
+                    <Label Grid.Column="3" Text="ms" VerticalTextAlignment="Center" Style="{StaticResource LabelStyle}" />
+                </Grid>
+
+                <Grid Padding="2,0,10,0" ColumnSpacing="10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="80"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="50"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Label Grid.Column="0" Text="{Binding LabelCh5}" TextColor="{Binding TextColorCh5}" Style="{StaticResource LabelTitleStyleNoColor}"  />
+                    <Slider Grid.Column="1" Maximum="{Binding SliderMax}" Minimum="0"  Style="{StaticResource SliderStyle}" Value="{Binding SliderValueCh5}"/>
+                    <Entry Grid.Column="2" Keyboard="Numeric" Text="{Binding EntryValueCh5}"  Style="{StaticResource EntryStyle}" >
+                        <Entry.Behaviors>
+                            <b:EventToCommandBehavior EventName="Completed" Command="{Binding EntryCompletedCommandCh5}"/>
+                        </Entry.Behaviors>
+                    </Entry>
+                    <Label Grid.Column="3" Text="ms" VerticalTextAlignment="Center" Style="{StaticResource LabelStyle}" />
+                </Grid>
+
+                <Grid Padding="2,0,10,0" ColumnSpacing="10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="80"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="50"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Label Grid.Column="0"  Text="{Binding LabelCh6}"  TextColor="{Binding TextColorCh6}" Style="{StaticResource LabelTitleStyleNoColor}"  />
+                    <Slider Grid.Column="1" Maximum="{Binding SliderMax}" Minimum="0" Style="{StaticResource SliderStyle}" Value="{Binding SliderValueCh6}"/>
+                    <Entry Grid.Column="2" Keyboard="Numeric" Text="{Binding EntryValueCh6}"  Style="{StaticResource EntryStyle}" >
+                        <Entry.Behaviors>
+                            <b:EventToCommandBehavior EventName="Completed" Command="{Binding EntryCompletedCommandCh6}"/>
+                        </Entry.Behaviors>
+                    </Entry>
+                    <Label Grid.Column="3" Text="ms" VerticalTextAlignment="Center" Style="{StaticResource LabelStyle}" />
+                </Grid>
+
+                <Grid Padding="2,0,10,0" ColumnSpacing="10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="80"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="50"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Label Grid.Column="0"  Text="{Binding LabelCh7}"  TextColor="{Binding TextColorCh7}" Style="{StaticResource LabelTitleStyleNoColor}" />
+
+                    <Slider Grid.Column="1" Maximum="{Binding SliderMax}" Minimum="0" Style="{StaticResource SliderStyle}" Value="{Binding SliderValueCh7}"/>
+                    <Entry Grid.Column="2" Keyboard="Numeric" Text="{Binding EntryValueCh7}"  Style="{StaticResource EntryStyle}" >
+                        <Entry.Behaviors>
+                            <b:EventToCommandBehavior EventName="Completed" Command="{Binding EntryCompletedCommandCh7}"/>
+                        </Entry.Behaviors>
+                    </Entry>
+                    <Label Grid.Column="3" Text="ms" VerticalTextAlignment="Center" Style="{StaticResource LabelStyle}" />
+                </Grid>
+                <Label Text ="Groups" Style="{StaticResource LabelTitleStyle}"  Margin="0,10,0,0"/>
+                <Grid Margin="2,4,0,0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width ="80"/>
+                        <ColumnDefinition Width ="Auto"/>
+                        <ColumnDefinition Width ="80"/>
+                        <ColumnDefinition Width ="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Label  Grid.Row ="0" Grid.Column="0" Text="{Binding LabelCh0}" TextColor="{Binding TextColorCh0}" Style="{StaticResource LabelTitleStyleNoColor}" />
+                    <Picker Grid.Row ="0" Grid.Column="1" Title="Ch 1 Group" ItemsSource="{Binding Groups}" ItemDisplayBinding="{Binding Name}" SelectedIndex="{Binding SelectedIndexCh0}" Style="{StaticResource PickerStyle}" />
+                    <Label  Grid.Row ="0" Grid.Column="2" Text="{Binding LabelCh1}" TextColor="{Binding TextColorCh1}" Style="{StaticResource LabelTitleStyleNoColor}" />
+                    <Picker Grid.Row ="0" Grid.Column="3" Title="Ch 2 Group" ItemsSource="{Binding Groups}" ItemDisplayBinding="{Binding Name}" SelectedIndex="{Binding SelectedIndexCh1}" Style="{StaticResource PickerStyle}" />
+
+                    <Label  Grid.Row ="1" Grid.Column="0" Text="{Binding LabelCh2}" TextColor="{Binding TextColorCh2}" Style="{StaticResource LabelTitleStyleNoColor}"/>
+                    <Picker Grid.Row ="1" Grid.Column="1" Title="Ch 3 Group" ItemsSource="{Binding Groups}" ItemDisplayBinding="{Binding Name}" SelectedIndex="{Binding SelectedIndexCh2}" Style="{StaticResource PickerStyle}"  />
+                    <Label  Grid.Row ="1" Grid.Column="2" Text="{Binding LabelCh3}" TextColor="{Binding TextColorCh3}" Style="{StaticResource LabelTitleStyleNoColor}"/>
+                    <Picker Grid.Row ="1" Grid.Column="3" Title="Ch 4 Group"  ItemsSource="{Binding Groups}" ItemDisplayBinding="{Binding Name}" SelectedIndex="{Binding SelectedIndexCh3}" Style="{StaticResource PickerStyle}"  />
+
+                    <Label  Grid.Row ="2" Grid.Column="0" Text="{Binding LabelCh4}" TextColor="{Binding TextColorCh4}" Style="{StaticResource LabelTitleStyleNoColor}"/>
+                    <Picker Grid.Row ="2" Grid.Column="1" Title="Ch 5 Group"  ItemsSource="{Binding Groups}" ItemDisplayBinding="{Binding Name}" SelectedIndex="{Binding SelectedIndexCh4}" Style="{StaticResource PickerStyle}" />
+                    <Label  Grid.Row ="2" Grid.Column="2" Text="{Binding LabelCh5}" TextColor="{Binding TextColorCh5}" Style="{StaticResource LabelTitleStyleNoColor}"/>
+                    <Picker Grid.Row ="2" Grid.Column="3" Title="Ch 6 Group"  ItemsSource="{Binding Groups}" ItemDisplayBinding="{Binding Name}" SelectedIndex="{Binding SelectedIndexCh5}" Style="{StaticResource PickerStyle}"  />
+
+                    <Label  Grid.Row ="3" Grid.Column="0" Text="{Binding LabelCh6}" TextColor="{Binding TextColorCh6}" Style="{StaticResource LabelTitleStyleNoColor}"/>
+                    <Picker Grid.Row ="3" Grid.Column="1" Title="Ch 7 Group"  ItemsSource="{Binding Groups}" ItemDisplayBinding="{Binding Name}" SelectedIndex="{Binding SelectedIndexCh6}" Style="{StaticResource PickerStyle}"  />
+                    <Label  Grid.Row ="3" Grid.Column="2" Text="{Binding LabelCh7}" TextColor="{Binding TextColorCh7}" Style="{StaticResource LabelTitleStyleNoColor}" />
+                    <Picker Grid.Row ="3" Grid.Column="3" Title="Ch 8 Group" ItemsSource="{Binding Groups}" ItemDisplayBinding="{Binding Name}" SelectedIndex="{Binding SelectedIndexCh7}" Style="{StaticResource PickerStyle}" />
+
+                </Grid>
+                <Button Text="Default Groups"  Style="{StaticResource ButtonStyle}"  Command="{Binding ButtonDefaultGroups}" Margin="20,5,25,0"/>
+
+
+
+            </StackLayout>
+        </ScrollView>
+    </ContentPage.Content>
+</ContentPage>

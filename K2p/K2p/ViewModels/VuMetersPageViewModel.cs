@@ -1,0 +1,635 @@
+﻿using Prism.Commands;
+using Prism.Mvvm;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows.Input;
+using K2p.Statics;
+using Prism.Navigation;
+using Prism.Services;
+using SkiaSharp;
+using SkiaSharp.Views.Forms;
+using Xamarin.Forms;
+
+namespace K2p.ViewModels
+{
+  public class VuMetersPageViewModel : ViewModelBase
+  {
+    private IPageDialogService _dialogService;
+    private bool _showPlotPortrait;
+    // private SKPath _path1;
+    private readonly SKPaint[] _paintLevel = new SKPaint[4];
+    public Timer _timer;
+
+    public ICommand PaintCommand0 { get; }
+    public ICommand PaintCommand1 { get; }
+    public ICommand PaintCommand2 { get; }
+    public ICommand PaintCommand3 { get; }
+
+    private readonly SKPaint _xAxisPaint;
+    // private SKPath _xAxisPath;
+
+    public VuMetersPageViewModel(INavigationService navigationService, IPageDialogService dialogService) : base(navigationService)
+    {
+      _dialogService = dialogService;
+      PaintCommand0 = new Command<SKPaintSurfaceEventArgs>(OnInputVuPainting);
+      PaintCommand1 = new Command<SKPaintSurfaceEventArgs>(OnPostMixerVuPainting);
+      PaintCommand2 = new Command<SKPaintSurfaceEventArgs>(OnPostEqVuPainting);
+      PaintCommand3 = new Command<SKPaintSurfaceEventArgs>(OnOutputVuPainting);
+
+      _xAxisPaint = new SKPaint
+      {
+        Style = SKPaintStyle.Stroke,
+        Color = new SKColor(98, 98, 98),
+        StrokeWidth = 4,
+        StrokeCap = SKStrokeCap.Butt,
+        IsAntialias = true
+      };
+
+      _paintLevel[3] = new SKPaint //red
+      {
+        Style = SKPaintStyle.Fill,
+        Color = new SKColor(255, 0, 0),
+        StrokeWidth = 4,
+        StrokeCap = SKStrokeCap.Butt,
+        IsAntialias = true
+      };
+      _paintLevel[2] = new SKPaint // yellow
+      {
+        Style = SKPaintStyle.Fill,
+        Color = new SKColor(255, 255, 0),
+        StrokeWidth = 4,
+        StrokeCap = SKStrokeCap.Butt,
+        IsAntialias = true
+      };
+      _paintLevel[1] = new SKPaint // green
+      {
+        Style = SKPaintStyle.Fill,
+        Color = new SKColor(0, 255, 0),
+        StrokeWidth = 4,
+        StrokeCap = SKStrokeCap.Butt,
+        IsAntialias = true
+      };
+      _paintLevel[0] = new SKPaint // blue
+      {
+        Style = SKPaintStyle.Fill,
+        Color = new SKColor(0, 0, 255),
+        StrokeWidth = 4,
+        StrokeCap = SKStrokeCap.Butt,
+        IsAntialias = true
+      };
+      _timer = new Timer(OnTick, null, 100, 100);
+
+    }
+
+    Random _rand = new Random();
+    private double[] _inputLevels = new double[10];
+    private double[] _postMixerLevels = new double[8];
+    private double[] _postEqLevels = new double[8];
+    private double[] _outputLevels = new double[8];
+
+    public static bool TimerIsEnabled;
+
+    private bool _timerHoldoff;
+    private void OnTick(object state)
+    {
+      if (!TimerIsEnabled)
+        return;
+
+      if (_timerHoldoff)
+      {
+        Debug.WriteLine("************************* Timer holdoff ******************************************");
+        return;
+      }
+      _timerHoldoff = true;
+      int channel;
+      if (TCP.IsConnected)
+      {
+        var meters = Meters.ReadMeters();
+        if (meters == null) return;
+        if (meters.Length == 34)
+        {
+         
+          var index = 0;
+          for (channel = 0; channel != 10; channel++)
+          {
+            _inputLevels[channel] = 20.0 * Math.Log10(meters[index++]);
+          }
+
+          for (channel = 0; channel != 8; channel++)
+          {
+            _postMixerLevels[channel] = 20.0 * Math.Log10(meters[index++]);
+          }
+
+          for (channel = 0; channel != 8; channel++)
+          {
+            _postEqLevels[channel] = 20.0 * Math.Log10(meters[index++]);
+          }
+
+          for (channel = 0; channel != 8; channel++)
+          {
+            _outputLevels[channel] = 20.0 * Math.Log10(meters[index++]);
+          }
+        }
+      }
+      else
+      {
+       // PreventBackButton = true;
+        for (channel = 0; channel != 10; channel++)
+        {
+          _inputLevels[channel] = -60*_rand.NextDouble();
+        }
+        for (channel = 0; channel != 8; channel++)
+        {
+          _postMixerLevels[channel] = -60 * _rand.NextDouble();
+        }
+        for (channel = 0; channel != 8; channel++)
+        {
+          _postEqLevels[channel] = -60 * _rand.NextDouble();
+        }
+        for (channel = 0; channel != 8; channel++)
+        {
+          _outputLevels[channel] = -60 * _rand.NextDouble();
+        }
+     
+      }
+
+      Utils.VuMetersPageView?.Redraw0();
+      Utils.VuMetersPageView?.Redraw1();
+      Utils.VuMetersPageView?.Redraw2();
+      Utils.VuMetersPageView?.Redraw3();
+      _timerHoldoff = false;
+    //  PreventBackButton = false;
+
+    }
+
+  //  public bool PreventBackButton;
+    public int PlotRow0 { get; set; } = 0;
+    public int PlotColumn0 { get; set; } = 0;
+    public int PlotRowSpan0 { get; set; } = 1;
+    public int PlotColumnSpan0 { get; set; } = 4;
+
+    public int PlotRow1 { get; set; } = 1;
+    public int PlotColumn1 { get; set; } = 0;
+    public int PlotRowSpan1 { get; set; } = 1;
+    public int PlotColumnSpan1 { get; set; } = 4;
+
+    public int PlotRow2 { get; set; } = 2;
+    public int PlotColumn2 { get; set; } = 0;
+    public int PlotRowSpan2 { get; set; } = 1;
+    public int PlotColumnSpan2 { get; set; } = 4;
+
+    public int PlotRow3 { get; set; } = 3;
+    public int PlotColumn3 { get; set; } = 0;
+    public int PlotRowSpan3 { get; set; } = 1;
+    public int PlotColumnSpan3 { get; set; } = 4;
+
+    public bool ShowPlotPortrait
+    {
+      get => _showPlotPortrait;
+      set
+      {
+        SetProperty(ref _showPlotPortrait, value);
+        if (value) // Portrait
+        {
+          PlotRow0 = 0;
+          PlotColumn0 = 0;
+          PlotRowSpan0 = 1;
+          PlotColumnSpan0 = 4;
+
+
+          PlotRow1 = 1;
+          PlotColumn1 = 0;
+          PlotRowSpan1 = 1;
+          PlotColumnSpan1 = 4;
+
+          PlotRow2 = 2;
+          PlotColumn2 = 0;
+          PlotRowSpan2 = 1;
+          PlotColumnSpan2 = 4;
+
+          PlotRow3 = 3;
+          PlotColumn3 = 0;
+          PlotRowSpan3 = 1;
+          PlotColumnSpan3 = 4;
+
+        }
+        else
+        {
+          PlotRow0 = 0;
+          PlotColumn0 = 0;
+          PlotRowSpan0 = 4;
+          PlotColumnSpan0 = 1;
+
+          PlotRow1 = 0;
+          PlotColumn1 = 1;
+          PlotRowSpan1 = 4;
+          PlotColumnSpan1 = 1;
+
+          PlotRow2 = 0;
+          PlotColumn2 = 2;
+          PlotRowSpan2 = 4;
+          PlotColumnSpan2 = 1;
+
+          PlotRow3 = 0;
+          PlotColumn3 = 3;
+          PlotRowSpan3 = 4;
+          PlotColumnSpan3 = 1;
+        }
+
+        for (var i = 0; i != 4; i++)
+        {
+          RaisePropertyChanged($"PlotRow{i}");
+          RaisePropertyChanged($"PlotColumn{i}");
+          RaisePropertyChanged($"PlotRowSpan{i}");
+          RaisePropertyChanged($"PlotColumnSpan{i}");
+        }
+
+      }
+    }
+
+    private void TranslateYcoordinate(ref float y, float height)
+    {
+      y = height - y;
+    }
+   // private float[] InputLevels = { -10, -60, -50, -40, -30, -20, -10, 0 };
+    // y = mX+B
+    //y = 1/63 x + .952
+
+    private float[] _thresholds = { -60f, -40f, -20f, -5f, 3f };
+
+    private const float _leftMargin = 80;
+    private const float _topMargin = 80;
+    private const float _bottomMargin = 50;
+
+    // returns an array of Rects, count depends of dB magniitude
+    private SKRect[] GetRects(float x, double dB, int channels)
+    {
+      dB = dB > 0 ? 0 : dB;
+      var channelWidth = (_width - _leftMargin) / channels;
+      float[] scaledThresholds = new float[_thresholds.Length];
+      int i;
+      for (i = 0; i != _thresholds.Length; i++)
+      {
+        scaledThresholds[i] =
+          TranslateY(dBtoHeight(60.0 + _thresholds[i]), false); //_height - _bottomMargin - dBtoHeight(60.0 + _thresholds[i]);
+      }
+
+      var count = 0;
+
+      for (i = 0; i != _thresholds.Length; i++)
+      {
+        if (dB >= _thresholds[i])
+        {
+          count++;
+        }
+        else break;
+      }
+
+      var rects = new SKRect[count];
+      for (i = 0; i != rects.Length; i++)
+      {
+        float rectHight;
+        if (dB >= _thresholds[i + 1])
+        {
+          rectHight = dBtoHeight(_thresholds[i + 1] - _thresholds[i]);
+        }
+        else
+        {
+          rectHight = dBtoHeight(dB - _thresholds[i]);
+        }
+        rects[i] = SKRect.Create(x, scaledThresholds[i], channelWidth, -rectHight);
+      }
+      return rects;
+    }
+    SKPaint textPaint = new SKPaint
+    {
+      IsAntialias = true,
+      Style = SKPaintStyle.StrokeAndFill,
+      Color = new SKColor(255, 255, 255, 255),
+      TextSize = 50,
+      IsVerticalText = false,
+    };
+
+    SKPaint ChannelPaint = new SKPaint
+    {
+      IsAntialias = true,
+      Style = SKPaintStyle.StrokeAndFill,
+      Color = new SKColor(0, 255, 0, 180),
+      TextSize = 40,
+      IsVerticalText = true
+    };
+
+    /// <summary>
+    /// Of the form y = mX + B
+    /// 
+    /// </summary>
+    /// <param name="dB"></param>
+    /// <returns></returns>
+    private float dBtoHeight(double dB)
+    {
+      // double B = 60.0 / 63.0;
+      double M = 1.0 / 60.0;
+      M *= _height - _topMargin - _bottomMargin;
+      double B = 0;
+      // dB = -dB;
+
+      var retval = (float)(dB * M + B);
+      return (float)(dB * M + B);
+    }
+
+    private float TranslateY(float y, bool scale = false)
+    {
+      var B = _height - _bottomMargin;
+      //var m = _bottomMargin / A - 1.0;
+      var m = scale ? _height / (_height + _topMargin + _bottomMargin) : 1.0;
+
+      return (float)(B - y * m);
+    }
+
+   // private float ChannelWidth => (float)((_width - _leftMargin) / 8.0);
+    private float _height;
+    private float _width;
+
+    private static Color _white = Color.FromRgba(255, 255, 255, 180);
+
+    private Color[] _inputColors = {_white, _white, _white, _white, _white, _white, _white, _white, _white, _white,};
+    /// <summary>
+    /// Objects locate from theie top left.  When using TranslateY() for the object y value, heights must be negative
+    /// </summary>
+    /// <param name="e"></param>
+    private void OnInputVuPainting(SKPaintSurfaceEventArgs e)
+    {
+      var surface = e.Surface;
+      var canvas = surface.Canvas;
+      _height = e.Info.Height;
+      _width = e.Info.Width;
+
+      canvas.Clear(Constants.PlotBackgroundColor);
+      
+
+      DrawRects(ref canvas, ref _inputLevels, 10);
+      DrawAxis(ref canvas, "Inputs", ref _inputColors, ref Settings.input_labels, 10);
+    }
+
+    private void OnPostEqVuPainting(SKPaintSurfaceEventArgs e)
+    {
+      var surface = e.Surface;
+      var canvas = surface.Canvas;
+      _height = e.Info.Height;
+      _width = e.Info.Width;
+      canvas.Clear(Constants.PlotBackgroundColor);
+      DrawRects(ref canvas, ref _postEqLevels, 8);
+      DrawAxis(ref canvas, "Post EQ", ref Settings.mixer_2_output_brush, ref Settings.output_labels, 8);
+    }
+
+    private void OnOutputVuPainting(SKPaintSurfaceEventArgs e)
+    {
+      var surface = e.Surface;
+      var canvas = surface.Canvas;
+      _height = e.Info.Height;
+      _width = e.Info.Width;
+      canvas.Clear(Constants.PlotBackgroundColor);
+      DrawRects(ref canvas, ref _outputLevels, 8);
+      DrawAxis(ref canvas, "Output", ref Settings.mixer_2_output_brush, ref Settings.output_labels, 8);
+    }
+
+    
+
+    private void OnPostMixerVuPainting(SKPaintSurfaceEventArgs e)
+    {
+      var surface = e.Surface;
+      var canvas = surface.Canvas;
+      _height = e.Info.Height;
+      _width = e.Info.Width;
+      canvas.Clear(Constants.PlotBackgroundColor);
+      DrawRects(ref canvas, ref _postMixerLevels, 8);
+      DrawAxis(ref canvas, "Post Mixer", ref Settings.mixer_2_output_brush, ref Settings.output_labels,  8);
+    }
+
+    private void DrawRects(ref SKCanvas canvas, ref double[] array, int channels)
+    {
+      var channelWidth = (_width - _leftMargin) / channels;
+      for (var channel = 0; channel != channels; channel++)
+      {
+        var rects = GetRects(_leftMargin + channelWidth * channel, array[channel], channels);
+        int i;
+        for (i = 0; i != rects.Length; i++)
+        {
+          canvas.DrawRect(rects[i], _paintLevel[i]);
+        }
+      }
+    }
+   
+
+    private void DrawAxis(ref SKCanvas canvas, string label, ref Color[] colors, ref string [] labels, int channels)
+    {
+      var channelWidth = (_width - _leftMargin) / channels;
+      for (var channel = 0; channel != channels; channel++)
+      {
+        var topPoint = new SKPoint(_leftMargin + channel * channelWidth, _topMargin);
+        var bottomPoint = new SKPoint(_leftMargin + channel * channelWidth, _height - _bottomMargin);
+        canvas.DrawLine(topPoint, bottomPoint, _xAxisPaint);
+        textPaint.Color = SKColors.LightGreen;
+        canvas.DrawText(label, _leftMargin + _width / 2 - (15 * label.Length), 50, textPaint);
+        textPaint.Color = SKColors.White;
+      }
+
+      var textOffset = textPaint.TextSize / 2 - 10;
+
+      var leftPoint = new SKPoint(_leftMargin, TranslateY(dBtoHeight(0)));
+      var rightPoint = new SKPoint(_width, leftPoint.Y);
+
+      canvas.DrawLine(leftPoint, rightPoint, _xAxisPaint);
+      leftPoint.X = 0;
+      leftPoint.Y += textOffset;
+      canvas.DrawText("-60", leftPoint, textPaint);
+
+      leftPoint.Y = TranslateY(dBtoHeight(10));
+
+      rightPoint.Y = leftPoint.Y;
+      leftPoint.X = _leftMargin;
+      canvas.DrawLine(leftPoint, rightPoint, _xAxisPaint);
+
+      leftPoint.X = 0;
+      leftPoint.Y += textOffset;
+      canvas.DrawText("-50", leftPoint, textPaint);
+
+      leftPoint.Y = TranslateY(dBtoHeight(20));
+      rightPoint.Y = leftPoint.Y;
+      leftPoint.X = _leftMargin;
+      canvas.DrawLine(leftPoint, rightPoint, _xAxisPaint);
+      leftPoint.X = 0;
+      leftPoint.Y += textOffset;
+      canvas.DrawText("-40", leftPoint, textPaint);
+
+      leftPoint.Y = TranslateY(dBtoHeight(30));
+      rightPoint.Y = leftPoint.Y;
+      leftPoint.X = _leftMargin;
+      canvas.DrawLine(leftPoint, rightPoint, _xAxisPaint);
+      leftPoint.X = 0;
+      leftPoint.Y += textOffset;
+      canvas.DrawText("-30", leftPoint, textPaint);
+
+      leftPoint.Y = TranslateY(dBtoHeight(40));
+      rightPoint.Y = leftPoint.Y;
+      leftPoint.X = _leftMargin;
+      canvas.DrawLine(leftPoint, rightPoint, _xAxisPaint);
+      leftPoint.X = 0;
+      leftPoint.Y += textOffset;
+      canvas.DrawText("-20", leftPoint, textPaint);
+
+
+      leftPoint.Y = TranslateY(dBtoHeight(50));
+      rightPoint.Y = leftPoint.Y;
+      leftPoint.X = _leftMargin;
+      canvas.DrawLine(leftPoint, rightPoint, _xAxisPaint);
+      leftPoint.X = 0;
+      leftPoint.Y += textOffset;
+    
+      canvas.DrawText("-10", leftPoint, textPaint);
+
+      leftPoint.Y = TranslateY(dBtoHeight(60));
+      rightPoint.Y = leftPoint.Y;
+      leftPoint.X = _leftMargin;
+      canvas.DrawLine(leftPoint, rightPoint, _xAxisPaint);
+      leftPoint.X = 43;
+      leftPoint.Y += textOffset;
+      canvas.DrawText("0", leftPoint, textPaint);
+
+      leftPoint.X = _leftMargin + channelWidth / 2f;
+      leftPoint.Y = _topMargin + 5;
+      var xoffset = channelWidth / 2f;
+
+      for (var channel = 0; channel != channels; channel++)
+      {
+        leftPoint.X = _leftMargin + xoffset;
+        xoffset += channelWidth;
+        ChannelPaint.Color = SetAlpha(colors[channel].ToSKColor(), 190);
+        
+        canvas.DrawText(labels[channel], leftPoint, ChannelPaint);
+      }
+    }
+
+    private SKColor SetAlpha(SKColor color, byte alpha)
+    {
+      SKColor newColor = new SKColor(color.Red, color.Green, color.Blue, alpha);
+      return newColor;
+    }
+
+  }
+
+  public static class Meters
+  {
+
+    public static bool ReadMetersIsBusy
+    {
+      get;
+      set;
+    }
+    /// <summary>
+    /// Need to read 4 banks of 8 meters. One bank of 10 + 3 x 8 = 136
+    /// Will:
+    /// Send CMD_READ_METERS
+    /// Wait for ACK
+    /// Send 32 addresses
+    /// Receive 64 bytes (1st 2 banks)
+    /// Receive 64 bytes (2nd 2 banks)
+    /// </summary>
+    /// <param name="meters"></param>
+    /// <returns></returns>
+    public static float[] ReadMeters()
+    {
+      if (!TCP.IsConnected)
+      {
+        return null;
+      }
+
+
+      ReadMetersIsBusy = true;
+      var results = new float[34];
+
+      var commandArray = new byte[4];
+      int i;
+      commandArray[0] = USB_Commands.CMD_REPORT_ID;
+      commandArray[1] = USB_Commands.CMD_START;
+      commandArray[2] = USB_Commands.CMD_GET_METERS;
+      if (!Utils.Universal_Write(ref commandArray))
+      {
+        Debug.WriteLine("CMD_READ_METERS failed");
+        ReadMetersIsBusy = false;
+        return null;
+      }
+
+      var arrayIndex = 0;
+      var k = 0;
+      // var array = new byte[136];
+      // Task.Delay(15).Wait();
+      var success = TCP.Read(out var array);
+
+      //  var bytesRead = TCP.WiFiStream.Read(array, 0, 136);
+
+      if (!success)
+      {
+        Debug.WriteLine("ReadMeters() Read failed");
+        ReadMetersIsBusy = false;
+        return null;
+      }
+      if (array.Length != 136)
+      {
+        Debug.WriteLine($"readMeters() arrar.Length != 136 {array.Length }");
+        ReadMetersIsBusy = false;
+        return null;
+      }
+
+      for (i = 0; i != 34; i++)
+      {
+        var result = array[arrayIndex++] << 24;
+        result += array[arrayIndex++] << 16;
+        result += array[arrayIndex++] << 8;
+        result += array[arrayIndex++];
+        results[k++] = (float)Utils.Convert_8_24_to_double((uint)result);
+      }
+      ReadMetersIsBusy = false;
+      return results;
+    }
+
+    //  public static async Task<float[]> ReadMetersAsync()
+    //  {
+    //    if (!TCP.IsConnected)
+    //    {
+    //      return null;
+    //    }
+    //    var results = new float[34];
+
+    //    var commandArray = new byte[4];
+    //    int i;
+    //    commandArray[0] = USB_Commands.CMD_REPORT_ID;
+    //    commandArray[1] = USB_Commands.CMD_START;
+    //    commandArray[2] = USB_Commands.CMD_GET_METERS;
+    //    if (!Utils.Universal_Write(ref commandArray))
+    //    {
+    //      Debug.WriteLine("CMD_READ_METERS failed");
+    //      return null;
+    //    }
+
+    //    Int32 result;
+
+    //    var arrayIndex = 0;
+    //    var k = 0;
+    //    byte[] array = new byte[512];
+    //    var bytesRead = TCP.WiFiStream.Read(array, 0, 136);
+    //    if (bytesRead != 136)
+    //    {
+    //      Debug.WriteLine("ReadMeters() Read failed");
+    //      return null;
+    //    }
+
+
+    //    return results;
+    //  }
+  }
+}
